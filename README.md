@@ -1,4 +1,3 @@
-WP-KB-Articles
-==============
+## WordPress® KB Articles
 
-KB Articles for WordPress; adds a new Custom Post Type.
+KB Articles (custom post type) for WordPress®.
