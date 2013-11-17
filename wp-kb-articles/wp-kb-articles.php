@@ -58,7 +58,7 @@ class wp_kb_articles // WP KB Articles; a new custom post type for WordPress.
 				'all_items'          => __('All KB Articles', 'wp-kb-articles'),
 				'view_item'          => __('View KB Article', 'wp-kb-articles'),
 				'search_items'       => __('Search KB Articles', 'wp-kb-articles'),
-				'not_found'          => __('No KB Article found', 'wp-kb-articles'),
+				'not_found'          => __('No KB Articles found', 'wp-kb-articles'),
 				'not_found_in_trash' => __('No KB Articles found in Trash', 'wp-kb-articles')
 			);
 			register_post_type('kb_article', $post_type_args);

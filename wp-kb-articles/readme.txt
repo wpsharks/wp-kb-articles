@@ -50,8 +50,8 @@ NOTE: There are also some WordPress filters integrated into the code for this pl
 
 = WP KB Articles is very easy to install (instructions) =
 1. Upload the `/wp-kb-articles` folder to your `/wp-content/plugins/` directory.
-2. Activate the plugin through the `Plugins` menu in WordPress®.
-3. Create KB Articles in WordPress® (see: Dashboard -› KB Articles).
+2. Activate the plugin through the **Plugins** menu in WordPress®.
+3. Create KB Articles in WordPress® (see: **Dashboard -› KB Articles**).
 
 == Changelog ==
 
