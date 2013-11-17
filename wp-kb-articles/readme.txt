@@ -16,7 +16,7 @@ Create KB Articles! This plugin adds a new Post Type. That's it (for now).
 
 == Description ==
 
-This plugin is VERY simple. There are NO configuration options necessary.
+This plugin is VERY simple; NO configuration options necessary.
 
 This plugin adds a new Post Type. This plugin makes it SUPER easy to create KB Articles (as a separate Post Type in WordPress). This is a very lightweight plugin (for now). In the future we may add some additional functionality for KB Article integrations w/ other plugins.
 
@@ -24,7 +24,7 @@ After installing this plugin, create a new KB Article (find menu item on the lef
 
 == Frequently Asked Questions ==
 
-#### Who can manage KB Articles in the Dashboard?
+= Who can manage KB Articles in the Dashboard? =
 
 By default, only WordPress® Administrators can manage (i.e. create/edit/delete/manage) KB Articles. Editors and Authors can create/edit/delete their own KB Articles, but permissions are limited for Editors/Authors. If you would like to give other WordPress Roles the Capabilities required, please use a plugin like [Enhanced Capability Manager](http://wordpress.org/extend/plugins/capability-manager-enhanced/).
 
@@ -48,7 +48,8 @@ NOTE: There are also some WordPress filters integrated into the code for this pl
 
 == Installation ==
 
-= WP KB Articles is very easy to install (instructions) =
+= WP KB Articles is Very Easy to Install =
+
 1. Upload the `/wp-kb-articles` folder to your `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** menu in WordPress®.
 3. Create KB Articles in WordPress® (see: **Dashboard -› KB Articles**).
@@ -56,4 +57,5 @@ NOTE: There are also some WordPress filters integrated into the code for this pl
 == Changelog ==
 
 = v131113 =
- * Initial release.
+
+* Initial release.
