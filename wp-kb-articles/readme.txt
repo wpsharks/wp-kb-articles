@@ -12,7 +12,7 @@ Contributors: WebSharks
 Donate link: http://www.websharks-inc.com/r/wp-theme-plugin-donation/
 Tags: kb article, kb articles, ecommerce, e-commerce, post type, post types, utilities, posts, pages
 
-Create KB Articles! This plugin adds a new Post Type. That's it (for now).
+Create KB Articles! This plugin adds a new Post Type.
 
 == Description ==
 
