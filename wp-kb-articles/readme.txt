@@ -1,6 +1,6 @@
 === WP KB Articles ===
 
-Stable tag: 131113
+Stable tag: 131121
 Requires at least: 3.3
 Tested up to: 3.7.1
 Text Domain: wp-kb-articles
@@ -76,6 +76,10 @@ Released under the terms of the [GNU General Public License](http://www.gnu.org/
 	- Font Awesome <http://fortawesome.github.io/Font-Awesome/>
 
 == Changelog ==
+
+= v131121 =
+
+* Updating readme file and adding license file.
 
 = v131113 =
 

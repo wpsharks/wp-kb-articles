@@ -1,6 +1,6 @@
 <?php
 /*
-Version: 131113
+Version: 131121
 Text Domain: wp-kb-articles
 Plugin Name: WP KB Articles
 
