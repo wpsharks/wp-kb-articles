@@ -8,7 +8,7 @@ Author URI: http://www.websharks-inc.com/
 Author: WebSharks, Inc. (Jason Caldwell)
 
 Plugin URI: http://www.websharks-inc.com/product/wp-kb-articles/
-Description: Create KB Articles! This plugin adds a new Post Type. That's it (for now).
+Description: Create KB Articles! This plugin adds a new Post Type.
 */
 if(!defined('WPINC')) // MUST have WordPress.
 	exit('Do NOT access this file directly: '.basename(__FILE__));
