@@ -8,7 +8,7 @@ Text Domain: wp-kb-articles
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Contributors: WebSharks
+Contributors: WebSharks, JasWSInc
 Donate link: http://www.websharks-inc.com/r/wp-theme-plugin-donation/
 Tags: kb article, kb articles, ecommerce, e-commerce, post type, post types, utilities, posts, pages
 
