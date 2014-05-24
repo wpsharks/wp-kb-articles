@@ -42,7 +42,7 @@ class wp_kb_articles // WP KB Articles; a new custom post type for WordPress.
 	{
 		$post_type_args           = array
 		(
-			'public'       => TRUE, 'has_archive' => TRUE,
+			'public'       => TRUE, 'has_archive' => 'kb-articles',
 			'map_meta_cap' => TRUE, 'capability_type' => array('kb_article', 'kb_articles'),
 			'rewrite'      => array('slug' => 'kb-article', 'with_front' => FALSE), // Like a Post (but no Post Formats).
 			'supports'     => array('title', 'editor', 'author', 'excerpt', 'revisions', 'thumbnail', 'custom-fields', 'comments', 'trackbacks')
