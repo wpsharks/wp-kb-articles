@@ -13,9 +13,6 @@ Description: Create KB Articles! This plugin adds a new Post Type.
 if(!defined('WPINC')) // MUST have WordPress.
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
-if(!defined('WP_KB_ARTICLE_ROLES_ALL_CAPS')) define('WP_KB_ARTICLE_ROLES_ALL_CAPS', 'administrator');
-if(!defined('WP_KB_ARTICLE_ROLES_EDIT_CAPS')) define('WP_KB_ARTICLE_ROLES_EDIT_CAPS', 'administrator,editor,author');
-
 class wp_kb_articles // WP KB Articles; a new custom post type for WordPress.
 {
 	public static $roles_all_caps = array(); // WP Roles; as array.

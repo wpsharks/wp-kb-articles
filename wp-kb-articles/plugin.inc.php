@@ -13,6 +13,18 @@ namespace wp_kb_articles
 
 	require_once dirname(__FILE__).'/includes/classes/abs-base.php';
 
+	if(!defined('WP_KB_ARTICLE_ROLES_ALL_CAPS'))
+		/**
+		 * @var string Back compat. constant with original release.
+		 */
+		define('WP_KB_ARTICLE_ROLES_ALL_CAPS', 'administrator');
+
+	if(!defined('WP_KB_ARTICLE_ROLES_EDIT_CAPS'))
+		/**
+		 * @var string Back compat. constant with original release.
+		 */
+		define('WP_KB_ARTICLE_ROLES_EDIT_CAPS', 'administrator,editor,author');
+
 	if(!class_exists('\\'.__NAMESPACE__.'\\plugin'))
 	{
 		/**
