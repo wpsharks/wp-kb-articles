@@ -8,13 +8,13 @@
  */
 /*
 Version: 141206
-Text Domain: comment-mail
+Text Domain: wp-kb-articles
 Plugin Name: Comment Mail
 
 Author: WebSharks, Inc.
 Author URI: http://www.websharks-inc.com
 
-Plugin URI: http://www.websharks-inc.com/product/comment-mail/
+Plugin URI: http://www.websharks-inc.com/product/wp-kb-articles/
 Description: A WordPress plugin enabling email subscriptions for comments.
 
 Enables email subscriptions for comments in WordPress.

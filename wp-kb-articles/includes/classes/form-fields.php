@@ -6,7 +6,7 @@
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
-namespace comment_mail // Root namespace.
+namespace wp_kb_articles // Root namespace.
 {
 	if(!defined('WPINC')) // MUST have WordPress.
 		exit('Do NOT access this file directly: '.basename(__FILE__));
@@ -402,12 +402,7 @@ namespace comment_mail // Root namespace.
 				$input_fallback_args = array_merge($args, (array)$args['input_fallback_args']);
 				unset($input_fallback_args['input_fallback_args']); // Unset self reference.
 
-				if($options === '%%users%%') $options = $this->plugin->utils_markup->user_select_options($current_value, $select_options_args);
-				else if($options === '%%posts%%') $options = $this->plugin->utils_markup->post_select_options($current_value, array_merge($select_options_args, array('for_comments_only' => TRUE)));
-				else if($options === '%%comments%%') $options = $this->plugin->utils_markup->comment_select_options($post_id, $current_value, $select_options_args);
-				else if($options === '%%deliver%%') $options = $this->plugin->utils_markup->deliver_select_options($current_value, $select_options_args);
-				else if($options === '%%status%%') $options = $this->plugin->utils_markup->status_select_options($current_value, $select_options_args);
-				else if(is_array($options)) $options = $this->plugin->utils_markup->select_options($options, $current_value, $select_options_args);
+				if(is_array($options)) $options = $this->plugin->utils_markup->select_options($options, $current_value, $select_options_args);
 
 				if(!($options = trim((string)$options)) && $allow_empty && $allow_arbitrary)
 					return $this->input_row($input_fallback_args);

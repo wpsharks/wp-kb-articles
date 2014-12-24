@@ -6,7 +6,7 @@
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
-namespace comment_mail
+namespace wp_kb_articles
 {
 	if(!defined('WPINC')) // MUST have WordPress.
 		exit('Do NOT access this file directly: '.basename(__FILE__));
@@ -52,22 +52,13 @@ namespace comment_mail
 			public $is_pro = TRUE;
 
 			/**
-			 * Identifies enterprise version.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @var boolean `TRUE` for enterprise version.
-			 */
-			public $is_enterprise = TRUE;
-
-			/**
 			 * Plugin name.
 			 *
 			 * @since 141111 First documented version.
 			 *
 			 * @var string Plugin name.
 			 */
-			public $name = 'Comment Mail';
+			public $name = 'WP KB Articles';
 
 			/**
 			 * Plugin name (abbreviated).
@@ -76,7 +67,7 @@ namespace comment_mail
 			 *
 			 * @var string Plugin name (abbreviated).
 			 */
-			public $short_name = 'CM';
+			public $short_name = 'WPKBA';
 
 			/**
 			 * Plugin name.
@@ -85,7 +76,7 @@ namespace comment_mail
 			 *
 			 * @var string Plugin name.
 			 */
-			public $site_name = 'Comment-Mail.com';
+			public $site_name = 'wp-kb-articles.com';
 
 			/**
 			 * Plugin product page URL.
@@ -94,7 +85,7 @@ namespace comment_mail
 			 *
 			 * @var string Plugin product page URL.
 			 */
-			public $product_url = 'http://comment-mail.com';
+			public $product_url = 'http://wp-kb-articles.com';
 
 			/**
 			 * Used by the plugin's uninstall handler.
@@ -313,300 +304,29 @@ namespace comment_mail
 				$this->default_options = array(
 					/* Core/systematic option keys. */
 
-					'version'                                                                        => $this->version,
-					'crons_setup'                                                                    => '0', // `0` or timestamp.
+					'version'                      => $this->version,
+					'crons_setup'                  => '0', // `0` or timestamp.
 
 					/* Related to data safeguards. */
 
-					'uninstall_safeguards_enable'                                                    => '1', // `0|1`; safeguards on?
+					'uninstall_safeguards_enable'  => '1', // `0|1`; safeguards on?
 
 					/* Related to user authentication. */
 
-					'manage_cap'                                                                     => $this->manage_cap, // Capability.
-
-					/* Low-level switches to enable/disable certain functionalities.
-					 *
-					 * With the `enable=0` option, here is an overview of what happens:
-					 *
-					 * • Subscription options no longer appear on comment forms; i.e. no new subscriptions.
-					 *    In addition, the ability to add a new subscription through any/all front-end forms
-					 *    is disabled too. All back-end functionality remains available however.
-					 *
-					 * • The queue processor will stop processing, until such time as the plugin is renabled.
-					 *    i.e. No more email notifications. Queue injections continue, but no queue processing.
-					 *    If it is desirable that any queued notifications NOT be processed at all upon re-enabling,
-					 *    a site owner can choose to delete queued notifications in the dashboard before doing so.
-					 *
-					 * • Even w/ `enable=0`, all other functionality remains while the plugin is enabled in WP.
-					 *
-					 * The `new_subs_enable` and `queue_processing_enable` options allow for more control over
-					 * which of these two functionalities should be enabled/disabled. In some cases it might
-					 * be nice to disable queue processing temporarily; allowing everything else to remain as-is.
-					 *
-					 * Or, a site owner can allow other functionality to remain available, but stop
-					 * accepting new subscriptions if they so desire; i.e. by setting `new_subs_enable=0`.
-					 *
-					 * --------------------------------------------------------------------------------------
-					 * The `comment_form_sub_template_enable` option can be turned off if the site owner would like to
-					 * implement their own HTML markup for comment subscription options; instead of the built-in template.
-					 *
-					 * The `comment_form_sub_scripts_enable` option can be turned off if the site owner has decided not to use
-					 * the default HTML markup for comment subscription options; i.e. they might not need JavaScript in this case.
-					 *    Note that `comment_form_sub_template_enable` must also be disabled for this option to actually work;
-					 *    i.e. the default comment form template relies on this; so IT must be off to turn this off.
-					 */
-					'enable'                                                                         => '1', // `0|1`; enable?
-					'new_subs_enable'                                                                => '1', // `0|1`; enable?
-					'queue_processing_enable'                                                        => '1', // `0|1`; enable?
-
-					'comment_form_sub_template_enable'                                               => '1', // `0|1`; enable?
-					'comment_form_sub_scripts_enable'                                                => '1', // `0|1`; enable?
-
-					'comment_form_default_sub_type_option'                                           => 'comment', // ``, `comment` or `comments`.
-					'comment_form_default_sub_deliver_option'                                        => 'asap', // `asap`, `hourly`, `daily`, `weekly`.
-
-					/* Related to SSO and service integrations. */
-
-					'sso_enable'                                                                     => '0', // `0|1`; enable?
-
-					'comment_form_sso_template_enable'                                               => '1', // `0|1`; enable?
-					'comment_form_sso_scripts_enable'                                                => '1', // `0|1`; enable?
-
-					'login_form_sso_template_enable'                                                 => '1', // `0|1`; enable?
-					'login_form_sso_scripts_enable'                                                  => '1', // `0|1`; enable?
-
-					'sso_twitter_key'                                                                => '',
-					'sso_twitter_secret'                                                             => '',
-					// See: <https://apps.twitter.com/app/new>
-
-					'sso_facebook_key'                                                               => '',
-					'sso_facebook_secret'                                                            => '',
-					// See: <https://developers.facebook.com/quickstarts/?platform=web>
-
-					'sso_google_key'                                                                 => '',
-					'sso_google_secret'                                                              => '',
-					// See: <https://developers.google.com/accounts/docs/OpenIDConnect#getcredentials>
-
-					'sso_linkedin_key'                                                               => '',
-					'sso_linkedin_secret'                                                            => '',
-					// See: <https://www.linkedin.com/secure/developer?newapp=>
-
-					/* Related to CAN-SPAM compliance. */
-
-					'can_spam_postmaster'                                                            => get_bloginfo('admin_email'),
-					'can_spam_mailing_address'                                                       => get_bloginfo('name').'<br />'."\n".
-					                                                                                    '123 Somewhere Street<br />'."\n".
-					                                                                                    'Attn: Comment Subscriptions<br />'."\n".
-					                                                                                    'Somewhere, USA 99999 ~ Ph: 555-555-5555', // CAN-SPAM contact info.
-					'can_spam_privacy_policy_url'                                                    => '', // CAN-SPAM privacy policy.
-
-					/* Related to auto-subscribe functionality. */
-
-					'auto_subscribe_enable'                                                          => '1', // `0|1`; auto-subscribe enable?
-					'auto_subscribe_deliver'                                                         => 'asap', // `asap`, `hourly`, `daily`, `weekly`.
-					'auto_subscribe_post_types'                                                      => 'post,page', // Comma-delimited post types.
-					'auto_subscribe_post_author_enable'                                              => '1', // `0|1`; auto-subscribe post authors?
-					'auto_subscribe_recipients'                                                      => '', // Others `;|,` delimited emails.
-
-					/* Auto-confirm functionality and security issues related to this.
-
-					 * Note that turning `auto_confirm_force_enable` on, has the negative side-effect of making it
-					 * much more difficult for users to view a summary of their existing subscriptions;
-					 * i.e. they won't get a `sub_email` cookie right away via email confirmation.
-					 *
-					 * The only way they can view a summary of their subscriptions is:
-					 *    1. If they're a logged-in user, and the site owner says that `all_wp_users_confirm_email`.
-					 *    2. Or, if they click a link to manage their subscription after having received a notification.
-					 *       It is at this point that an auto-confirmed subscriber will finally get their cookie.
-					 *
-					 * For this reason (and for security), it is suggested that `auto_confirm_force_enable=0`,
-					 * unless there happens to be a very good reason for doing so. Can't really think of one;
-					 * but this option remains nonetheless — just in case it becomes handy for some.
-					 *
-					 * The second option here: `auto_confirm_if_already_subscribed_u0ip_enable`, is a bit different.
-					 * This option does not explicitly enable auto-confirm functionality, it simply states that we will
-					 * allow auto-confirmations to occur even whenever there is no reliable user ID to help verify.
-					 *
-					 * In this case, we can try to match the IP address and auto-confirm that way.
-					 * However, since IP addresses can be spoofed, it remains disabled by default as a security measure.
-					 * A site owner must turn this on themselves. Note: this option is not necessary (or recommended)
-					 * if you require folks to login before leaving a comment. A user ID can be used in this case.
-					 *
-					 * The final option here is related to our ability to trust the `wp_users` table, or not!
-					 * Some sites run plugins that allow users to register and gain immediate access w/o confirmation
-					 * being necessary. We assume (by default) that this is the case on every site. A site owner must tell us
-					 * explicitly that they force every user to confirm via email before being allowed to log into the site.
-					 * Otherwise, we will not trust the email addresses associated with registered users.
-					 */
-					'auto_confirm_force_enable'                                                      => '0', // `0|1`; auto-confirm enable?
-					'auto_confirm_if_already_subscribed_u0ip_enable'                                 => '0', // `0|1`; auto-confirm enable?
-					'all_wp_users_confirm_email'                                                     => '0', // WP users confirm their email?
-
-					/* Related to email headers. */
-
-					'from_name'                                                                      => get_bloginfo('name'), // From: name.
-					'from_email'                                                                     => get_bloginfo('admin_email'), // From: <email>.
-					'reply_to_email'                                                                 => get_bloginfo('admin_email'), // Reply-To: <email>.
-
-					/* Related to SMPT configuration. */
-
-					'smtp_enable'                                                                    => '0', // `0|1`; enable?
-
-					'smtp_host'                                                                      => '', // SMTP host name.
-					'smtp_port'                                                                      => '465', // SMTP port number.
-					'smtp_secure'                                                                    => 'ssl', // ``, `ssl` or `tls`.
-
-					'smtp_username'                                                                  => '', // SMTP username.
-					'smtp_password'                                                                  => '', // SMTP password.
-
-					'smtp_from_name'                                                                 => get_bloginfo('name'), // From: name.
-					'smtp_from_email'                                                                => get_bloginfo('admin_email'), // From: <email>.
-					'smtp_reply_to_email'                                                            => get_bloginfo('admin_email'), // Reply-To: <email>.
-					'smtp_force_from'                                                                => '1', // `0|1`; force? Not configurable at this time.
-
-					/* Related to replies via email. */
-
-					'replies_via_email_enable'                                                       => '0', // `0|1`; enable?
-					'replies_via_email_handler'                                                      => '', // `mandrill`.
-					// Mandrill is currently the only choice. In the future we may add other options to this list.
-
-					'rve_mandrill_reply_to_email'                                                    => '', // `Reply-To:` address.
-					'rve_mandrill_max_spam_score'                                                    => '5.0', // Max allowable spam score.
-					'rve_mandrill_spf_check_enable'                                                  => '1', // `0|1|2|3|4`; where `0` = disable.
-					'rve_mandrill_dkim_check_enable'                                                 => '1', // `0|1|2`; where `0` = disable.
-
-					/* Related to blacklisting. */
-
-					'email_blacklist_patterns'                                                       => implode("\n", utils_mail::$role_based_blacklist_patterns),
-
-					/* Related to performance tuning. */
-
-					'queue_processor_max_time'                                                       => '30', // In seconds.
-					'queue_processor_delay'                                                          => '250', // In milliseconds.
-					'queue_processor_max_limit'                                                      => '100', // Total queue entries.
-					'queue_processor_realtime_max_limit'                                             => '5', // Total queue entries.
-
-					'sub_cleaner_max_time'                                                           => '30', // In seconds.
-					'unconfirmed_expiration_time'                                                    => '60 days', // `strtotime()` compatible.
-					'trashed_expiration_time'                                                        => '60 days', // `strtotime()` compatible.
-
-					'log_cleaner_max_time'                                                           => '30', // In seconds.
-					'sub_event_log_expiration_time'                                                  => '', // `strtotime()` compatible.
-					'queue_event_log_expiration_time'                                                => '', // `strtotime()` compatible.
+					'manage_cap'                   => $this->manage_cap, // Capability.
 
 					/* Related to IP tracking. */
 
-					'prioritize_remote_addr'                                                         => '0', // `0|1`; enable?
-					'geo_location_tracking_enable'                                                   => '0', // `0|1`; enable?
-
-					/* Related to meta boxes. */
-
-					'excluded_meta_box_post_types'                                                   => 'link,comment,revision,attachment,nav_menu_item,snippet,redirect',
-
-					/* Related to comment notifications. */
-
-					'comment_notification_parent_content_clip_max_chars'                             => '100', // Max chars to include in notifications.
-					'comment_notification_content_clip_max_chars'                                    => '200', // Max chars to include in notifications.
-
-					/* Related to subscription summary. */
-
-					'sub_manage_summary_max_limit'                                                   => '25', // Subscriptions per page.
-
-					/* Related to select options. */
-
-					'post_select_options_enable'                                                     => '1', // `0|1`; enable?
-					'post_select_options_media_enable'                                               => '0', // `0|1`; enable?
-					'comment_select_options_enable'                                                  => '1', // `0|1`; enable?
-					'user_select_options_enable'                                                     => '1', // `0|1`; enable?
-					'max_select_options'                                                             => '2000', // Max options.
+					'prioritize_remote_addr'       => '0', // `0|1`; enable?
+					'geo_location_tracking_enable' => '0', // `0|1`; enable?
 
 					/* Related to menu pages; i.e. logo display. */
 
-					'menu_pages_logo_icon_enable'                                                    => '0', // `0|1`; display?
-
-					/* Related to branding; i.e. powered by Comment Mail™ notes.
-					~ IMPORTANT: please see <https://wordpress.org/plugins/about/guidelines/>
-					#10. The plugin must NOT embed external links on the public site (like a "powered by" link) without
-					explicitly asking the user's permission. Any such options in the plugin must default to NOT show the link. */
-
-					'email_footer_powered_by_enable'                                                 => '0', // `0|1`; enable?
-					'site_footer_powered_by_enable'                                                  => '0', // `0|1`; enable?
+					'menu_pages_logo_icon_enable'  => '0', // `0|1`; display?
 
 					/* Template-related config. options. */
 
-					'template_type'                                                                  => 's', // `a|s`.
-
-					# Simple snippet-based templates for the site.
-
-					'template__type_s__site__snippet__header_tag'                                    => '', // HTML code.
-					'template__type_s__site__snippet__footer_tag'                                    => '', // HTML code.
-
-					'template__type_s__site__login_form__snippet__sso_ops'                           => '', // HTML code.
-
-					'template__type_s__site__comment_form__snippet__sso_ops'                         => '', // HTML code.
-					'template__type_s__site__comment_form__snippet__sub_ops'                         => '', // HTML code.
-
-					'template__type_s__site__sub_actions__snippet__confirmed'                        => '', // HTML code.
-					'template__type_s__site__sub_actions__snippet__unsubscribed'                     => '', // HTML code.
-					'template__type_s__site__sub_actions__snippet__unsubscribed_all'                 => '', // HTML code.
-
-					# Advanced HTML, PHP-based templates for the site.
-
-					'template__type_a__site__header'                                                 => '', // HTML/PHP code.
-					'template__type_a__site__header_styles'                                          => '', // HTML/PHP code.
-					'template__type_a__site__header_scripts'                                         => '', // HTML/PHP code.
-					'template__type_a__site__header_tag'                                             => '', // HTML/PHP code.
-
-					'template__type_a__site__footer_tag'                                             => '', // HTML/PHP code.
-					'template__type_a__site__footer'                                                 => '', // HTML/PHP code.
-
-					'template__type_a__site__comment_form__sso_ops'                                  => '', // HTML/PHP code.
-					'template__type_a__site__comment_form__sso_op_scripts'                           => '', // HTML/PHP code.
-
-					'template__type_a__site__login_form__sso_ops'                                    => '', // HTML/PHP code.
-					'template__type_a__site__login_form__sso_op_scripts'                             => '', // HTML/PHP code.
-
-					'template__type_a__site__sso_actions__complete'                                  => '', // HTML/PHP code.
-
-					'template__type_a__site__comment_form__sub_ops'                                  => '', // HTML/PHP code.
-					'template__type_a__site__comment_form__sub_op_scripts'                           => '', // HTML/PHP code.
-
-					'template__type_a__site__sub_actions__confirmed'                                 => '', // HTML/PHP code.
-					'template__type_a__site__sub_actions__unsubscribed'                              => '', // HTML/PHP code.
-					'template__type_a__site__sub_actions__unsubscribed_all'                          => '', // HTML/PHP code.
-					'template__type_a__site__sub_actions__manage_summary'                            => '', // HTML/PHP code.
-					'template__type_a__site__sub_actions__manage_sub_form'                           => '', // HTML/PHP code.
-					'template__type_a__site__sub_actions__manage_sub_form_comment_id_row_via_ajax'   => '', // HTML/PHP code.
-
-					# Simple snippet-based templates for emails.
-
-					'template__type_s__email__snippet__header_tag'                                   => '', // HTML code.
-					'template__type_s__email__snippet__footer_tag'                                   => '', // HTML code.
-
-					'template__type_s__email__sub_confirmation__snippet__subject'                    => '', // HTML code.
-					'template__type_s__email__sub_confirmation__snippet__message'                    => '', // HTML code.
-
-					'template__type_s__email__comment_notification__snippet__subject'                => '', // HTML code.
-					'template__type_s__email__comment_notification__snippet__message_heading'        => '', // HTML code.
-					'template__type_s__email__comment_notification__snippet__message_in_response_to' => '', // HTML code.
-					'template__type_s__email__comment_notification__snippet__message_reply_from'     => '', // HTML code.
-					'template__type_s__email__comment_notification__snippet__message_comment_from'   => '', // HTML code.
-
-					# Advanced HTML, PHP-based templates for emails.
-
-					'template__type_a__email__header'                                                => '', // HTML/PHP code.
-					'template__type_a__email__header_styles'                                         => '', // HTML/PHP code.
-					'template__type_a__email__header_scripts'                                        => '', // HTML/PHP code.
-					'template__type_a__email__header_tag'                                            => '', // HTML/PHP code.
-
-					'template__type_a__email__footer_tag'                                            => '', // HTML/PHP code.
-					'template__type_a__email__footer'                                                => '', // HTML/PHP code.
-
-					'template__type_a__email__sub_confirmation__subject'                             => '', // HTML/PHP code.
-					'template__type_a__email__sub_confirmation__message'                             => '', // HTML/PHP code.
-
-					'template__type_a__email__comment_notification__subject'                         => '', // HTML/PHP code.
-					'template__type_a__email__comment_notification__message'                         => '', // HTML/PHP code.
+					'template_type'                => 's', // `a|s`.
 
 				); // Default options are merged with those defined by the site owner.
 				$this->default_options = apply_filters(__METHOD__.'__default_options', $this->default_options); // Allow filters.
@@ -641,34 +361,7 @@ namespace comment_mail
 				add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
 				add_filter('plugin_action_links_'.plugin_basename($this->file), array($this, 'add_settings_link'), 10, 1);
 
-				add_action('init', array($this, 'comment_shortlink_redirect'), -11);
-
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10);
-
-				add_action('login_form', array($this, 'login_form'), 5, 0); // Ideal choice.
-				add_action('login_footer', array($this, 'login_form'), 5, 0); // Secondary fallback.
-
-				add_action('transition_post_status', array($this, 'post_status'), 10, 3);
-				add_action('before_delete_post', array($this, 'post_delete'), 10, 1);
-
-				add_action('comment_form_must_log_in_after', array($this, 'comment_form_must_log_in_after'), 5, 0);
-				add_action('comment_form_top', array($this, 'comment_form_must_log_in_after'), 5, 0); // Secondary fallback.
-
-				add_filter('comment_form_field_comment', array($this, 'comment_form_filter_append'), 5, 1);
-				add_action('comment_form', array($this, 'comment_form'), 5, 0); // Secondary fallback.
-
-				add_action('comment_post', array($this, 'comment_post'), 10, 2);
-				add_action('transition_comment_status', array($this, 'comment_status'), 10, 3);
-
-				add_filter('pre_option_comment_registration', array($this, 'pre_option_comment_registration'), 1000, 1);
-				add_filter('pre_comment_approved', array($this, 'pre_comment_approved'), 1000, 2);
-
-				add_action('user_register', array($this, 'user_register'), 10, 1);
-				add_action('delete_user', array($this, 'user_delete'), 10, 1);
-				add_action('wpmu_delete_user', array($this, 'user_delete'), 10, 1);
-				add_action('remove_user_from_blog', array($this, 'user_delete'), 10, 2);
-
-				add_action('add_meta_boxes', array($this, 'add_meta_boxes'), 10);
 
 				/*
 				 * Setup CRON-related hooks.
@@ -677,21 +370,13 @@ namespace comment_mail
 
 				if((integer)$this->options['crons_setup'] < 1382523750)
 				{
-					wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_queue_processor');
-					wp_schedule_event(time() + 60, 'every5m', '_cron_'.__NAMESPACE__.'_queue_processor');
-
-					wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_sub_cleaner');
-					wp_schedule_event(time() + 60, 'hourly', '_cron_'.__NAMESPACE__.'_sub_cleaner');
-
-					wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_log_cleaner');
-					wp_schedule_event(time() + 60, 'hourly', '_cron_'.__NAMESPACE__.'_log_cleaner');
+					wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_github_processor');
+					wp_schedule_event(time() + 60, 'every15m', '_cron_'.__NAMESPACE__.'_github_processor');
 
 					$this->options['crons_setup'] = (string)time();
 					update_option(__NAMESPACE__.'_options', $this->options);
 				}
-				add_action('_cron_'.__NAMESPACE__.'_queue_processor', array($this, 'queue_processor'), 10);
-				add_action('_cron_'.__NAMESPACE__.'_sub_cleaner', array($this, 'sub_cleaner'), 10);
-				add_action('_cron_'.__NAMESPACE__.'_log_cleaner', array($this, 'log_cleaner'), 10);
+				add_action('_cron_'.__NAMESPACE__.'_queue_processor', array($this, 'github_processor'), 10);
 
 				/*
 				 * Fire setup completion hooks.
@@ -851,71 +536,6 @@ namespace comment_mail
 			}
 
 			/*
-			 * Admin Meta-Box-Related Methods
-			 */
-
-			/**
-			 * Adds plugin meta boxes.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `add_meta_boxes` action.
-			 *
-			 * @param string $post_type The current post type.
-			 */
-			public function add_meta_boxes($post_type)
-			{
-				if(!current_user_can($this->manage_cap))
-					if(!current_user_can($this->cap))
-						return; // Do not add meta boxes.
-
-				$post_type           = strtolower((string)$post_type);
-				$excluded_post_types = $this->options['excluded_meta_box_post_types'];
-				$excluded_post_types = preg_split('/[\s;,]+/', $excluded_post_types, NULL, PREG_SPLIT_NO_EMPTY);
-
-				if(in_array($post_type, $excluded_post_types, TRUE))
-					return; // Ignore; this post type excluded.
-
-				// Meta boxes use an SVG graphic.
-				$icon = $this->utils_fs->inline_icon_svg();
-
-				if(!$this->utils_env->is_menu_page('post-new.php'))
-					add_meta_box(__NAMESPACE__.'_small', $icon.' '.$this->name.'&trade;', array($this, 'post_small_meta_box'), $post_type, 'side', 'high');
-
-				// @TODO disabling this for now.
-				//add_meta_box(__NAMESPACE__.'_large', $icon.' '.$this->name.'&trade; '.__('Subscriptions', $this->text_domain),
-				//             array($this, 'post_large_meta_box'), $post_type, 'normal', 'high');
-			}
-
-			/**
-			 * Builds small meta box for this plugin.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @param \WP_Post $post A WP post object reference.
-			 *
-			 * @see add_meta_boxes()
-			 */
-			public function post_small_meta_box(\WP_Post $post)
-			{
-				new post_small_meta_box($post);
-			}
-
-			/**
-			 * Builds large meta box for this plugin.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @param \WP_Post $post A WP post object reference.
-			 *
-			 * @see add_meta_boxes()
-			 */
-			public function post_large_meta_box(\WP_Post $post)
-			{
-				new post_large_meta_box($post);
-			}
-
-			/*
 			 * Admin Menu-Page-Related Methods
 			 */
 
@@ -928,42 +548,14 @@ namespace comment_mail
 			 */
 			public function enqueue_admin_styles()
 			{
-				if($this->utils_env->is_menu_page('post.php')
-				   || $this->utils_env->is_menu_page('post-new.php')
-				) $this->_enqueue_post_admin_styles();
-
 				if(!$this->utils_env->is_menu_page(__NAMESPACE__.'*'))
 					return; // Nothing to do; not applicable.
 
-				$deps = array('codemirror', 'jquery-datetimepicker', 'chosen', 'font-awesome', 'sharkicons'); // Dependencies.
+				$deps = array('codemirror', 'font-awesome', 'sharkicons'); // Dependencies.
 
 				wp_enqueue_style('codemirror', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/codemirror.min.css'), array(), NULL, 'all');
 				wp_enqueue_style('codemirror-fullscreen', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/addon/display/fullscreen.min.css'), array('codemirror'), NULL, 'all');
 				wp_enqueue_style('codemirror-ambiance-theme', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/theme/ambiance.min.css'), array('codemirror'), NULL, 'all');
-
-				wp_enqueue_style('jquery-datetimepicker', $this->utils_url->to('/submodules/datetimepicker/jquery.datetimepicker.css'), array(), NULL, 'all');
-				wp_enqueue_style('chosen', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css'), array(), NULL, 'all');
-
-				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
-				wp_enqueue_style('sharkicons', $this->utils_url->to('/submodules/sharkicons/styles.min.css'), array(), NULL, 'all');
-
-				wp_enqueue_style(__NAMESPACE__, $this->utils_url->to('/client-s/css/menu-pages.min.css'), $deps, $this->version, 'all');
-			}
-
-			/**
-			 * Adds CSS for administrative menu pages.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `admin_enqueue_scripts` action indirectly.
-			 */
-			public function _enqueue_post_admin_styles()
-			{
-				if(!$this->utils_env->is_menu_page('post.php')
-				   && !$this->utils_env->is_menu_page('post-new.php')
-				) return; // Not applicable.
-
-				$deps = array('font-awesome', 'sharkicons'); // Dependencies.
 
 				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
 				wp_enqueue_style('sharkicons', $this->utils_url->to('/submodules/sharkicons/styles.min.css'), array(), NULL, 'all');
@@ -983,7 +575,7 @@ namespace comment_mail
 				if(!$this->utils_env->is_menu_page(__NAMESPACE__.'*'))
 					return; // Nothing to do; NOT a plugin menu page.
 
-				$deps = array('jquery', 'postbox', 'codemirror', 'google-jsapi-modules', 'chartjs', 'jquery-datetimepicker', 'chosen'); // Dependencies.
+				$deps = array('jquery', 'codemirror'); // Dependencies.
 
 				wp_enqueue_script('codemirror', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/codemirror.min.js'), array(), NULL, TRUE);
 				wp_enqueue_script('codemirror-fullscreen', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/addon/display/fullscreen.min.js'), array('codemirror'), NULL, TRUE);
@@ -995,50 +587,13 @@ namespace comment_mail
 				wp_enqueue_script('codemirror-clike', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/mode/clike/clike.js'), array('codemirror'), NULL, TRUE);
 				wp_enqueue_script('codemirror-php', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/mode/php/php.js'), array('codemirror'), NULL, TRUE);
 
-				$google_jsapi_modules = "{'modules':[{'name':'visualization','version':'1','packages':['geochart']}]}";
-				wp_enqueue_script('google-jsapi-modules', set_url_scheme('//www.google.com/jsapi?autoload='.urlencode($google_jsapi_modules)), array(), NULL, TRUE);
-
-				wp_enqueue_script('chartjs', set_url_scheme('//cdn.jsdelivr.net/chart.js/1.0.1-beta.4/Chart.min.js'), array(), NULL, TRUE);
-				wp_enqueue_script('jquery-datetimepicker', $this->utils_url->to('/submodules/datetimepicker/jquery.datetimepicker.js'), array('jquery'), NULL, TRUE);
-				wp_enqueue_script('chosen', set_url_scheme('//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js'), array('jquery'), NULL, TRUE);
-
 				wp_enqueue_script(__NAMESPACE__, $this->utils_url->to('/client-s/js/menu-pages.min.js'), $deps, $this->version, TRUE);
 
 				wp_localize_script(__NAMESPACE__, __NAMESPACE__.'_vars', array(
 					'pluginUrl'    => rtrim($this->utils_url->to('/'), '/'),
 					'ajaxEndpoint' => rtrim($this->utils_url->page_nonce_only(), '/'),
 				));
-				wp_localize_script(__NAMESPACE__, __NAMESPACE__.'_i18n', array(
-					'bulkReconfirmConfirmation' => __('Resend email confirmation link? Are you sure?', $this->text_domain),
-					'bulkDeleteConfirmation'    => $this->utils_env->is_menu_page('*_event_log')
-						? $this->utils_i18n->log_entry_js_deletion_confirmation_warning()
-						: __('Delete permanently? Are you sure?', $this->text_domain),
-					'dateTimePickerI18n'        => array('en' => array(
-						'months'    => array(
-							__('January', $this->text_domain),
-							__('February', $this->text_domain),
-							__('March', $this->text_domain),
-							__('April', $this->text_domain),
-							__('May', $this->text_domain),
-							__('June', $this->text_domain),
-							__('July', $this->text_domain),
-							__('August', $this->text_domain),
-							__('September', $this->text_domain),
-							__('October', $this->text_domain),
-							__('November', $this->text_domain),
-							__('December', $this->text_domain),
-						),
-						'dayOfWeek' => array(
-							__('Sun', $this->text_domain),
-							__('Mon', $this->text_domain),
-							__('Tue', $this->text_domain),
-							__('Wed', $this->text_domain),
-							__('Thu', $this->text_domain),
-							__('Fri', $this->text_domain),
-							__('Sat', $this->text_domain),
-						),
-					)),
-				));
+				wp_localize_script(__NAMESPACE__, __NAMESPACE__.'_i18n', array());
 			}
 
 			/**
@@ -1065,13 +620,11 @@ namespace comment_mail
 
 				$current_menu_page = $this->utils_env->current_menu_page(); // Current menu page slug.
 
-				// Menu page titles use UTF-8 char: `⥱`; <http://unicode-table.com/en/2971/>.
-
 				/* ----------------------------------------- */
 
 				$_menu_title                          = $this->name;
 				$_page_title                          = $this->name.'&trade;';
-				$_menu_position                       = apply_filters(__METHOD__.'_position', '25.00001');
+				$_menu_position                       = apply_filters(__METHOD__.'_position', '24.00001');
 				$this->menu_page_hooks[__NAMESPACE__] = add_menu_page($_page_title, $_menu_title, $this->cap, __NAMESPACE__, array($this, 'menu_page_options'), 'data:image/svg+xml;base64,'.base64_encode($icon), $_menu_position);
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__], array($this, 'menu_page_options_screen'));
 
@@ -1090,13 +643,6 @@ namespace comment_mail
 				$this->menu_page_hooks[__NAMESPACE__.'_import_export'] = add_submenu_page($_menu_parent, $_page_title, $_menu_title, $this->cap, __NAMESPACE__.'_import_export', array($this, 'menu_page_import_export'));
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_import_export'], array($this, 'menu_page_import_export_screen'));
 
-				$_menu_title                                             = // Visible on-demand only.
-					'<small><em>'.$child_branch_indent.__('Email Templates', $this->text_domain).'</em></small>';
-				$_page_title                                             = $this->name.'&trade; &#10609; '.__('Email Templates', $this->text_domain);
-				$_menu_parent                                            = $current_menu_page === __NAMESPACE__.'_email_templates' ? __NAMESPACE__ : NULL;
-				$this->menu_page_hooks[__NAMESPACE__.'_email_templates'] = add_submenu_page($_menu_parent, $_page_title, $_menu_title, $this->cap, __NAMESPACE__.'_email_templates', array($this, 'menu_page_email_templates'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_email_templates'], array($this, 'menu_page_email_templates_screen'));
-
 				$_menu_title                                            = // Visible on-demand only.
 					'<small><em>'.$child_branch_indent.__('Site Templates', $this->text_domain).'</em></small>';
 				$_page_title                                            = $this->name.'&trade; &#10609; '.__('Site Templates', $this->text_domain);
@@ -1105,43 +651,6 @@ namespace comment_mail
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_site_templates'], array($this, 'menu_page_site_templates_screen'));
 
 				unset($_menu_title, $_page_title, $_menu_parent); // Housekeeping.
-
-				/* ----------------------------------------- */
-
-				$_menu_title                                  = $divider.__('Subscriptions', $this->text_domain);
-				$_page_title                                  = $this->name.'&trade; &#10609; '.__('Subscriptions', $this->text_domain);
-				$this->menu_page_hooks[__NAMESPACE__.'_subs'] = add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->manage_cap, __NAMESPACE__.'_subs', array($this, 'menu_page_subs'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_subs'], array($this, 'menu_page_subs_screen'));
-
-				$_menu_title                                           = $child_branch_indent.__('Event Log', $this->text_domain);
-				$_page_title                                           = $this->name.'&trade; &#10609; '.__('Sub. Event Log', $this->text_domain);
-				$this->menu_page_hooks[__NAMESPACE__.'_sub_event_log'] = add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->manage_cap, __NAMESPACE__.'_sub_event_log', array($this, 'menu_page_sub_event_log'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_sub_event_log'], array($this, 'menu_page_sub_event_log_screen'));
-
-				unset($_menu_title, $_page_title); // Housekeeping.
-
-				/* ----------------------------------------- */
-
-				$_menu_title                                   = $divider.__('Mail Queue', $this->text_domain);
-				$_page_title                                   = $this->name.'&trade; &#10609; '.__('Mail Queue', $this->text_domain);
-				$this->menu_page_hooks[__NAMESPACE__.'_queue'] = add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->manage_cap, __NAMESPACE__.'_queue', array($this, 'menu_page_queue'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_queue'], array($this, 'menu_page_queue_screen'));
-
-				$_menu_title                                             = $child_branch_indent.__('Event Log', $this->text_domain);
-				$_page_title                                             = $this->name.'&trade; &#10609; '.__('Queue Event Log', $this->text_domain);
-				$this->menu_page_hooks[__NAMESPACE__.'_queue_event_log'] = add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->manage_cap, __NAMESPACE__.'_queue_event_log', array($this, 'menu_page_queue_event_log'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_queue_event_log'], array($this, 'menu_page_queue_event_log_screen'));
-
-				unset($_menu_title, $_page_title); // Housekeeping.
-
-				/* ----------------------------------------- */
-
-				$_menu_title                                   = $divider.__('Statistics/Charts', $this->text_domain);
-				$_page_title                                   = $this->name.'&trade; &#10609; '.__('Statistics/Charts', $this->text_domain);
-				$this->menu_page_hooks[__NAMESPACE__.'_stats'] = add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->manage_cap, __NAMESPACE__.'_stats', array($this, 'menu_page_stats'));
-				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_stats'], array($this, 'menu_page_stats_screen'));
-
-				unset($_menu_title, $_page_title); // Housekeeping.
 			}
 
 			/**
@@ -1204,226 +713,6 @@ namespace comment_mail
 			}
 
 			/**
-			 * Menu page screen; for subs.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_subs']` action.
-			 *
-			 * @see add_menu_pages()
-			 * @see subs_table::get_hidden_columns()
-			 */
-			public function menu_page_subs_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_subs'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_subs']
-				) return; // Not applicable.
-
-				add_screen_option('per_page', array(
-					'default' => '20', // Default items per page.
-					'label'   => __('Per Page', $this->text_domain),
-					'option'  => __NAMESPACE__.'_subs_per_page',
-				));
-				add_filter('manage_'.$screen->id.'_columns', function ()
-				{
-					return menu_page_subs_table::get_columns_();
-				});
-				add_filter('get_user_option_manage'.$screen->id.'columnshidden', function ($value)
-				{
-					return is_array($value) ? $value : menu_page_subs_table::get_hidden_columns_();
-				});
-			}
-
-			/**
-			 * Menu page for subscriptions.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_subs()
-			{
-				new menu_page('subs');
-			}
-
-			/**
-			 * Menu page screen; for subs.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_subs']` action.
-			 *
-			 * @see add_menu_pages()
-			 * @see subs_table::get_hidden_columns()
-			 */
-			public function menu_page_sub_event_log_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_sub_event_log'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_sub_event_log']
-				) return; // Not applicable.
-
-				add_screen_option('per_page', array(
-					'default' => '20', // Default items per page.
-					'label'   => __('Per Page', $this->text_domain),
-					'option'  => __NAMESPACE__.'_sub_event_log_entries_per_page',
-				));
-				add_filter('manage_'.$screen->id.'_columns', function ()
-				{
-					return menu_page_sub_event_log_table::get_columns_();
-				});
-				add_filter('get_user_option_manage'.$screen->id.'columnshidden', function ($value)
-				{
-					return is_array($value) ? $value : menu_page_sub_event_log_table::get_hidden_columns_();
-				});
-			}
-
-			/**
-			 * Menu page for sub. event log.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_sub_event_log()
-			{
-				new menu_page('sub_event_log');
-			}
-
-			/**
-			 * Menu page screen; for queue.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_queue']` action.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_queue_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_queue'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_queue']
-				) return; // Not applicable.
-
-				add_screen_option('per_page', array(
-					'default' => '20', // Default items per page.
-					'label'   => __('Per Page', $this->text_domain),
-					'option'  => __NAMESPACE__.'_queued_notifications_per_page',
-				));
-				add_filter('manage_'.$screen->id.'_columns', function ()
-				{
-					return menu_page_queue_table::get_columns_();
-				});
-				add_filter('get_user_option_manage'.$screen->id.'columnshidden', function ($value)
-				{
-					return is_array($value) ? $value : menu_page_queue_table::get_hidden_columns_();
-				});
-			}
-
-			/**
-			 * Menu page for mail queue.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_queue()
-			{
-				new menu_page('queue');
-			}
-
-			/**
-			 * Menu page screen; for queue event log.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_queue_event_log']` action.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_queue_event_log_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_queue_event_log'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_queue_event_log']
-				) return; // Not applicable.
-
-				add_screen_option('per_page', array(
-					'default' => '20', // Default items per page.
-					'label'   => __('Per Page', $this->text_domain),
-					'option'  => __NAMESPACE__.'_queue_event_log_entries_per_page',
-				));
-				add_filter('manage_'.$screen->id.'_columns', function ()
-				{
-					return menu_page_queue_event_log_table::get_columns_();
-				});
-				add_filter('get_user_option_manage'.$screen->id.'columnshidden', function ($value)
-				{
-					return is_array($value) ? $value : menu_page_queue_event_log_table::get_hidden_columns_();
-				});
-			}
-
-			/**
-			 * Menu page for mail queue event log.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_queue_event_log()
-			{
-				new menu_page('queue_event_log');
-			}
-
-			/**
-			 * Menu page screen; for stats.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_stats']` action.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_stats_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_stats'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_stats']
-				) return; // Not applicable.
-
-				return; // No screen for this page right now.
-			}
-
-			/**
-			 * Menu page for stats.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_stats()
-			{
-				new menu_page('stats');
-			}
-
-			/**
 			 * Menu page screen; for import/export.
 			 *
 			 * @since 141111 First documented version.
@@ -1455,40 +744,6 @@ namespace comment_mail
 			public function menu_page_import_export()
 			{
 				new menu_page('import_export');
-			}
-
-			/**
-			 * Menu page screen; for email templates.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_email_templates']` action.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_email_templates_screen()
-			{
-				$screen = get_current_screen();
-				if(!($screen instanceof \WP_Screen))
-					return; // Not possible.
-
-				if(empty($this->menu_page_hooks[__NAMESPACE__.'_email_templates'])
-				   || $screen->id !== $this->menu_page_hooks[__NAMESPACE__.'_email_templates']
-				) return; // Not applicable.
-
-				return; // No screen for this page right now.
-			}
-
-			/**
-			 * Menu page for email templates.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @see add_menu_pages()
-			 */
-			public function menu_page_email_templates()
-			{
-				new menu_page('email_templates');
 			}
 
 			/**
@@ -1756,309 +1011,6 @@ namespace comment_mail
 			}
 
 			/*
-			 * Login-Related Methods
-			 */
-
-			/**
-			 * Login form integration.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `login_form` hook.
-			 * @attaches-to `login_footer` as a secondary fallback.
-			 */
-			public function login_form()
-			{
-				if(!is_null($fired = &$this->static_key(__FUNCTION__)))
-					return; // We only handle this for a single hook.
-				// The first hook to fire this will win automatically.
-
-				$fired = TRUE; // Flag as `TRUE` now.
-
-				new login_form_after();
-			}
-
-			/*
-			 * Post-Related Methods
-			 */
-
-			/**
-			 * Post status handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `transition_post_status` action.
-			 *
-			 * @param string        $new_post_status New post status.
-			 *
-			 *    One of the following statuses:
-			 *    See: <http://codex.wordpress.org/Function_Reference/get_post_status>
-			 *
-			 *       - `publish`
-			 *       - `pending`
-			 *       - `draft`
-			 *       - `auto-draft`
-			 *       - `future`
-			 *       - `private`
-			 *       - `inherit`
-			 *       - `trash`
-			 *
-			 *    See also: {@link get_available_post_statuses()}
-			 *       Custom post types may have their own statuses.
-			 *
-			 * @param string        $old_post_status Old post status.
-			 *
-			 *    One of the following statuses:
-			 *    See: <http://codex.wordpress.org/Function_Reference/get_post_status>
-			 *
-			 *       - `new`
-			 *       - `publish`
-			 *       - `pending`
-			 *       - `draft`
-			 *       - `auto-draft`
-			 *       - `future`
-			 *       - `private`
-			 *       - `inherit`
-			 *       - `trash`
-			 *
-			 *    See also: {@link get_available_post_statuses()}
-			 *       Custom post types may have their own statuses.
-			 *
-			 * @param \WP_Post|null $post Post object instance.
-			 */
-			public function post_status($new_post_status, $old_post_status, \WP_Post $post = NULL)
-			{
-				new post_status($new_post_status, $old_post_status, $post);
-			}
-
-			/**
-			 * Post deletion handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `before_delete_post` action.
-			 *
-			 * @param integer|string $post_id Post ID.
-			 */
-			public function post_delete($post_id)
-			{
-				new post_delete($post_id);
-			}
-
-			/*
-			 * Comment-Related Methods
-			 */
-
-			/**
-			 * Comment shortlink redirections.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `init` action.
-			 */
-			public function comment_shortlink_redirect()
-			{
-				if(empty($_REQUEST['c']) || is_admin())
-					return; // Nothing to do.
-
-				new comment_shortlink_redirect();
-			}
-
-			/**
-			 * Comment form login integration.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `comment_form_must_log_in_after` hook.
-			 * @attaches-to `comment_form_top` as a secondary fallback.
-			 */
-			public function comment_form_must_log_in_after()
-			{
-				if(!is_null($fired = &$this->static_key(__FUNCTION__)))
-					return; // We only handle this for a single hook.
-				// The first hook to fire this will win automatically.
-
-				$fired = TRUE; // Flag as `TRUE` now.
-
-				new comment_form_login();
-			}
-
-			/**
-			 * Comment form integration; via filter.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `comment_form_field_comment` filter.
-			 *
-			 * @param mixed $value Value passed in by a filter.
-			 *
-			 * @return mixed The `$value`; possibly filtered here.
-			 */
-			public function comment_form_filter_append($value)
-			{
-				if(!is_null($fired = &$this->static_key('comment_form')))
-					return $value; // We only handle this for a single hook.
-				// The first hook to fire this will win automatically.
-
-				if(is_string($value))
-				{
-					$fired = TRUE; // Flag as `TRUE` now.
-
-					ob_start(); // Output buffer.
-					new comment_form_after();
-					$value .= ob_get_clean();
-				}
-				return $value;
-			}
-
-			/**
-			 * Comment form integration.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `comment_form` action.
-			 */
-			public function comment_form()
-			{
-				if(!is_null($fired = &$this->static_key(__FUNCTION__)))
-					return; // We only handle this for a single hook.
-				// The first hook to fire this will win automatically.
-
-				$fired = TRUE; // Flag as `TRUE` now.
-
-				new comment_form_after();
-			}
-
-			/**
-			 * Comment post handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `comment_post` action.
-			 *
-			 * @param integer|string $comment_id Comment ID.
-			 *
-			 * @param integer|string $comment_status Initial comment status.
-			 *
-			 *    One of the following:
-			 *       - `0` (aka: ``, `hold`, `unapprove`, `unapproved`, `moderated`),
-			 *       - `1` (aka: `approve`, `approved`),
-			 *       - or `trash`, `post-trashed`, `spam`, `delete`.
-			 */
-			public function comment_post($comment_id, $comment_status)
-			{
-				new comment_post($comment_id, $comment_status);
-			}
-
-			/**
-			 * Comment status handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `transition_comment_status` action.
-			 *
-			 * @param integer|string $new_comment_status New comment status.
-			 *
-			 *    One of the following:
-			 *       - `0` (aka: ``, `hold`, `unapprove`, `unapproved`, `moderated`),
-			 *       - `1` (aka: `approve`, `approved`),
-			 *       - or `trash`, `post-trashed`, `spam`, `delete`.
-			 *
-			 * @param integer|string $old_comment_status Old comment status.
-			 *
-			 *    One of the following:
-			 *       - `0` (aka: ``, `hold`, `unapprove`, `unapproved`, `moderated`),
-			 *       - `1` (aka: `approve`, `approved`),
-			 *       - or `trash`, `post-trashed`, `spam`, `delete`.
-			 *
-			 * @param \stdClass|null $comment Comment object (now).
-			 */
-			public function comment_status($new_comment_status, $old_comment_status, \stdClass $comment = NULL)
-			{
-				new comment_status($new_comment_status, $old_comment_status, $comment);
-			}
-
-			/**
-			 * Filters `comment_registration` option in WordPress.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `pre_option_comment_registration` filter.
-			 *
-			 * @param integer|string|boolean $registration_required `FALSE` if not yet defined by another filter.
-			 *
-			 * @return integer|string|boolean Filtered `$comment_registration` value.
-			 */
-			public function pre_option_comment_registration($registration_required)
-			{
-				if($this->options['replies_via_email_enable'])
-					$registration_required = $this->utils_rve->pre_option_comment_registration($registration_required);
-
-				return $registration_required; // Pass through.
-			}
-
-			/**
-			 * Filters `pre_comment_approved` value in WordPress.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `pre_comment_approved` filter.
-			 *
-			 * @param integer|string $comment_status New comment status.
-			 *
-			 *    One of the following:
-			 *       - `0` (aka: ``, `hold`, `unapprove`, `unapproved`, `moderated`),
-			 *       - `1` (aka: `approve`, `approved`),
-			 *       - or `trash`, `post-trashed`, `spam`, `delete`.
-			 *
-			 * @param array          $comment_data An array of all comment data associated w/ a new comment being created.
-			 *
-			 * @return integer|string Filtered `$comment_status` value.
-			 */
-			public function pre_comment_approved($comment_status, array $comment_data)
-			{
-				if($this->options['replies_via_email_enable'])
-					$comment_status = $this->utils_rve->pre_comment_approved($comment_status, $comment_data);
-
-				return $comment_status; // Pass through.
-			}
-
-			/*
-			 * User-Related Methods
-			 */
-
-			/**
-			 * User registration handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `user_register` action.
-			 *
-			 * @param integer|string $user_id User ID.
-			 */
-			public function user_register($user_id)
-			{
-				new user_register($user_id);
-			}
-
-			/**
-			 * User deletion handler.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `delete_user` action.
-			 * @attaches-to `wpmu_delete_user` action.
-			 * @attaches-to `remove_user_from_blog` action.
-			 *
-			 * @param integer|string $user_id User ID.
-			 * @param integer|string $blog_id Blog ID. Defaults to `0` (current blog).
-			 */
-			public function user_delete($user_id, $blog_id = 0)
-			{
-				new user_delete($user_id, $blog_id);
-			}
-
-			/*
 			 * CRON-Related Methods
 			 */
 
@@ -2082,39 +1034,15 @@ namespace comment_mail
 			}
 
 			/**
-			 * Queue processor.
+			 * GitHub processor.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @attaches-to `_cron_'.__NAMESPACE__.'_queue_processor` action.
+			 * @attaches-to `_cron_'.__NAMESPACE__.'_github_processor` action.
 			 */
-			public function queue_processor()
+			public function github_processor()
 			{
-				new queue_processor();
-			}
-
-			/**
-			 * Sub cleaner.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `_cron_'.__NAMESPACE__.'_sub_cleaner` action.
-			 */
-			public function sub_cleaner()
-			{
-				new sub_cleaner();
-			}
-
-			/**
-			 * Log cleaner.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `_cron_'.__NAMESPACE__.'_log_cleaner` action.
-			 */
-			public function log_cleaner()
-			{
-				new log_cleaner();
+				new github_processor();
 			}
 		}
 

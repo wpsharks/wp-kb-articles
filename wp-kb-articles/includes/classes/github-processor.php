@@ -1,29 +1,24 @@
 <?php
 /**
- * Uninstaller
+ * GitHub Processor
  *
  * @since 141111 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
-namespace wp_kb_articles
+namespace wp_kb_articles // Root namespace.
 {
 	if(!defined('WPINC')) // MUST have WordPress.
 		exit('Do NOT access this file directly: '.basename(__FILE__));
 
-	$GLOBALS[__NAMESPACE__.'_uninstalling']    = TRUE;
-	$GLOBALS[__NAMESPACE__.'_autoload_plugin'] = FALSE;
-
-	require_once dirname(__FILE__).'/plugin.inc.php';
-
-	if(!class_exists('\\'.__NAMESPACE__.'\\uninstall'))
+	if(!class_exists('\\'.__NAMESPACE__.'\\github_processor'))
 	{
 		/**
-		 * Uninstaller
+		 * GitHub Processor
 		 *
 		 * @since 141111 First documented version.
 		 */
-		class uninstall // Stand-alone class.
+		class github_processor extends abs_base
 		{
 			/**
 			 * Class constructor.
@@ -32,10 +27,8 @@ namespace wp_kb_articles
 			 */
 			public function __construct()
 			{
-				$GLOBALS[__NAMESPACE__] = new plugin(FALSE);
-				$GLOBALS[__NAMESPACE__]->uninstall();
+				parent::__construct();
 			}
 		}
 	}
-	new uninstall(); // Run the uninstaller.
 }
