@@ -46,7 +46,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$response = $this->get_response($url);
 
-				if($response['status_code'] === 200) return json_decode($response['body'], TRUE);
+				if($response) return json_decode($response['body'], TRUE);
 				else return FALSE;
 			}
 
@@ -57,7 +57,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$response = $this->get_response($url);
 
-				if($response['status_code'] === 200) return json_decode($response['body'], TRUE);
+				if($response) return json_decode($response['body'], TRUE);
 				else return FALSE;
 			}
 
@@ -68,7 +68,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$response = $this->get_response($url);
 
-				if($response['status_code'] === 200) return $response['body'];
+				if($response) return $response['body'];
 				else return FALSE;
 			}
 
@@ -139,6 +139,8 @@ namespace wp_kb_articles // Root namespace.
 				$response_code = wp_remote_retrieve_response_code($request);
 
 				unset($url, $args);
+
+				if($response_code !== 302 && $response_code !== 200) return FALSE; // Error
 
 				// array('request' => $request, 'body' => $body, 'headers' => $headers, 'response_code' => $response_code);
 				return get_defined_vars();
