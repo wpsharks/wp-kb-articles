@@ -46,7 +46,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$response = $this->get_response($url);
 
-				if($response['status_code'] === 200) return $response['body'];
+				if($response['status_code'] === 200) return json_decode($response['body'], TRUE);
 				else return FALSE;
 			}
 
@@ -57,7 +57,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$response = $this->get_response($url);
 
-				if($response['status_code'] === 200) return $response['body'];
+				if($response['status_code'] === 200) return json_decode($response['body'], TRUE);
 				else return FALSE;
 			}
 
