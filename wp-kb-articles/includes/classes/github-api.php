@@ -18,7 +18,7 @@ namespace wp_kb_articles // Root namespace.
 		 *
 		 * @since 141111 First documented version.
 		 */
-		class github_api extends abs_base
+		class github_api/* extends abs_base*/
 		{
 
 			private $owner, $repo, $branch = 'HEAD';
@@ -34,12 +34,12 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function __construct()
 			{
-				parent::__construct();
+				//parent::__construct();
 			}
 
 			/* === Main Retrieval === */
 
-			public function retrieve_files()
+			public function retrieve_files($get_body = FALSE)
 			{
 				$tree  = $this->retrieve_tree();
 				$posts = array();
@@ -52,19 +52,26 @@ namespace wp_kb_articles // Root namespace.
 					if(!preg_match('/\.md$/i', $blob['path'])) continue;
 
 					$post = array('headers' => array(), 'body' => '', 'sha' => $blob['sha'], 'url' => $blob['url'], 'path' => $blob['path']);
-					$blob = $this->retrieve_blob($post['sha']);
 
-					if(!$blob) return FALSE; // TODO error handling
+					if($get_body)
+					{
+						$blob = $this->retrieve_blob($post['sha']);
 
-					$body = base64_decode($blob['body']);
+						if(!$blob) return FALSE; // TODO error handling
 
-					if(!strpos(trim($body), '---')) {
-						$post['body'] = $body;
-						$posts[$post['path']] = $post;
+						$body = base64_decode($blob['body']);
+
+						if(!strpos(trim($body), '---'))
+						{
+							$post['body']         = $body;
+						}
+						else
+						{
+							$yaml = yaml_parse($body, 0);
+						}
 					}
-					else {
 
-					}
+					$posts[$post['path']] = $post;
 				}
 
 				return $posts;
