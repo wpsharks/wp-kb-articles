@@ -43,10 +43,33 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
 				$url = sprintf($url, $this->owner, $this->repo, $this->branch);
+
+				$response = $this->get_response($url);
+
+				if($response['status_code'] === 200) return $response['body'];
+				else return FALSE;
 			}
 
-			public function retrieve_file()
+			public function retrieve_blob($sha)
 			{
+				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
+				$url = sprintf($url, $this->owner, $this->repo, $this->branch);
+
+				$response = $this->get_response($url);
+
+				if($response['status_code'] === 200) return $response['body'];
+				else return FALSE;
+			}
+
+			public function retrieve_file($file)
+			{
+				$url = 'raw.githubusercontent.com/%1$s/%2$s/%3$s/%4$s';
+				$url = sprintf($url, $this->owner, $this->repo, $this->branch, $file);
+
+				$response = $this->get_response($url);
+
+				if($response['status_code'] === 200) return $response['body'];
+				else return FALSE;
 			}
 
 			/* === Default Info === */
@@ -81,15 +104,15 @@ namespace wp_kb_articles // Root namespace.
 
 				else
 				{
-					$this->username = $a;
-					$this->password = $b;
+					$this->username = strtolower(trim($a));
+					$this->password = strtolower(trim($b));
 				}
 			}
 
 			/**
 			 * HTTP Request Method
 			 */
-			private function http($url, $args = array())
+			private function get_response($url, $args = array())
 			{
 				// Allow for overriding of defaults
 				$_args = array('headers' => array(), 'user-agent' => apply_filters(__NAMESPACE__.'_github_api_user_agent', 'WP KB Articles for '.get_site_url()));
