@@ -37,7 +37,40 @@ namespace wp_kb_articles // Root namespace.
 				parent::__construct();
 			}
 
-			/* === Retrieval === */
+			/* === Main Retrieval === */
+
+			public function retrieve_files()
+			{
+				$tree  = $this->retrieve_tree();
+				$posts = array();
+
+				if(!$tree) return FALSE; // Error
+
+				foreach($tree['tree'] as $blob)
+				{
+					if($blob['type'] !== 'blob') continue;
+					if(!preg_match('/\.md$/i', $blob['path'])) continue;
+
+					$post = array('headers' => array(), 'body' => '', 'sha' => $blob['sha'], 'url' => $blob['url'], 'path' => $blob['path']);
+					$blob = $this->retrieve_blob($post['sha']);
+
+					if(!$blob) return FALSE; // TODO error handling
+
+					$body = base64_decode($blob['body']);
+
+					if(!strpos(trim($body), '---')) {
+						$post['body'] = $body;
+						$posts[$post['path']] = $post;
+					}
+					else {
+
+					}
+				}
+
+				return $posts;
+			}
+
+			/* === Base GitHub Retrieval === */
 
 			public function retrieve_tree()
 			{
