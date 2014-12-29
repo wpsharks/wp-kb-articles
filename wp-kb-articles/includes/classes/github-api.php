@@ -79,6 +79,9 @@ namespace wp_kb_articles // Root namespace.
 
 								foreach($lines as $line)
 								{
+									// In case of blank line or line without colon after at least 1 characters
+									if(!strlen($line) || strpos($line, ':', 1) === FALSE) continue;
+
 									list($name, $value) = explode(':', $line, 2);
 									$post['headers'][trim($name)] = trim($value);
 								}
