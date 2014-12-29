@@ -62,12 +62,29 @@ namespace wp_kb_articles // Root namespace.
 						$body = base64_decode($blob['body']);
 
 						if(!strpos(trim($body), '---'))
-						{
-							$post['body']         = $body;
-						}
+							$post['body'] = $body;
 						else
 						{
-							$yaml = yaml_parse($body, 0);
+							$startsAt = strpos($body, '---') + strlen('---');
+							$endsAt   = strpos($body, '---', $startsAt);
+
+							$yaml = substr($body, $startsAt, $endsAt - $startsAt);
+							$body = substr($body, $endsAt - $startsAt);
+
+							unset($startsAt, $endsAt);
+
+							$post['body'] = $body;
+
+							if($yaml && strlen($yaml))
+							{
+								$lines = explode("\n", $yaml);
+
+								foreach($lines as $line)
+								{
+									list($name, $value) = explode(':', $line, 2);
+									$post['headers'][trim($name)] = trim($value);
+								}
+							}
 						}
 					}
 
@@ -75,6 +92,22 @@ namespace wp_kb_articles // Root namespace.
 				}
 
 				return $posts;
+			}
+
+			public function retrieve_body($a)
+			{
+				$is_sha = (bool)preg_match('/^[0-9a-f]{40}$/i', $a);
+
+				if($is_sha)
+				{
+					$blob = $this->retrieve_blob($a);
+
+					if(!$blob) return FALSE;
+					if($blob['encoding'] === 'base64') return base64_decode($blob['content']);
+					return $blob['content'];
+				}
+				else// It's a path
+					return $this->retrieve_file($a);
 			}
 
 			/* === Base GitHub Retrieval === */
