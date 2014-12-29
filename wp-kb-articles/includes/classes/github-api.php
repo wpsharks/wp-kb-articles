@@ -39,7 +39,7 @@ namespace wp_kb_articles // Root namespace.
 
 			/* === Main Retrieval === */
 
-			public function retrieve_files($get_body = FALSE)
+			public function retrieve_posts($get_body = FALSE)
 			{
 				$tree  = $this->retrieve_tree();
 				$posts = array();
@@ -92,6 +92,17 @@ namespace wp_kb_articles // Root namespace.
 				return $posts;
 			}
 
+			public function retrieve_post($a)
+			{
+				$data = $this->retrieve_body($a);
+
+				if(!$data) return FALSE;
+
+				return $data;
+			}
+
+			/* === Base GitHub Retrieval === */
+
 			public function retrieve_body($a)
 			{
 				$is_sha = (bool)preg_match('/^[0-9a-f]{40}$/i', $a);
@@ -107,8 +118,6 @@ namespace wp_kb_articles // Root namespace.
 				else// It's a path
 					return $this->retrieve_file($a);
 			}
-
-			/* === Base GitHub Retrieval === */
 
 			public function retrieve_tree()
 			{
