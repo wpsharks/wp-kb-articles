@@ -55,11 +55,9 @@ namespace wp_kb_articles // Root namespace.
 
 					if($get_body)
 					{
-						$blob = $this->retrieve_blob($post['sha']);
+						$body = $this->retrieve_body($post['sha']);
 
-						if(!$blob) return FALSE; // TODO error handling
-
-						$body = base64_decode($blob['body']);
+						if(!$body) return FALSE; // TODO error handling
 
 						if(!strpos(trim($body), '---'))
 							$post['body'] = $body;
@@ -125,8 +123,8 @@ namespace wp_kb_articles // Root namespace.
 
 			public function retrieve_blob($sha)
 			{
-				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
-				$url = sprintf($url, $this->owner, $this->repo, $this->branch);
+				$url = 'api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
+				$url = sprintf($url, $this->owner, $this->repo, $sha);
 
 				$response = $this->get_response($url);
 
@@ -167,19 +165,13 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Authentication
 			 *
-			 * @param        $a
-			 * @param string $b
+			 * @param string $user
+			 * @param string $pass
 			 */
-			public function authenticate($a, $b = FALSE)
+			public function authenticate($user, $pass)
 			{
-				if($b === FALSE)
-					$this->apiKey = trim($a);
-
-				else
-				{
-					$this->username = strtolower(trim($a));
-					$this->password = strtolower(trim($b));
-				}
+				$this->username = strtolower(trim((string)$user));
+				$this->password = trim((string)$pass);
 			}
 
 			/**
@@ -189,7 +181,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				// Allow for overriding of defaults
 				$_args = array('headers' => array(), 'user-agent' => apply_filters(__NAMESPACE__.'_github_api_user_agent', 'WP KB Articles for '.get_site_url()));
-				$args  = array_merge($_args, $args);
+				$args  = array_merge_recursive($_args, $args);
 				unset($_args);
 
 				// If Authorization done via GitHub API Key

@@ -33,15 +33,7 @@ class wp_kb_articles // WP KB Articles; a new custom post type for WordPress.
 		wp_kb_articles::$roles_edit_caps = apply_filters('wp_kb_article_roles_edit_caps', wp_kb_articles::$roles_edit_caps);
 
 		wp_kb_articles::register();
-/*
-		require(dirname(__FILE__).'/includes/classes/github-api.php');
-
-		$that = new \wp_kb_articles\github_api;
-		$that->set_owner('brucewsinc');
-		$that->set_repo('ghpages-gen');
-
-		var_dump($that->retrieve_files());
-	*/}
+	}
 
 	public static function register()
 	{
