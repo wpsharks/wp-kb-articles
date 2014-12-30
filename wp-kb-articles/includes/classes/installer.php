@@ -31,8 +31,30 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->plugin->setup();
 
+				$this->activate_post_type_role_caps();
+				$this->flush_rewrite_rules();
 				$this->maybe_enqueue_notice();
 				$this->set_install_time();
+			}
+
+			/**
+			 * Activate post type role caps.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function activate_post_type_role_caps()
+			{
+				$this->plugin->post_type_role_caps('activate');
+			}
+
+			/**
+			 * Flush rewrite rules.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function flush_rewrite_rules()
+			{
+				flush_rewrite_rules();
 			}
 
 			/**

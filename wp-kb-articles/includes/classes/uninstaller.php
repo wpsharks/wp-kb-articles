@@ -54,6 +54,8 @@ namespace wp_kb_articles // Root namespace.
 				$this->delete_install_time();
 				$this->delete_post_meta_keys();
 				$this->delete_user_meta_keys();
+				$this->deactivate_post_type_role_caps();
+				$this->flush_rewrite_rules();
 				$this->clear_cron_hooks();
 			}
 
@@ -85,6 +87,26 @@ namespace wp_kb_articles // Root namespace.
 			protected function delete_install_time()
 			{
 				delete_option(__NAMESPACE__.'_install_time');
+			}
+
+			/**
+			 * Deactivate post type role caps.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function deactivate_post_type_role_caps()
+			{
+				$this->plugin->post_type_role_caps('deactivate');
+			}
+
+			/**
+			 * Flush rewrite rules.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function flush_rewrite_rules()
+			{
+				flush_rewrite_rules();
 			}
 
 			/**

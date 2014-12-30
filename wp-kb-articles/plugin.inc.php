@@ -100,6 +100,24 @@ namespace wp_kb_articles
 			public $product_url = 'http://wp-kb-articles.com';
 
 			/**
+			 * Post type w/ underscores.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Post type w/ underscores.
+			 */
+			public $post_type = 'kb_article';
+
+			/**
+			 * Post type w/ dashes.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Post type w/ dashes.
+			 */
+			public $post_type_slug = 'kb-article';
+
+			/**
 			 * Used by the plugin's uninstall handler.
 			 *
 			 * @since 141111 Adding uninstall handler.
@@ -218,6 +236,9 @@ namespace wp_kb_articles
 			 *    i.e. the ability to deactivate and even delete the plugin.
 			 */
 			public $uninstall_cap;
+
+			public $roles_recieving_all_caps = array();
+			public $roles_recieving_edit_caps = array();
 
 			/*
 			 * Public Properties (Defined by Various Hooks)
@@ -352,6 +373,14 @@ namespace wp_kb_articles
 				if($this->options['manage_cap']) // This can be altered by plugin config. options.
 					$this->manage_cap = apply_filters(__METHOD__.'_manage_cap', $this->options['manage_cap']);
 
+				if(WP_KB_ARTICLE_ROLES_ALL_CAPS) // Specific Roles?
+					$this->roles_recieving_all_caps = // Convert these to an array.
+						preg_split('/[\s;,]+/', WP_KB_ARTICLE_ROLES_ALL_CAPS, NULL, PREG_SPLIT_NO_EMPTY);
+
+				if(WP_KB_ARTICLE_ROLES_EDIT_CAPS) // Specific Roles?
+					$this->roles_recieving_edit_caps = // Convert these to an array.
+						preg_split('/[\s;,]+/', WP_KB_ARTICLE_ROLES_EDIT_CAPS, NULL, PREG_SPLIT_NO_EMPTY);
+
 				/*
 				 * With or without hooks?
 				 */
@@ -361,19 +390,21 @@ namespace wp_kb_articles
 				/*
 				 * Setup all secondary plugin hooks.
 				 */
-				add_action('init', array($this, 'actions'), -10);
+				add_action('init', array($this, 'actions'), -10, 0);
 
-				add_action('admin_init', array($this, 'check_version'), 10);
-				add_action('all_admin_notices', array($this, 'all_admin_notices'), 10);
+				add_action('admin_init', array($this, 'check_version'), 10, 0);
+				add_action('all_admin_notices', array($this, 'all_admin_notices'), 10, 0);
 
-				add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'), 10);
-				add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'), 10);
+				add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'), 10, 0);
+				add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'), 10, 0);
 
-				add_action('admin_menu', array($this, 'add_menu_pages'), 10);
+				add_action('admin_menu', array($this, 'add_menu_pages'), 10, 0);
 				add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
 				add_filter('plugin_action_links_'.plugin_basename($this->file), array($this, 'add_settings_link'), 10, 1);
 
-				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10);
+				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
+
+				add_action('init', array($this, 'register_post_type'), 10, 0);
 
 				/*
 				 * Setup CRON-related hooks.
@@ -1055,6 +1086,142 @@ namespace wp_kb_articles
 			public function github_processor()
 			{
 				new github_processor();
+			}
+
+			/*
+			 * Custom post type handlers.
+			 */
+
+			/**
+			 * Regisers post type.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `init` action.
+			 */
+			public function register_post_type()
+			{
+				$post_type_args           = array
+				(
+					'public'       => TRUE, 'has_archive' => $this->post_type_slug.'s',
+					'map_meta_cap' => TRUE, 'capability_type' => array($this->post_type, $this->post_type.'s'),
+					'rewrite'      => array('slug' => $this->post_type_slug, 'with_front' => FALSE), // Like a Post (but no Post Formats).
+					'supports'     => array('title', 'editor', 'author', 'excerpt', 'revisions', 'thumbnail', 'custom-fields', 'comments', 'trackbacks')
+				);
+				$post_type_args['labels'] = array
+				(
+					'name'               => __('KB Articles', $this->text_domain),
+					'singular_name'      => __('KB Article', $this->text_domain),
+					'add_new'            => __('Add KB Article', $this->text_domain),
+					'add_new_item'       => __('Add New KB Article', $this->text_domain),
+					'edit_item'          => __('Edit KB Article', $this->text_domain),
+					'new_item'           => __('New KB Article', $this->text_domain),
+					'all_items'          => __('All KB Articles', $this->text_domain),
+					'view_item'          => __('View KB Article', $this->text_domain),
+					'search_items'       => __('Search KB Articles', $this->text_domain),
+					'not_found'          => __('No KB Articles found', $this->text_domain),
+					'not_found_in_trash' => __('No KB Articles found in Trash', $this->text_domain)
+				);
+				register_post_type($this->post_type, $post_type_args);
+
+				$category_taxonomy_args = array // Categories.
+				(
+				                                'public'       => TRUE, 'show_admin_column' => TRUE,
+				                                'hierarchical' => TRUE, // This will use category labels.
+				                                'rewrite'      => array('slug' => $this->post_type_slug.'-category', 'with_front' => FALSE),
+				                                'capabilities' => array('assign_terms' => 'edit_'.$this->post_type.'s',
+				                                                        'edit_terms'   => 'edit_'.$this->post_type.'s',
+				                                                        'manage_terms' => 'edit_others_'.$this->post_type.'s',
+				                                                        'delete_terms' => 'delete_others_'.$this->post_type.'s')
+				);
+				register_taxonomy($this->post_type.'_category', array($this->post_type), $category_taxonomy_args);
+
+				$tag_taxonomy_args = array // Tags.
+				(
+				                           'public'       => TRUE, 'show_admin_column' => TRUE,
+				                           'rewrite'      => array('slug' => $this->post_type_slug.'-tag', 'with_front' => FALSE),
+				                           'capabilities' => array('assign_terms' => 'edit_'.$this->post_type.'s',
+				                                                   'edit_terms'   => 'edit_'.$this->post_type.'s',
+				                                                   'manage_terms' => 'edit_others_'.$this->post_type.'s',
+				                                                   'delete_terms' => 'delete_others_'.$this->post_type.'s')
+				);
+				register_taxonomy($this->post_type.'_tag', array($this->post_type), $tag_taxonomy_args);
+			}
+
+			/**
+			 * Activate or deactivate role-base caps.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string $action One of `activate` or `deactivate`.
+			 */
+			public function post_type_role_caps($action)
+			{
+				$all_caps = array(
+					'edit_'.$this->post_type.'s',
+					'edit_others_'.$this->post_type.'s',
+					'edit_published_'.$this->post_type.'s',
+					'edit_private_'.$this->post_type.'s',
+
+					'publish_'.$this->post_type.'s',
+
+					'delete_'.$this->post_type.'s',
+					'delete_private_'.$this->post_type.'s',
+					'delete_published_'.$this->post_type.'s',
+					'delete_others_'.$this->post_type.'s',
+
+					'read_private_'.$this->post_type.'s',
+				);
+				if($action === 'deactivate') // All on deactivate.
+					$_roles = array_keys($GLOBALS['wp_roles']->roles);
+				else $_roles = $this->roles_recieving_all_caps;
+
+				foreach($_roles as $_role) if(is_object($_role = get_role($_role)))
+					foreach($all_caps as $_cap) switch($action)
+					{
+						case 'activate': // Activating?
+
+							$_role->add_cap($_cap);
+
+							break; // Break switch handler.
+
+						case 'deactivate': // Deactivating?
+
+							$_role->remove_cap($_cap);
+
+							break; // Break switch handler.
+					}
+				unset($_roles, $_role, $_cap); // Housekeeping.
+
+				$edit_caps = array(
+					'edit_'.$this->post_type.'s',
+					'edit_published_'.$this->post_type.'s',
+
+					'publish_'.$this->post_type.'s',
+
+					'delete_'.$this->post_type.'s',
+					'delete_published_'.$this->post_type.'s',
+				);
+				if($action === 'deactivate') // All on deactivate.
+					$_roles = array_keys($GLOBALS['wp_roles']->roles);
+				else $_roles = $this->roles_recieving_edit_caps;
+
+				foreach($_roles as $_role) if(is_object($_role = get_role($_role)))
+					foreach(($action === 'deactivate' ? $all_caps : $edit_caps) as $_cap) switch($action)
+					{
+						case 'activate': // Activating?
+
+							$_role->add_cap($_cap);
+
+							break; // Break switch handler.
+
+						case 'deactivate': // Deactivating?
+
+							$_role->remove_cap($_cap);
+
+							break; // Break switch handler.
+					}
+				unset($_roles, $_role, $_cap); // Housekeeping.
 			}
 		}
 
