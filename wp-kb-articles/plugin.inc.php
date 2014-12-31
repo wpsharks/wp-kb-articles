@@ -326,7 +326,7 @@ namespace wp_kb_articles
 				 * Setup class properties related to authentication/capabilities.
 				 */
 				$this->cap                = apply_filters(__METHOD__.'_cap', 'activate_plugins');
-				$this->manage_cap         = apply_filters(__METHOD__.'_manage_cap', 'moderate_comments');
+				$this->manage_cap         = apply_filters(__METHOD__.'_manage_cap', 'manage_options');
 				$this->auto_recompile_cap = apply_filters(__METHOD__.'_auto_recompile_cap', 'activate_plugins');
 				$this->upgrade_cap        = apply_filters(__METHOD__.'_upgrade_cap', 'update_plugins');
 				$this->uninstall_cap      = apply_filters(__METHOD__.'_uninstall_cap', 'delete_plugins');
