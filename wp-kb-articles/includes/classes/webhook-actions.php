@@ -36,8 +36,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$this->valid_actions
-					= array();
+				$this->valid_actions = array();
 				$this->maybe_handle();
 			}
 

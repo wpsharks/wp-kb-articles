@@ -237,7 +237,22 @@ namespace wp_kb_articles
 			 */
 			public $uninstall_cap;
 
+			/**
+			 * Roles to receive all KB article caps.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Roles to receive all KB article caps.
+			 */
 			public $roles_recieving_all_caps = array();
+
+			/**
+			 * Roles to receive KB article edit caps.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Roles to receive KB article edit caps.
+			 */
 			public $roles_recieving_edit_caps = array();
 
 			/*
