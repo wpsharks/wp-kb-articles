@@ -59,34 +59,7 @@ namespace wp_kb_articles // Root namespace.
 
 						if(!$body) return FALSE; // TODO error handling
 
-						if(!strpos(trim($body), '---'))
-							$post['body'] = $body;
-						else
-						{
-							$startsAt = strpos($body, '---') + strlen('---');
-							$endsAt   = strpos($body, '---', $startsAt);
-
-							$yaml = substr($body, $startsAt, $endsAt - $startsAt);
-							$body = substr($body, $endsAt - $startsAt);
-
-							unset($startsAt, $endsAt);
-
-							$post['body'] = $body;
-
-							if($yaml && strlen($yaml))
-							{
-								$lines = explode("\n", $yaml);
-
-								foreach($lines as $line)
-								{
-									// In case of blank line or line without colon after at least 1 characters
-									if(!isset($line[0]) || strpos($line, ':', 1) === FALSE) continue;
-
-									list($name, $value) = explode(':', $line, 2);
-									$post['headers'][trim($name)] = trim($value);
-								}
-							}
-						}
+						$post = array_merge_recursive($post, $this->parse_yaml($body));
 					}
 
 					$posts[$post['path']] = $post;
@@ -101,7 +74,9 @@ namespace wp_kb_articles // Root namespace.
 
 				if(!$data) return FALSE;
 
-				return $data;
+				$post = array('sha' => sha1($data));
+
+				return array_merge_recursive($post, $this->parse_yaml($data));
 			}
 
 			/* === Base GitHub Retrieval === */
@@ -184,6 +159,38 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$this->username = strtolower(trim((string)$user));
 				$this->password = trim((string)$pass);
+			}
+
+			private function parse_yaml($body)
+			{
+				if(!strpos(trim($body), '---'))
+					return array('body' => $body);
+
+				$startsAt = strpos($body, '---') + strlen('---');
+				$endsAt   = strpos($body, '---', $startsAt);
+
+				$yaml = substr($body, $startsAt, $endsAt - $startsAt);
+				$body = substr($body, $endsAt - $startsAt);
+
+				$headers = array();
+
+				unset($startsAt, $endsAt);
+
+				if($yaml && strlen($yaml))
+				{
+					$lines = explode("\n", $yaml);
+
+					foreach($lines as $line)
+					{
+						// In case of blank line or line without colon after at least 1 characters
+						if(!isset($line[0]) || strpos($line, ':', 1) === FALSE) continue;
+
+						list($name, $value) = explode(':', $line, 2);
+						$headers[trim($name)] = trim($value);
+					}
+				}
+
+				return array('headers' => $headers, 'body' => $body);
 			}
 
 			/**
