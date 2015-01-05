@@ -18,7 +18,7 @@ namespace wp_kb_articles // Root namespace.
 		 *
 		 * @since 141111 First documented version.
 		 */
-		class github_api/* extends abs_base*/
+		class github_api extends abs_base
 		{
 
 			private $owner, $repo, $branch = 'HEAD';
@@ -34,7 +34,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function __construct()
 			{
-				//parent::__construct();
+				parent::__construct();
 			}
 
 			/* === Main Retrieval === */
