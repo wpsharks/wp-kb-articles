@@ -176,24 +176,22 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param string $a SHA1 key or path to file
+			 * @param string $a SHA1 key or path to file.
 			 *
-			 * @return string|false
+			 * @return string|boolean String body from GitHub, else `FALSE` on error.
 			 */
 			protected function retrieve_body($a)
 			{
-				$is_sha = (bool)preg_match('/^[0-9a-f]{40}$/i', $a);
-
-				if($is_sha)
+				if(($is_sha = (boolean)preg_match('/^[0-9a-f]{40}$/i', $a)))
 				{
-					$blob = $this->retrieve_blob($a);
+					if(!($blob = $this->retrieve_blob($a)))
+						return FALSE; // Error.
 
-					if(!$blob) return FALSE;
-					if($blob['encoding'] === 'base64') return base64_decode($blob['content']);
+					if($blob['encoding'] === 'base64')
+						return base64_decode($blob['content']);
 					return $blob['content'];
 				}
-				else// It's a path
-					return $this->retrieve_file($a);
+				return $this->retrieve_file($a);
 			}
 
 			/**
