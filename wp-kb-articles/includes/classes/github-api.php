@@ -18,21 +18,19 @@ namespace wp_kb_articles // Root namespace.
 		 *
 		 * @since 150107 First documented version.
 		 */
-		class github_api
+		class github_api extends abs_base
 		{
 
 			private $owner, $repo, $branch = 'HEAD';
 
 			private $api_key, $username, $password;
 
-			public $allow_https = TRUE;
-
 			/**
 			 * Class constructor.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * $param array $args Array of arguments specific to the GitHub integration about to be executed. Required.
+			 * @param array $args Array of arguments specific to the GitHub integration about to be executed. Required.
 			 */
 			public function __construct(array $args)
 			{
@@ -264,45 +262,46 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Universal GitHub HTTP Request Method
+			 * Universal GitHub HTTP request method.
 			 *
 			 * @param string $url The URL to request
 			 * @param array  $args An associative array of arguments that can be used to overwrite the defaults used by the function
 			 *
-			 * @return array
+			 * @return array|boolean An array with the following elements; else `FALSE` on error.
+			 *
+			 *    - `request` = Result from `wp_remote_request()` call.
+			 *    - `body` = Result from `wp_remote_retrieve_body()` call.
+			 *    - `headers` = Result from `wp_remote_retrieve_headers()` call.
+			 *    - `response_code` = Result from `wp_remote_retrieve_response_code()` call.
 			 */
-			protected function get_response($url, $args = array())
+			protected function get_response($url, array $args = array())
 			{
-				// Allow for overriding of defaults
-				$_args = array('headers' => array(), 'user-agent' => apply_filters(__NAMESPACE__.'_github_api_user_agent', 'WP KB Articles for '.get_site_url()));
-				$args  = array_merge_recursive($_args, $args);
-				unset($_args);
+				$default_args = array(
+					'headers'    => array(),
+					'user-agent' => apply_filters(__METHOD__.'_user_agent', $this->plugin->name)
+				);
+				$args         = array_merge($default_args, $args);
+				$args         = array_intersect_key($args, $default_args);
 
-				// If Authorization done via GitHub API Key
-				if($this->api_key) $args['headers'][] = 'Authorization: token '.$this->api_key;
+				if($this->api_key) // If Authorization done via GitHub API key.
+					$args['headers'][] = 'Authorization: token '.$this->api_key;
 
-				// For Authorization via Username + Password
-				if(strlen($this->username) && strlen($this->password)) $before = $this->username.':'.$this->password.'@';
-				else $before = '';
+				$user_pass_prefix = ''; // Initialize.
+				if(isset($this->username[0], $this->password[0]))
+					$user_pass_prefix = $this->username.':'.$this->password.'@';
+				$url = 'https://'.$user_pass_prefix.$url;
 
-				// Create request URL
-				if($this->allow_https) $url = 'https://'.$before.$url;
-				else $url = 'http://'.$before.$url;
+				if(is_wp_error($request = wp_remote_request($url, $args)))
+					return FALSE; // Error.
 
-				unset($before);
-
-				// Class relies on WP_Http
-				$request       = wp_remote_request($url, $args);
 				$body          = wp_remote_retrieve_body($request);
 				$headers       = wp_remote_retrieve_headers($request);
 				$response_code = wp_remote_retrieve_response_code($request);
 
-				unset($url, $args);
+				if($response_code !== 302 && $response_code !== 200)
+					return FALSE; // Error.
 
-				if($response_code !== 302 && $response_code !== 200) return FALSE; // Error
-
-				// array('request' => $request, 'body' => $body, 'headers' => $headers, 'response_code' => $response_code);
-				return get_defined_vars();
+				return compact('request', 'body', 'headers', 'response_code');
 			}
 		}
 	}
