@@ -155,19 +155,17 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Retrieves list of files (as in, directory list) recursively from GitHub repo
+			 * Retrieves list of files (as in, directory list) recursively from GitHub repo.
 			 *
-			 * @return array|false FALSE on error, else array of files from GitHub
+			 * @return array|boolean Array of files from GitHub, else `FALSE` on error.
 			 */
 			protected function retrieve_tree()
 			{
-				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
-				$url = sprintf($url, $this->owner, $this->repo, $this->branch);
-
+				$url      = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
+				$url      = sprintf($url, $this->owner, $this->repo, $this->branch);
 				$response = $this->get_response($url);
 
-				if($response) return json_decode($response['body'], TRUE);
-				else return FALSE;
+				return $response ? json_decode($response['body'], TRUE) : FALSE;
 			}
 
 			/**
