@@ -30,7 +30,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param array $args Array of arguments specific to the GitHub integration about to be executed. Required.
+			 * @param array $args Array of arguments specific to the GitHub integration.
 			 */
 			public function __construct(array $args)
 			{
@@ -80,7 +80,9 @@ namespace wp_kb_articles // Root namespace.
 			/* === Public Methods === */
 
 			/**
-			 * Retrieves an array of data for all `.MD` files within a repo
+			 * Retrieves an array of data for all `.MD` files within a repo.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param bool $get_body If TRUE, this function will retrieve body contents for each `.md` file in the request
 			 *
@@ -116,7 +118,9 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Retrieves an associative array for information on a particular article, including the body
+			 * Retrieves an associative array for information on a particular article, including the body.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param string $a SHA1 key or path to file
 			 *
@@ -136,7 +140,9 @@ namespace wp_kb_articles // Root namespace.
 			/* === Base GitHub Retrieval === */
 
 			/**
-			 * Wrapper function for retrieve_blob and retrieve_file based on $a
+			 * Wrapper function for retrieve_blob and retrieve_file based on `$a`.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param string $a SHA1 key or path to file
 			 *
@@ -161,6 +167,8 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Retrieves list of files (as in, directory list) recursively from GitHub repo.
 			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @return array|boolean Array of files from GitHub, else `FALSE` on error.
 			 */
 			protected function retrieve_tree()
@@ -174,6 +182,8 @@ namespace wp_kb_articles // Root namespace.
 
 			/**
 			 * Retrieves UTF-8 encoded file from GitHub via SHA1 key.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param string $sha SHA1 value to be retrieved from the GitHub repo.
 			 *
@@ -191,6 +201,8 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Retrieves a UTF-8 encoded raw file from GitHub via path.
 			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @param string $path The path to the file to be retrieved.
 			 *
 			 * @return string|boolean String body from GitHub, else `FALSE` on error.
@@ -206,6 +218,8 @@ namespace wp_kb_articles // Root namespace.
 
 			/**
 			 * Parses a KB article w/ possible YAML front matter.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param string $article Input article content to parse.
 			 *
@@ -258,6 +272,8 @@ namespace wp_kb_articles // Root namespace.
 
 			/**
 			 * Universal GitHub HTTP request method.
+			 *
+			 * @since 141111 First documented version.
 			 *
 			 * @param string $url The URL to request.
 			 * @param array  $args An associative array of arguments that can be used to overwrite the defaults used by the function.
