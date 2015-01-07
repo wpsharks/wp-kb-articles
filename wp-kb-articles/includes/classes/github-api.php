@@ -77,7 +77,7 @@ namespace wp_kb_articles // Root namespace.
 
 			/* === Main Retrieval === */
 
-			public function retrieve_posts($get_body = FALSE)
+			public function retrieve_articles($get_body = FALSE)
 			{
 				$tree  = $this->retrieve_tree();
 				$posts = array();
@@ -97,7 +97,7 @@ namespace wp_kb_articles // Root namespace.
 
 						if(!$body) return FALSE; // TODO error handling
 
-						$post = array_merge_recursive($post, $this->parse_yaml($body));
+						$post = array_merge_recursive($post, $this->parse_article($body));
 					}
 
 					$posts[$post['path']] = $post;
@@ -106,7 +106,7 @@ namespace wp_kb_articles // Root namespace.
 				return $posts;
 			}
 
-			public function retrieve_post($a)
+			public function retrieve_article($a)
 			{
 				$data = $this->retrieve_body($a);
 
@@ -114,7 +114,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$post = array('sha' => sha1($data));
 
-				return array_merge_recursive($post, $this->parse_yaml($data));
+				return array_merge_recursive($post, $this->parse_article($data));
 			}
 
 			/* === Base GitHub Retrieval === */
@@ -168,36 +168,59 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
-			protected function parse_yaml($body)
+			/**
+			 * Parses a KB article w/ possible YAML front matter.
+			 *
+			 * @param string $article Input article content to parse.
+			 *
+			 * @return array An array with two elements.
+			 *    - `headers` An associative array of all YAML headers.
+			 *    - `body` The body part of the article after YAML headers were parsed.
+			 */
+			protected function parse_article($article)
 			{
-				if(!strpos(trim($body), '---'))
-					return array('body' => $body);
+				$parts = array(
+					'headers' => array(),
+					'body'    => '',
+				);
 
-				$startsAt = strpos($body, '---') + strlen('---');
-				$endsAt   = strpos($body, '---', $startsAt);
+				// Normalize line breaks. Use "\n" for all line breaks.
+				$article = str_replace(array("\r\n", "\r"), "\n", $article);
+				$article = trim($article);
 
-				$yaml = substr($body, $startsAt, $endsAt - $startsAt);
-				$body = substr($body, $endsAt - $startsAt);
-
-				$headers = array();
-
-				unset($startsAt, $endsAt);
-
-				if($yaml && strlen($yaml))
+				if(strpos($article, '---'."\n") !== 0)
 				{
-					$lines = explode("\n", $yaml);
-
-					foreach($lines as $line)
-					{
-						// In case of blank line or line without colon after at least 1 characters
-						if(!isset($line[0]) || strpos($line, ':', 1) === FALSE) continue;
-
-						list($name, $value) = explode(':', $line, 2);
-						$headers[trim($name)] = trim($value);
-					}
+					$parts['body'] = $article;
+					return $parts;
 				}
 
-				return array('headers' => $headers, 'body' => $body);
+				$article_parts = preg_split('/^\-{3}$/m', $article, 3);
+
+				// If the article does NOT have three parts, it contains no YAML front matter.
+				if(count($article_parts) !== 3)
+				{
+					$parts['body'] = $article;
+					return $parts;
+				}
+
+				list(, $article_headers_part, $article_body_part) = $article_parts;
+
+				foreach(explode("\n", trim($article_headers_part)) as $_line)
+				{
+					if(!($_line = trim($_line)))
+						continue; // Skip over empty lines; i.e. with whitespace only.
+
+					if(strpos($_line, ':', 1) !== FALSE)
+					{
+						list($_name, $_value) = explode(':', $_line, 2);
+						$parts['headers'][strtolower(trim($_name))] = trim($_value);
+					}
+				}
+				unset($_line, $_name, $_value); // Housekeeping.
+
+				$parts['body'] = trim($article_body_part);
+
+				return $parts;
 			}
 
 			/**
