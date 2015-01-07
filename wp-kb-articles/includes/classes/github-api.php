@@ -343,10 +343,11 @@ namespace wp_kb_articles // Root namespace.
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
 
+				if($this->api_key)
+					$args['headers']['Authorization'] = 'token '.$this->api_key;
+
 				$user_pass_prefix = ''; // Initialize.
-				if(isset($this->api_key))
-					$user_pass_prefix = $this->api_key.':x-oauth-basic@';
-				else if(isset($this->username[0], $this->password[0]))
+				if(isset($this->username[0], $this->password[0]))
 					$user_pass_prefix = $this->username.':'.$this->password.'@';
 				$url = 'https://'.$user_pass_prefix.$url;
 
