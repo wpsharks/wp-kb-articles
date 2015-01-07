@@ -337,7 +337,8 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$default_args = array(
 					'headers'    => array(),
-					'user-agent' => apply_filters(__METHOD__.'_user_agent', $this->plugin->name)
+					'user-agent' => apply_filters(__METHOD__.'_user_agent',
+					                              $this->plugin->name.' @ '.$_SERVER['HTTP_HOST'])
 				);
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
