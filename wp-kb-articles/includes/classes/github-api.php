@@ -20,9 +20,60 @@ namespace wp_kb_articles // Root namespace.
 		 */
 		class github_api extends abs_base
 		{
-			protected $owner, $repo, $branch = 'HEAD';
 
-			protected $api_key, $username, $password;
+			/**
+			 * Repo owner; e.g. `https://github.com/[owner]`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Repo owner; e.g. `https://github.com/[owner]`.
+			 */
+			protected $owner;
+
+			/**
+			 * Repo name; e.g. `https://github.com/[owner]/[repo]`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Repo name; e.g. `https://github.com/[owner]/[repo]`.
+			 */
+			protected $repo;
+
+			/**
+			 * Repo owner; e.g. `https://github.com/[owner]/[repo]/[branch]`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Repo owner; e.g. `https://github.com/[owner]/[repo]/[branch]`.
+			 */
+			protected $branch;
+
+			/**
+			 * API key; e.g. `Authorization: token [api_key]`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string API key; e.g. `Authorization: token [api_key]`.
+			 */
+			protected $api_key;
+
+			/**
+			 * GitHub username; e.g. `https://[username]@github.com/`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string GitHub username; e.g. `https://[username]@github.com/`.
+			 */
+			protected $username;
+
+			/**
+			 * GitHub password or API key; e.g. `https://[username]:[password]@github.com/`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string GitHub password or API key; e.g. `https://[username]:[password]@github.com/`.
+			 */
+			protected $password;
 
 			/**
 			 * Class constructor.
