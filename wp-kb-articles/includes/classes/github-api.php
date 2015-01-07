@@ -116,7 +116,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param bool $get_body If TRUE, this function will retrieve body contents for each `.md` file in the request
+			 * @param bool $get_body If TRUE, this function will retrieve body contents for each `.md` file in the request.
 			 *
 			 * @return array|false
 			 */
@@ -125,48 +125,59 @@ namespace wp_kb_articles // Root namespace.
 				$tree  = $this->retrieve_tree();
 				$posts = array();
 
-				if(!$tree) return FALSE; // Error
+				if(!$tree)
+					return FALSE; // Error.
 
 				foreach($tree['tree'] as $blob)
 				{
-					if($blob['type'] !== 'blob') continue;
-					if(!preg_match('/\.md$/i', $blob['path'])) continue;
+					if($blob['type'] !== 'blob')
+						continue;
 
-					$post = array('headers' => array(), 'body' => '', 'sha' => $blob['sha'], 'url' => $blob['url'], 'path' => $blob['path']);
+					if(!preg_match('/\.md$/i', $blob['path']))
+						continue;
 
+					$post = array(
+						'headers' => array(),
+						'body'    => '',
+						'sha'     => $blob['sha'],
+						'url'     => $blob['url'],
+						'path'    => $blob['path']
+					);
 					if($get_body)
 					{
 						$body = $this->retrieve_body($post['sha']);
 
-						if(!$body) return FALSE; // TODO error handling
+						if(!$body) // TODO error handling.
+							return FALSE;
 
 						$post = array_merge_recursive($post, $this->parse_article($body));
 					}
-
 					$posts[$post['path']] = $post;
 				}
-
 				return $posts;
 			}
 
 			/**
-			 * Retrieves an associative array for information on a particular article, including the body.
+			 * Retrieves an associative array of information on a particular article, including the body.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param string $a SHA1 key or path to file
+			 * @param string $a SHA1 key or path to file.
 			 *
-			 * @return array|false
+			 * @return array|boolean Array with the following elements, else `FALSE` on failure.
+			 *
+			 *    - `sha` SHA1 of the current body content data.
+			 *    - `headers` An associative array of all YAML headers.
+			 *    - `body` The body part of the article after YAML headers were parsed.
 			 */
 			public function retrieve_article($a)
 			{
-				$data = $this->retrieve_body($a);
+				if(!($body = $this->retrieve_body($a)))
+					return FALSE; // Error.
 
-				if(!$data) return FALSE;
+				$post = array('sha' => sha1($body));
 
-				$post = array('sha' => sha1($data));
-
-				return array_merge_recursive($post, $this->parse_article($data));
+				return array_merge($post, $this->parse_article($body));
 			}
 
 			/* === Base GitHub Retrieval === */
@@ -254,6 +265,7 @@ namespace wp_kb_articles // Root namespace.
 			 * @param string $article Input article content to parse.
 			 *
 			 * @return array An array with two elements.
+			 *
 			 *    - `headers` An associative array of all YAML headers.
 			 *    - `body` The body part of the article after YAML headers were parsed.
 			 */
