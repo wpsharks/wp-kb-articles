@@ -118,41 +118,47 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @param bool $get_body If TRUE, this function will retrieve body contents for each `.md` file in the request.
 			 *
-			 * @return array|false
+			 * @return array|boolean An associative array of all articles with the following elements, else `FALSE` on error.
+			 *
+			 *    - `headers` An associative array of all YAML headers; if `$get_body` is `TRUE`.
+			 *    - `body` The body part of the article after YAML headers were parsed; if `$get_body` is `TRUE`.
+			 *
+			 *    - `sha` SHA1 provided by the GitHub API.
+			 *    - `url` Blog URL provided by the GitHub API.
+			 *    - `path` Path to Markdown file; relative to repo root.
 			 */
 			public function retrieve_articles($get_body = FALSE)
 			{
-				$tree  = $this->retrieve_tree();
-				$posts = array();
+				$posts = array(); // Initialize.
 
-				if(!$tree)
+				if(!($tree = $this->retrieve_tree()))
 					return FALSE; // Error.
 
-				foreach($tree['tree'] as $blob)
+				foreach($tree['tree'] as $_blob)
 				{
-					if($blob['type'] !== 'blob')
-						continue;
+					if($_blob['type'] !== 'blob')
+						continue; // Not a blob.
 
-					if(!preg_match('/\.md$/i', $blob['path']))
-						continue;
+					if(!preg_match('/\.md$/i', $_blob['path']))
+						continue; // Not a Markdown file.
 
-					$post = array(
+					$_post = array(
 						'headers' => array(),
 						'body'    => '',
-						'sha'     => $blob['sha'],
-						'url'     => $blob['url'],
-						'path'    => $blob['path']
+						'sha'     => $_blob['sha'],
+						'url'     => $_blob['url'],
+						'path'    => $_blob['path'],
 					);
 					if($get_body)
 					{
-						$body = $this->retrieve_body($post['sha']);
+						$_body = $this->retrieve_body($_post['sha']);
 
-						if(!$body) // TODO error handling.
+						if(!$_body) // TODO error handling.
 							return FALSE;
 
-						$post = array_merge_recursive($post, $this->parse_article($body));
+						$_post = array_merge($_post, $this->parse_article($_body));
 					}
-					$posts[$post['path']] = $post;
+					$posts[$_post['path']] = $_post;
 				}
 				return $posts;
 			}
