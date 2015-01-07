@@ -2,7 +2,7 @@
 /**
  * GitHub API Class
  *
- * @since 141228 First documented version.
+ * @since 150107 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -14,9 +14,9 @@ namespace wp_kb_articles // Root namespace.
 	if(!class_exists('\\'.__NAMESPACE__.'\\github_api'))
 	{
 		/**
-		 * GitHub Processor
+		 * GitHub API Class
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150107 First documented version.
 		 */
 		class github_api
 		{
@@ -75,8 +75,15 @@ namespace wp_kb_articles // Root namespace.
 				}
 			}
 
-			/* === Main Retrieval === */
+			/* === Public Methods === */
 
+			/**
+			 * Retrieves an array of data for all `.MD` files within a repo
+			 *
+			 * @param bool $get_body If TRUE, this function will retrieve body contents for each `.md` file in the request
+			 *
+			 * @return array|false
+			 */
 			public function retrieve_articles($get_body = FALSE)
 			{
 				$tree  = $this->retrieve_tree();
@@ -106,6 +113,13 @@ namespace wp_kb_articles // Root namespace.
 				return $posts;
 			}
 
+			/**
+			 * Retrieves an associative array for information on a particular article, including the body
+			 *
+			 * @param string $a SHA1 key or path to file
+			 *
+			 * @return array|false
+			 */
 			public function retrieve_article($a)
 			{
 				$data = $this->retrieve_body($a);
@@ -119,6 +133,13 @@ namespace wp_kb_articles // Root namespace.
 
 			/* === Base GitHub Retrieval === */
 
+			/**
+			 * Wrapper function for retrieve_blob and retrieve_file based on $a
+			 *
+			 * @param string $a SHA1 key or path to file
+			 *
+			 * @return string|false
+			 */
 			protected function retrieve_body($a)
 			{
 				$is_sha = (bool)preg_match('/^[0-9a-f]{40}$/i', $a);
@@ -135,6 +156,11 @@ namespace wp_kb_articles // Root namespace.
 					return $this->retrieve_file($a);
 			}
 
+			/**
+			 * Retrieves list of files (as in, directory list) recursively from GitHub repo
+			 *
+			 * @return array|false FALSE on error, else array of files from GitHub
+			 */
 			protected function retrieve_tree()
 			{
 				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
@@ -146,6 +172,13 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
+			/**
+			 * Retrieves UTF-8 encoded file from GitHub via SHA1 key
+			 *
+			 * @param string $sha SHA1 value to be retrieved from the GitHub repo
+			 *
+			 * @return string|false FALSE on error, else string body from GitHub
+			 */
 			protected function retrieve_blob($sha)
 			{
 				$url = 'api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
@@ -157,15 +190,22 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
-			protected function retrieve_file($file)
+			/**
+			 * Retrieves a UTF-8 encoded raw file from GitHub via path
+			 *
+			 * @param string $path The path to the file to be retrieved
+			 *
+			 * @return string|false FALSE on error, else string body from GitHub
+			 */
+			protected function retrieve_file($path)
 			{
 				$url = 'raw.githubusercontent.com/%1$s/%2$s/%3$s/%4$s';
-				$url = sprintf($url, $this->owner, $this->repo, $this->branch, $file);
+				$url = sprintf($url, $this->owner, $this->repo, $this->branch, $path);
 
 				$response = $this->get_response($url);
 
 				if($response) return $response['body'];
-				else return FALSE;
+				return FALSE;
 			}
 
 			/**
@@ -224,7 +264,12 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * HTTP Request Method
+			 * Universal GitHub HTTP Request Method
+			 *
+			 * @param string $url The URL to request
+			 * @param array  $args An associative array of arguments that can be used to overwrite the defaults used by the function
+			 *
+			 * @return array
 			 */
 			protected function get_response($url, $args = array())
 			{
