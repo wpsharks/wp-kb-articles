@@ -44,38 +44,19 @@ namespace wp_kb_articles // Root namespace.
 
 					'username' => '',
 					'password' => '',
-
 					'api_key'  => '',
 				);
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
 
-				foreach($args as $_key => $_value)
-				{
-					if(!$_value)
-						continue;
+				$this->owner = trim(strtolower((string)$args['owner']));
+				$this->repo  = trim(strtolower((string)$args['repo']));
 
-					switch($_key)
-					{
-						case 'password':
-						case 'api_key':
-							if(isset($args['username']) && !empty($args['username']))
-							{
-								$this->username = strtolower(trim((string)$args['username']));
-								$this->password = trim((string)$_value);
-							}
-							break;
-						case 'owner':
-							$this->owner = strtolower(trim($_value));
-							break;
-						case 'repo':
-							$this->repo = strtolower(trim($_value));
-							break;
-						case 'branch':
-							$this->branch = trim($_value);
-							break;
-					}
-				}
+				$this->branch = trim((string)$args['branch']);
+
+				$this->username = trim(strtolower((string)$args['username']));
+				$this->password = trim((string)$args['password']);
+				$this->api_key  = trim((string)$args['api_key']);
 			}
 
 			/* === Public Methods === */
