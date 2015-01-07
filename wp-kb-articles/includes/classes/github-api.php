@@ -52,7 +52,8 @@ namespace wp_kb_articles // Root namespace.
 
 				foreach($args as $_key => $_value)
 				{
-					if(empty($_value)) continue;
+					if(!$_value)
+						continue;
 
 					switch($_key)
 					{
