@@ -189,21 +189,19 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Retrieves a UTF-8 encoded raw file from GitHub via path
+			 * Retrieves a UTF-8 encoded raw file from GitHub via path.
 			 *
-			 * @param string $path The path to the file to be retrieved
+			 * @param string $path The path to the file to be retrieved.
 			 *
-			 * @return string|false FALSE on error, else string body from GitHub
+			 * @return string|boolean String body from GitHub, else `FALSE` on error.
 			 */
 			protected function retrieve_file($path)
 			{
-				$url = 'raw.githubusercontent.com/%1$s/%2$s/%3$s/%4$s';
-				$url = sprintf($url, $this->owner, $this->repo, $this->branch, $path);
-
+				$url      = 'raw.githubusercontent.com/%1$s/%2$s/%3$s/%4$s';
+				$url      = sprintf($url, $this->owner, $this->repo, $this->branch, $path);
 				$response = $this->get_response($url);
 
-				if($response) return $response['body'];
-				return FALSE;
+				return $response ? $response['body'] : FALSE;
 			}
 
 			/**
@@ -261,8 +259,8 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Universal GitHub HTTP request method.
 			 *
-			 * @param string $url The URL to request
-			 * @param array  $args An associative array of arguments that can be used to overwrite the defaults used by the function
+			 * @param string $url The URL to request.
+			 * @param array  $args An associative array of arguments that can be used to overwrite the defaults used by the function.
 			 *
 			 * @return array|boolean An array with the following elements; else `FALSE` on error.
 			 *
