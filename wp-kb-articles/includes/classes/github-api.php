@@ -221,7 +221,6 @@ namespace wp_kb_articles // Root namespace.
 					'headers' => array(),
 					'body'    => '',
 				);
-
 				// Normalize line breaks. Use "\n" for all line breaks.
 				$article = str_replace(array("\r\n", "\r"), "\n", $article);
 				$article = trim($article);
@@ -231,7 +230,6 @@ namespace wp_kb_articles // Root namespace.
 					$parts['body'] = $article;
 					return $parts;
 				}
-
 				$article_parts = preg_split('/^\-{3}$/m', $article, 3);
 
 				// If the article does NOT have three parts, it contains no YAML front matter.
@@ -240,7 +238,6 @@ namespace wp_kb_articles // Root namespace.
 					$parts['body'] = $article;
 					return $parts;
 				}
-
 				list(, $article_headers_part, $article_body_part) = $article_parts;
 
 				foreach(explode("\n", trim($article_headers_part)) as $_line)
