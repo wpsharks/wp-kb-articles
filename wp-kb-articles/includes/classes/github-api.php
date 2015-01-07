@@ -171,21 +171,19 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Retrieves UTF-8 encoded file from GitHub via SHA1 key
+			 * Retrieves UTF-8 encoded file from GitHub via SHA1 key.
 			 *
-			 * @param string $sha SHA1 value to be retrieved from the GitHub repo
+			 * @param string $sha SHA1 value to be retrieved from the GitHub repo.
 			 *
-			 * @return string|false FALSE on error, else string body from GitHub
+			 * @return string|boolean String body from GitHub, else `FALSE` on error.
 			 */
 			protected function retrieve_blob($sha)
 			{
-				$url = 'api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
-				$url = sprintf($url, $this->owner, $this->repo, $sha);
-
+				$url      = 'api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
+				$url      = sprintf($url, $this->owner, $this->repo, $sha);
 				$response = $this->get_response($url);
 
-				if($response) return json_decode($response['body'], TRUE);
-				else return FALSE;
+				return $response ? json_decode($response['body'], TRUE) : FALSE;
 			}
 
 			/**
