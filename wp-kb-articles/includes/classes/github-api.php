@@ -34,17 +34,21 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function __construct(array $args)
 			{
+				parent::__construct();
+
 				$default_args = array(
 					'owner'    => '',
 					'repo'     => '',
+
 					'branch'   => 'HEAD',
+
 					'username' => '',
 					'password' => '',
-					'api_key'  => ''
-				);
 
-				$args = array_merge($default_args, $args);
-				$args = array_intersect_key($args, $default_args);
+					'api_key'  => '',
+				);
+				$args         = array_merge($default_args, $args);
+				$args         = array_intersect_key($args, $default_args);
 
 				foreach($args as $_key => $_value)
 				{
