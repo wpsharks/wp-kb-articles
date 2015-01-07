@@ -18,12 +18,12 @@ namespace wp_kb_articles // Root namespace.
 		 *
 		 * @since 141111 First documented version.
 		 */
-		class github_api extends abs_base
+		class github_api
 		{
 
 			private $owner, $repo, $branch = 'HEAD';
 
-			private $apiKey, $username, $password;
+			private $api_key, $username, $password;
 
 			public $allow_https = TRUE;
 
@@ -31,10 +31,48 @@ namespace wp_kb_articles // Root namespace.
 			 * Class constructor.
 			 *
 			 * @since 141111 First documented version.
+			 *
+			 * $param array $args Array of arguments specific to the GitHub integration about to be executed. Required.
 			 */
-			public function __construct()
+			public function __construct(array $args)
 			{
-				parent::__construct();
+				$default_args = array(
+					'owner'    => '',
+					'repo'     => '',
+					'branch'   => 'HEAD',
+					'username' => '',
+					'password' => '',
+					'api_key'  => ''
+				);
+
+				$args = array_merge($default_args, $args);
+				$args = array_intersect_key($args, $default_args);
+
+				foreach($args as $_key => $_value)
+				{
+					if(empty($_value)) continue;
+
+					switch($_key)
+					{
+						case 'password':
+						case 'api_key':
+							if(isset($args['username']) && !empty($args['username']))
+							{
+								$this->username = strtolower(trim((string)$args['username']));
+								$this->password = trim((string)$_value);
+							}
+							break;
+						case 'owner':
+							$this->owner = strtolower(trim($_value));
+							break;
+						case 'repo':
+							$this->repo = strtolower(trim($_value));
+							break;
+						case 'branch':
+							$this->branch = trim($_value);
+							break;
+					}
+				}
 			}
 
 			/* === Main Retrieval === */
@@ -81,7 +119,7 @@ namespace wp_kb_articles // Root namespace.
 
 			/* === Base GitHub Retrieval === */
 
-			public function retrieve_body($a)
+			protected function retrieve_body($a)
 			{
 				$is_sha = (bool)preg_match('/^[0-9a-f]{40}$/i', $a);
 
@@ -97,7 +135,7 @@ namespace wp_kb_articles // Root namespace.
 					return $this->retrieve_file($a);
 			}
 
-			public function retrieve_tree()
+			protected function retrieve_tree()
 			{
 				$url = 'api.github.com/repos/%1$s/%2$s/git/trees/%3$s?recursive=1';
 				$url = sprintf($url, $this->owner, $this->repo, $this->branch);
@@ -108,7 +146,7 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
-			public function retrieve_blob($sha)
+			protected function retrieve_blob($sha)
 			{
 				$url = 'api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
 				$url = sprintf($url, $this->owner, $this->repo, $sha);
@@ -119,7 +157,7 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
-			public function retrieve_file($file)
+			protected function retrieve_file($file)
 			{
 				$url = 'raw.githubusercontent.com/%1$s/%2$s/%3$s/%4$s';
 				$url = sprintf($url, $this->owner, $this->repo, $this->branch, $file);
@@ -130,38 +168,7 @@ namespace wp_kb_articles // Root namespace.
 				else return FALSE;
 			}
 
-			/* === Default Info === */
-
-			public function set_owner($owner)
-			{
-				$this->owner = strtolower(trim($owner));
-			}
-
-			public function set_repo($repo)
-			{
-				$this->repo = strtolower(trim($repo));
-			}
-
-			public function set_branch($branch)
-			{
-				if(is_string($branch) && strlen($branch))
-					$this->branch = strtolower(trim($branch));
-				else $this->branch = 'HEAD';
-			}
-
-			/**
-			 * Authentication
-			 *
-			 * @param string $user
-			 * @param string $pass
-			 */
-			public function authenticate($user, $pass)
-			{
-				$this->username = strtolower(trim((string)$user));
-				$this->password = trim((string)$pass);
-			}
-
-			private function parse_yaml($body)
+			protected function parse_yaml($body)
 			{
 				if(!strpos(trim($body), '---'))
 					return array('body' => $body);
@@ -196,7 +203,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * HTTP Request Method
 			 */
-			private function get_response($url, $args = array())
+			protected function get_response($url, $args = array())
 			{
 				// Allow for overriding of defaults
 				$_args = array('headers' => array(), 'user-agent' => apply_filters(__NAMESPACE__.'_github_api_user_agent', 'WP KB Articles for '.get_site_url()));
@@ -204,7 +211,7 @@ namespace wp_kb_articles // Root namespace.
 				unset($_args);
 
 				// If Authorization done via GitHub API Key
-				if($this->apiKey) $args['headers'][] = 'Authorization: token '.$this->apiKey;
+				if($this->api_key) $args['headers'][] = 'Authorization: token '.$this->api_key;
 
 				// For Authorization via Username + Password
 				if(strlen($this->username) && strlen($this->password)) $before = $this->username.':'.$this->password.'@';
