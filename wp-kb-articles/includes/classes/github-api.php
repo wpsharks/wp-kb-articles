@@ -20,10 +20,9 @@ namespace wp_kb_articles // Root namespace.
 		 */
 		class github_api extends abs_base
 		{
+			protected $owner, $repo, $branch = 'HEAD';
 
-			private $owner, $repo, $branch = 'HEAD';
-
-			private $api_key, $username, $password;
+			protected $api_key, $username, $password;
 
 			/**
 			 * Class constructor.
