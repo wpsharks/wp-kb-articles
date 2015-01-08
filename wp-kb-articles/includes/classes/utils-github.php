@@ -14,7 +14,7 @@ namespace wp_kb_articles // Root namespace.
 	if(!class_exists('\\'.__NAMESPACE__.'\\utils_github'))
 	{
 		/**
-		 * GitHub Utilities @TODO
+		 * GitHub Utilities
 		 *
 		 * @since 141111 First documented version.
 		 */
@@ -77,10 +77,18 @@ namespace wp_kb_articles // Root namespace.
 			 * @since 141111 First documented version.
 			 *
 			 * @param string $path GitHub repo path to a file.
+			 *
+			 * @return integer WordPress Post ID.
 			 */
 			public function path_post_id($path)
 			{
 				$path = trim((string)$path);
+				$guid = 'github:'.$this->plugin->post_type_slug.':'.$path;
+
+				$sql = "SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
+				       " WHERE `guid` = '".esc_sql($guid)."' LIMIT 1";
+
+				return (integer)$this->plugin->utils_db->wp->get_var($sql);
 			}
 		}
 	}
