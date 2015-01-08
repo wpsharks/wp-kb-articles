@@ -343,7 +343,7 @@ namespace wp_kb_articles // Root namespace.
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
 
-				if($this->api_key)
+				if($this->api_key) // Associative.
 					$args['headers']['Authorization'] = 'token '.$this->api_key;
 
 				$user_pass_prefix = ''; // Initialize.
