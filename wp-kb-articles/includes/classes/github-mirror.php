@@ -229,6 +229,9 @@ namespace wp_kb_articles // Root namespace.
 				$this->status  = strtolower($this->status);
 				$this->pubdate = (integer)$this->pubdate;
 
+				if($this->body && preg_match('/\.md$/i', $this->path))
+					$this->body = $this->plugin->utils_string->markdown($this->body);
+
 				$this->comment_status = strtolower($this->comment_status);
 				$this->ping_status    = strtolower($this->ping_status);
 			}
