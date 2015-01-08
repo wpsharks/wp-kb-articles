@@ -112,8 +112,8 @@ namespace wp_kb_articles // Root namespace.
 				parent::__construct();
 
 				$default_args = array(
-					'sha'            => '', // SHA1 hash from GitHub.
 					'path'           => '', // e.g. `my/article.md`.
+					'sha'            => '', // SHA1 hash from GitHub.
 
 					'slug'           => '', // e.g. `my-article`.
 					'title'          => '', // e.g. My Article Title.
@@ -151,11 +151,11 @@ namespace wp_kb_articles // Root namespace.
 			{
 				# Collect string values.
 
-				if(!($this->sha = trim((string)$this->args['sha'])))
-					throw new \exception(__('Missing sha.', $this->plugin->text_domain));
-
 				if(!($this->path = trim((string)$this->args['path'])))
 					throw new \exception(__('Missing path.', $this->plugin->text_domain));
+
+				if(!($this->sha = trim((string)$this->args['sha'])))
+					throw new \exception(__('Missing sha.', $this->plugin->text_domain));
 
 				$this->slug  = trim((string)$this->args['slug']);
 				$this->title = trim((string)$this->args['title']);
@@ -279,6 +279,8 @@ namespace wp_kb_articles // Root namespace.
 					throw new \exception(__('Insertion failure.', $this->plugin->text_domain));
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
+
+				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 
 			/**
@@ -314,6 +316,8 @@ namespace wp_kb_articles // Root namespace.
 					throw new \exception(__('Update failure.', $this->plugin->text_domain));
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
+
+				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 
 			/**

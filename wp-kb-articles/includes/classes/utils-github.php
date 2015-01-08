@@ -106,6 +106,42 @@ namespace wp_kb_articles // Root namespace.
 
 				return 'github:'.$this->plugin->post_type_slug.':'.$path;
 			}
+
+			/**
+			 * Gets SHA1 hash for an article.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param integer $post_id WordPress post ID.
+			 *
+			 * @return string SHA1 hash for the article.
+			 */
+			public function get_sha($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return ''; // Not possible.
+
+				return trim((string)get_post_meta($post_id, 'github_'.$this->plugin->post_type.'_sha', TRUE));
+			}
+
+			/**
+			 * Updates SHA1 hash for an article.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param integer $post_id WordPress post ID.
+			 * @param string  $sha Most recent SHA1 hash.
+			 */
+			public function update_sha($post_id, $sha)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($sha = trim((string)$sha)))
+					return; // Not possible.
+
+				update_post_meta($post_id, 'github_'.$this->plugin->post_type.'_sha', $sha);
+			}
 		}
 	}
 }

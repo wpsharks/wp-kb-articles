@@ -353,31 +353,45 @@ namespace wp_kb_articles
 				$this->default_options = array(
 					/* Core/systematic option keys. */
 
-					'version'                      => $this->version,
-					'crons_setup'                  => '0', // `0` or timestamp.
+					'version'                             => $this->version,
+					'crons_setup'                         => '0', // `0` or timestamp.
 
 					/* Related to data safeguards. */
 
-					'uninstall_safeguards_enable'  => '1', // `0|1`; safeguards on?
+					'uninstall_safeguards_enable'         => '1', // `0|1`; safeguards on?
 
 					/* Related to user authentication. */
 
-					'github_mirror_user_id'        => 0, // A WP User ID.
+					'manage_cap'                          => $this->manage_cap, // Capability.
 
-					'manage_cap'                   => $this->manage_cap, // Capability.
+					/* Related to GitHub integration. */
+
+					'github_processing_enable'            => '0', // `0|1`; enable?
+					'github_mirror_user_id'               => '0', // A WP User ID.
+					'github_mirror_owner'                 => '', // Repo owner.
+					'github_mirror_repo'                  => '', // Repo owner.
+					'github_mirror_branch'                => 'HEAD', // Branch.
+					'github_mirror_username'              => '', // Username.
+					'github_mirror_password'              => '', // Password.
+					'github_mirror_api_key'               => '', // API key.
+
+					'github_processor_max_time'           => '30', // In seconds.
+					'github_processor_delay'              => '250', // In milliseconds.
+					'github_processor_max_limit'          => '100', // Total files.
+					'github_processor_realtime_max_limit' => '5', // Total files.
 
 					/* Related to IP tracking. */
 
-					'prioritize_remote_addr'       => '0', // `0|1`; enable?
-					'geo_location_tracking_enable' => '0', // `0|1`; enable?
+					'prioritize_remote_addr'              => '0', // `0|1`; enable?
+					'geo_location_tracking_enable'        => '0', // `0|1`; enable?
 
 					/* Related to menu pages; i.e. logo display. */
 
-					'menu_pages_logo_icon_enable'  => '0', // `0|1`; display?
+					'menu_pages_logo_icon_enable'         => '0', // `0|1`; display?
 
 					/* Template-related config. options. */
 
-					'template_type'                => 's', // `a|s`.
+					'template_type'                       => 's', // `a|s`.
 
 				); // Default options are merged with those defined by the site owner.
 				$this->default_options = apply_filters(__METHOD__.'__default_options', $this->default_options); // Allow filters.
