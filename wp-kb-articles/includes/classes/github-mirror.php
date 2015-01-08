@@ -258,7 +258,7 @@ namespace wp_kb_articles // Root namespace.
 			protected function insert()
 			{
 				$data = array(
-					'' => '',
+					'guid' => '',
 				);
 				if(!($ID = wp_insert_post($data)) || !($this->post = get_post($ID)))
 					throw new \exception(__('Insertion failure.', $this->plugin->text_domain));

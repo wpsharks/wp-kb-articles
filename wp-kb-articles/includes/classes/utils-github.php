@@ -83,12 +83,28 @@ namespace wp_kb_articles // Root namespace.
 			public function path_post_id($path)
 			{
 				$path = trim((string)$path);
-				$guid = 'github:'.$this->plugin->post_type_slug.':'.$path;
+				$guid = $this->path_guid($path);
 
 				$sql = "SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
 				       " WHERE `guid` = '".esc_sql($guid)."' LIMIT 1";
 
 				return (integer)$this->plugin->utils_db->wp->get_var($sql);
+			}
+
+			/**
+			 * Converts a repo path to a GUID.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string $path GitHub repo path to a file.
+			 *
+			 * @return string Unique identifier.
+			 */
+			public function path_guid($path)
+			{
+				$path = trim((string)$path);
+
+				return 'github:'.$this->plugin->post_type_slug.':'.$path;
 			}
 		}
 	}
