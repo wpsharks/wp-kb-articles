@@ -56,10 +56,19 @@ namespace wp_kb_articles // Root namespace.
 			 * @since 141111 First documented version.
 			 *
 			 * @param string $body Article body.
+			 *
+			 * @return string Title from body; else `Untitled`.
 			 */
 			public function body_title($body)
 			{
 				$body = trim((string)$body);
+
+				foreach(explode("\n", $body) as $_line)
+					if(strpos($_line, '#') === 0 && ($_title = trim($_line, " \r\n\t\0\x0B".'#')))
+						return $_title; // Markdown title line.
+				unset($_line, $_title); // Housekeeping.
+
+				return $this->plugin->utils_string->clip($body);
 			}
 
 			/**
