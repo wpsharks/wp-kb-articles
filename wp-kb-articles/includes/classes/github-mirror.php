@@ -260,8 +260,10 @@ namespace wp_kb_articles // Root namespace.
 				$data = array(
 					'' => '',
 				);
-				if(!wp_insert_post($data)) // Insertion failure?
+				if(!($ID = wp_insert_post($data)) || !($this->post = get_post($ID)))
 					throw new \exception(__('Insertion failure.', $this->plugin->text_domain));
+
+				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
 			}
 
 			/**
@@ -278,6 +280,26 @@ namespace wp_kb_articles // Root namespace.
 				);
 				if(!wp_update_post($data)) // Update failure?
 					throw new \exception(__('Update failure.', $this->plugin->text_domain));
+
+				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
+			}
+
+			/**
+			 * Updates terms; i.e. categories/tags.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @throws \exception If unable to update terms.
+			 */
+			protected function maybe_update_terms()
+			{
+				if($this->categories) // Updating categories in this case?
+					if(is_wp_error(wp_set_object_terms($this->post->ID, $this->categories, $this->plugin->post_type.'_category')))
+						throw new \exception(__('Category update failure.', $this->plugin->text_domain));
+
+				if($this->tags) // Updating tags in this case?
+					if(is_wp_error(wp_set_object_terms($this->post->ID, $this->tags, $this->plugin->post_type.'_tag')))
+						throw new \exception(__('Tag update failure.', $this->plugin->text_domain));
 			}
 		}
 	}
