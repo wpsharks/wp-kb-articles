@@ -187,17 +187,13 @@ namespace wp_kb_articles // Root namespace.
 					else $body = $blob['content'];
 
 					// Set $article vars based on data from GitHub
-					$article = array('sha' => $a, 'url' => $blob['url']);
+					$article = array('sha' => $a);
 				}
 				else $body = $this->retrieve_file($a);
 
 				// Reconstruct data if necessary
-				if(!$is_sha) {
+				if(!$is_sha)
 					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body), 'path' => $a);
-
-					$url = 'https://api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
-					$article['url'] = sprintf($url, $this->owner, $this->repo, $article['sha']);
-				}
 
 				return array_merge($article, $this->parse_article($body));
 			}
