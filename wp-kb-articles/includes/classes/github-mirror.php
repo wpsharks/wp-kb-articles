@@ -300,12 +300,11 @@ namespace wp_kb_articles // Root namespace.
 				if($this->author) $data['post_author'] = $this->author;
 				if($this->status) $data['post_status'] = $this->status;
 
-				if($this->pubdate) // Updating the publish date? Offset local time.
-					$data['post_date'] = date('Y-m-d H:i:s', strtotime($this->pubdate) + (get_option('gmt_offset') * HOUR_IN_SECONDS));
-
-				if($this->pubdate) // Updating the publish date? UTC time.
+				if($this->pubdate && !$this->plugin->utils_date->is_relative($this->pubdate))
+				{ // Don't update relative dates; e.g. if pubdate is `now` or `+3 days` that works only for new articles.
+					$data['post_date']     = date('Y-m-d H:i:s', strtotime($this->pubdate) + (get_option('gmt_offset') * HOUR_IN_SECONDS));
 					$data['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($this->pubdate));
-
+				}
 				if($this->body) $data['post_content'] = $this->body;
 				if($this->excerpt) $data['post_excerpt'] = $this->excerpt;
 
