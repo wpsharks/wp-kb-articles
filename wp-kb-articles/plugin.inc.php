@@ -36,6 +36,7 @@ namespace wp_kb_articles
 		 * @property-read utils_enc             $utils_enc
 		 * @property-read utils_env             $utils_env
 		 * @property-read utils_fs              $utils_fs
+		 * @property-read utils_github          $utils_github
 		 * @property-read utils_i18n            $utils_i18n
 		 * @property-read utils_ip              $utils_ip
 		 * @property-read utils_log             $utils_log
@@ -360,6 +361,8 @@ namespace wp_kb_articles
 					'uninstall_safeguards_enable'  => '1', // `0|1`; safeguards on?
 
 					/* Related to user authentication. */
+
+					'github_mirror_user_id'        => 0, // A WP User ID.
 
 					'manage_cap'                   => $this->manage_cap, // Capability.
 

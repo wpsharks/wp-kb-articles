@@ -151,13 +151,13 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Removes `NULL` key/values.
+			 * Removes `NULL` values.
 			 *
 			 * @since 141111 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *
-			 * @return array Keys preserved; `NULL` key/values removed though.
+			 * @return array Keys preserved; `NULL` values removed though.
 			 */
 			public function remove_nulls(array $array)
 			{
@@ -172,13 +172,13 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Removes `NULL` key/values deeply.
+			 * Removes `NULL` values deeply.
 			 *
 			 * @since 141111 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *
-			 * @return array Keys preserved; `NULL` key/values removed though.
+			 * @return array Keys preserved; `NULL` values removed though.
 			 */
 			public function remove_nulls_deep(array $array)
 			{
@@ -193,6 +193,51 @@ namespace wp_kb_articles // Root namespace.
 				unset($_key, $_value); // Housekeeping.
 
 				return $array; // `NULL` values removed deeply.
+			}
+
+			/**
+			 * Removes empty values.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param array $array An input array to work from.
+			 *
+			 * @return array Keys preserved; empty values removed though.
+			 */
+			public function remove_emptys(array $array)
+			{
+				if(!$array) // Nothing to do.
+					return $array;
+
+				foreach($array as $_key => &$_value)
+					if(empty($_value)) unset($array[$_key]);
+				unset($_key, $_value); // Housekeeping.
+
+				return $array; // No empty values.
+			}
+
+			/**
+			 * Removes empty values deeply.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param array $array An input array to work from.
+			 *
+			 * @return array Keys preserved; empty values removed though.
+			 */
+			public function remove_emptys_deep(array $array)
+			{
+				if(!$array) // Nothing to do.
+					return $array;
+
+				$array = $this->remove_emptys($array);
+
+				foreach($array as $_key => &$_value)
+					if(is_array($_value)) // Recursion.
+						$_value = $this->remove_emptys_deep($_value);
+				unset($_key, $_value); // Housekeeping.
+
+				return $array; // Empty values removed deeply.
 			}
 		}
 	}
