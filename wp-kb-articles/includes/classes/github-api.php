@@ -143,22 +143,18 @@ namespace wp_kb_articles // Root namespace.
 						continue; // Not a Markdown file.
 
 					$_post = array(
-						'headers' => array(),
-						'body'    => '',
-						'sha'     => $_blob['sha'],
-						'url'     => $_blob['url'],
-						'path'    => $_blob['path'],
+						'sha'     => $_blob['sha']
 					);
 					if($get_body)
 					{
 						$_body = $this->retrieve_body($_post['sha']);
 
-						if(!$_body) // TODO error handling.
+						if(!$_body)
 							return FALSE;
 
 						$_post = array_merge($_post, $this->parse_article($_body));
 					}
-					$posts[$_post['path']] = $_post;
+					$posts[$_blob['path']] = $_post;
 				}
 				return $posts;
 			}
