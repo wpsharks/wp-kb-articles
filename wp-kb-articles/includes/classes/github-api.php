@@ -143,14 +143,12 @@ namespace wp_kb_articles // Root namespace.
 						continue; // Not a Markdown file.
 
 					$_post = array(
-						'sha'     => $_blob['sha']
+						'sha' => $_blob['sha'],
 					);
-					if($get_body)
+					if($get_body) // Parse articles too?
 					{
-						$_body = $this->retrieve_body($_post['sha']);
-
-						if(!$_body)
-							return FALSE;
+						if(!($_body = $this->retrieve_body($_post['sha'])))
+							return FALSE; // Failure.
 
 						$_post = array_merge($_post, $this->parse_article($_body));
 					}
@@ -192,8 +190,7 @@ namespace wp_kb_articles // Root namespace.
 				else if(!$body = $this->retrieve_file($a))
 					return FALSE; // Error.
 
-				// Reconstruct data if necessary.
-				if(!$is_sha)
+				if(!$is_sha) // Reconstruct data if necessary.
 					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body));
 
 				return array_merge($article, $this->parse_article($body));
