@@ -143,22 +143,18 @@ namespace wp_kb_articles // Root namespace.
 						continue; // Not a Markdown file.
 
 					$_post = array(
-						'headers' => array(),
-						'body'    => '',
-						'sha'     => $_blob['sha'],
-						'url'     => $_blob['url'],
-						'path'    => $_blob['path'],
+						'sha'     => $_blob['sha']
 					);
 					if($get_body)
 					{
 						$_body = $this->retrieve_body($_post['sha']);
 
-						if(!$_body) // TODO error handling.
+						if(!$_body)
 							return FALSE;
 
 						$_post = array_merge($_post, $this->parse_article($_body));
 					}
-					$posts[$_post['path']] = $_post;
+					$posts[$_blob['path']] = $_post;
 				}
 				return $posts;
 			}
@@ -178,12 +174,29 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function retrieve_article($a)
 			{
-				if(!($body = $this->retrieve_body($a)))
+				$article = array();
+
+				// Retrieve file data from GitHub.
+				if(($is_sha = (boolean)preg_match('/^[0-9a-f]{40}$/i', $a)))
+				{
+					if(!($blob = $this->retrieve_blob($a)) || !is_array($blob))
+						return FALSE; // Error.
+
+					if($blob['encoding'] === 'base64')
+						$body = base64_decode($blob['content']);
+					else $body = $blob['content'];
+
+					// Set $article vars based on data from GitHub.
+					$article = array('sha' => $a);
+				}
+				else if(!$body = $this->retrieve_file($a))
 					return FALSE; // Error.
 
-				$post = array('sha' => sha1($body));
+				// Reconstruct data if necessary.
+				if(!$is_sha)
+					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body));
 
-				return array_merge($post, $this->parse_article($body));
+				return array_merge($article, $this->parse_article($body));
 			}
 
 			/* === Base GitHub Retrieval === */
