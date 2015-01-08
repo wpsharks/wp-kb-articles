@@ -178,12 +178,32 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function retrieve_article($a)
 			{
-				if(!($body = $this->retrieve_body($a)))
-					return FALSE; // Error.
+				$article = array();
 
-				$post = array('sha' => sha1($body));
+				// Retrieve file data from GitHub
+				if(($is_sha = (boolean)preg_match('/^[0-9a-f]{40}$/i', $a)))
+				{
+					if(!($blob = $this->retrieve_blob($a)) || !is_array($blob))
+						return FALSE; // Error.
 
-				return array_merge($post, $this->parse_article($body));
+					if($blob['encoding'] === 'base64')
+						$body = base64_decode($blob['content']);
+					else $body = $blob['content'];
+
+					// Set $article vars based on data from GitHub
+					$article = array('sha' => $a, 'url' => $blob['url']);
+				}
+				else $body = $this->retrieve_file($a);
+
+				// Reconstruct data if necessary
+				if(!$is_sha) {
+					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body), 'path' => $a);
+
+					$url = 'https://api.github.com/repos/%1$s/%2$s/git/blobs/%3$s';
+					$article['url'] = sprintf($url, $this->owner, $this->repo, $article['sha']);
+				}
+
+				return array_merge($article, $this->parse_article($body));
 			}
 
 			/* === Base GitHub Retrieval === */
