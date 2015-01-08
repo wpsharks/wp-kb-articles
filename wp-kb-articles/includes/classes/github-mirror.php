@@ -21,6 +21,11 @@ namespace wp_kb_articles // Root namespace.
 		class github_mirror extends abs_base
 		{
 			/**
+			 * @var array Args.
+			 */
+			protected $args;
+
+			/**
 			 * @var string GitHub sha1 hash.
 			 */
 			protected $sha;
@@ -31,9 +36,9 @@ namespace wp_kb_articles // Root namespace.
 			protected $path;
 
 			/**
-			 * @var integer Post ID.
+			 * @var \WP_Post|null Post.
 			 */
-			protected $post_id;
+			protected $post;
 
 			/**
 			 * @var boolean It's new?
@@ -101,10 +106,6 @@ namespace wp_kb_articles // Root namespace.
 			 * @since 141111 First documented version.
 			 *
 			 * @param array $args Arguments to constructor.
-			 *
-			 * @throws \exception If the `sha` or `path` args are empty.
-			 *
-			 * @TODO A specific user needs to be set as the current user before this is called upon.
 			 */
 			public function __construct(array $args)
 			{
@@ -132,43 +133,61 @@ namespace wp_kb_articles // Root namespace.
 				);
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
+				$this->args   = $args; // Set arguments property.
 
-				if(!($this->sha = trim((string)$args['sha'])))
-					throw new \exception(__('Missing sha.', $this->plugin->text_domain));
+				$this->normalize_props(); // Normalize all properties.
 
-				if(!($this->path = trim((string)$args['path'])))
-					throw new \exception(__('Missing path.', $this->plugin->text_domain));
-
-				$this->slug  = trim((string)$args['slug']);
-				$this->title = trim((string)$args['title']);
-
-				$this->categories = trim((string)$args['categories']);
-				$this->tags       = trim((string)$args['tags']);
-
-				$this->author  = trim((string)$args['author']);
-				$this->status  = trim((string)$args['status']);
-				$this->pubdate = trim((string)$args['pubdate']);
-
-				$this->body    = trim((string)$args['body']);
-				$this->excerpt = trim((string)$args['excerpt']);
-
-				$this->comment_status = trim((string)$args['comment_status']);
-				$this->ping_status    = trim((string)$args['ping_status']);
-
-				$this->normalize_props();
-
-				wp_insert_post();
-				wp_update_post();
+				$this->mirror(); // Mirror headers/body.
 			}
 
+			/**
+			 * Normalizes all class properties.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @throws \exception If the `sha` or `path` args are empty.
+			 */
 			protected function normalize_props()
 			{
-				$this->post_id = $this->plugin->utils_github->path_post_id($this->path);
-				$this->is_new  = empty($this->post_id); // No post ID yet?
+				# Collect string values.
 
-				if($this->is_new) // It's a new article not yet in the system?
+				if(!($this->sha = trim((string)$this->args['sha'])))
+					throw new \exception(__('Missing sha.', $this->plugin->text_domain));
+
+				if(!($this->path = trim((string)$this->args['path'])))
+					throw new \exception(__('Missing path.', $this->plugin->text_domain));
+
+				$this->slug  = trim((string)$this->args['slug']);
+				$this->title = trim((string)$this->args['title']);
+
+				$this->categories = trim((string)$this->args['categories']);
+				$this->tags       = trim((string)$this->args['tags']);
+
+				$this->author  = trim((string)$this->args['author']);
+				$this->status  = trim((string)$this->args['status']);
+				$this->pubdate = trim((string)$this->args['pubdate']);
+
+				$this->body    = trim((string)$this->args['body']);
+				$this->excerpt = trim((string)$this->args['excerpt']);
+
+				$this->comment_status = trim((string)$this->args['comment_status']);
+				$this->ping_status    = trim((string)$this->args['ping_status']);
+
+				# Convert to post ID, if possible.
+
+				if(($_post_id = $this->plugin->utils_github->path_post_id($this->path)))
+					$this->post = get_post($_post_id); // Get the existing article.
+				unset($_post_id); // Housekeeping.
+
+				# Determine if post is new; i.e. there's no existing post?
+
+				$this->is_new = empty($this->post); // No post ID yet?
+
+				# Handle new KB articles; i.e. new posts.
+
+				if($this->is_new) // It's a new KB article; i.e. post?
 				{
-					if(!$this->slug) // Convert path to slug.
+					if(!$this->slug) // Convert path to slug in this case.
 						$this->slug = $this->plugin->utils_github->path_to_slug($this->path);
 
 					if(!$this->title) // Get title from the body.
@@ -189,6 +208,8 @@ namespace wp_kb_articles // Root namespace.
 					if(!$this->ping_status) // Default ping status.
 						$this->ping_status = get_option('default_ping_status');
 				}
+				# Normalize all properties.
+
 				$this->slug = strtolower($this->slug); // Force lowercase.
 
 				$this->categories = preg_split('/,+/', $this->categories, NULL, PREG_SPLIT_NO_EMPTY);
@@ -208,10 +229,52 @@ namespace wp_kb_articles // Root namespace.
 				$this->status  = strtolower($this->status);
 				$this->pubdate = (integer)$this->pubdate;
 
-				if($this->post_id)
-				{
-					$post = get_post($this->post_id); // @TODO
-				}
+				$this->comment_status = strtolower($this->comment_status);
+				$this->ping_status    = strtolower($this->ping_status);
+			}
+
+			/**
+			 * Mirrors article/post.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function mirror()
+			{
+				if($this->is_new)
+					$this->insert();
+				else $this->update();
+			}
+
+			/**
+			 * Inserts a new article/post.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @throws \exception If unable to insert article.
+			 */
+			protected function insert()
+			{
+				$data = array(
+					'' => '',
+				);
+				if(!wp_insert_post($data)) // Insertion failure?
+					throw new \exception(__('Insertion failure.', $this->plugin->text_domain));
+			}
+
+			/**
+			 * Updating existing article/post.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @throws \exception If unable to update article.
+			 */
+			protected function update()
+			{
+				$data = array(
+					'ID' => $this->post->ID,
+				);
+				if(!wp_update_post($data)) // Update failure?
+					throw new \exception(__('Update failure.', $this->plugin->text_domain));
 			}
 		}
 	}
