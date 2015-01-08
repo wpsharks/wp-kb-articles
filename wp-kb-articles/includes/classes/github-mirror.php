@@ -200,7 +200,7 @@ namespace wp_kb_articles // Root namespace.
 						$this->status = 'pending'; // Pending review.
 
 					if(!$this->pubdate) // Use the current time.
-						$this->pubdate = time(); // Current UTC timestamp.
+						$this->pubdate = 'now'; // `strtotime()` compatible.
 
 					if(!$this->comment_status) // Default comment status.
 						$this->comment_status = get_option('default_comment_status');
@@ -225,9 +225,8 @@ namespace wp_kb_articles // Root namespace.
 						$this->author = $_author_user->ID; // User ID.
 				unset($_author_user); // A little housekeeping.
 
-				$this->author  = (integer)$this->author;
-				$this->status  = strtolower($this->status);
-				$this->pubdate = (integer)$this->pubdate;
+				$this->author = (integer)$this->author;
+				$this->status = strtolower($this->status);
 
 				if($this->body && preg_match('/\.md$/i', $this->path))
 					$this->body = $this->plugin->utils_string->markdown($this->body);
@@ -258,7 +257,23 @@ namespace wp_kb_articles // Root namespace.
 			protected function insert()
 			{
 				$data = array(
-					'guid' => '',
+					'guid'           => $this->plugin->utils_github->path_guid($this->path),
+
+					'post_type'      => $this->plugin->post_type,
+					'post_name'      => $this->slug,
+					'post_title'     => $this->title,
+
+					'post_author'    => $this->author,
+					'post_status'    => $this->status,
+
+					'post_date'      => date('Y-m-d H:i:s', strtotime($this->pubdate) + (get_option('gmt_offset') * HOUR_IN_SECONDS)),
+					'post_date_gmt'  => date('Y-m-d H:i:s', strtotime($this->pubdate)),
+
+					'post_content'   => $this->body,
+					'post_excerpt'   => $this->excerpt,
+
+					'comment_status' => $this->comment_status,
+					'ping_status'    => $this->ping_status,
 				);
 				if(!($ID = wp_insert_post($data)) || !($this->post = get_post($ID)))
 					throw new \exception(__('Insertion failure.', $this->plugin->text_domain));
@@ -275,9 +290,26 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function update()
 			{
-				$data = array(
-					'ID' => $this->post->ID,
-				);
+				$data = array('ID' => $this->post->ID);
+
+				if($this->slug) $data['post_name'] = $this->slug;
+				if($this->title) $data['post_title'] = $this->title;
+
+				if($this->author) $data['post_author'] = $this->author;
+				if($this->status) $data['post_status'] = $this->status;
+
+				if($this->pubdate) // Updating the publish date? Offset local time.
+					$data['post_date'] = date('Y-m-d H:i:s', strtotime($this->pubdate) + (get_option('gmt_offset') * HOUR_IN_SECONDS));
+
+				if($this->pubdate) // Updating the publish date? UTC time.
+					$data['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($this->pubdate));
+
+				if($this->body) $data['post_content'] = $this->body;
+				if($this->excerpt) $data['post_excerpt'] = $this->excerpt;
+
+				if($this->comment_status) $data['comment_status'] = $this->comment_status;
+				if($this->ping_status) $data['ping_status'] = $this->ping_status;
+
 				if(!wp_update_post($data)) // Update failure?
 					throw new \exception(__('Update failure.', $this->plugin->text_domain));
 
