@@ -139,7 +139,7 @@ namespace wp_kb_articles // Root namespace.
 					if($_blob['type'] !== 'blob')
 						continue; // Not a blob.
 
-					if(!preg_match('/\.md$/i', $_blob['path']))
+					if(!preg_match('/\.(md|html)$/i', $_blob['path']))
 						continue; // Not a Markdown file.
 
 					$_post = array(
