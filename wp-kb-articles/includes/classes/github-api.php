@@ -193,7 +193,7 @@ namespace wp_kb_articles // Root namespace.
 
 				// Reconstruct data if necessary
 				if(!$is_sha)
-					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body), 'path' => $a);
+					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body));
 
 				return array_merge($article, $this->parse_article($body));
 			}
