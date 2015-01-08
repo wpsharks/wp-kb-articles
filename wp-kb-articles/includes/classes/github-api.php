@@ -176,7 +176,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$article = array();
 
-				// Retrieve file data from GitHub
+				// Retrieve file data from GitHub.
 				if(($is_sha = (boolean)preg_match('/^[0-9a-f]{40}$/i', $a)))
 				{
 					if(!($blob = $this->retrieve_blob($a)) || !is_array($blob))
@@ -186,12 +186,13 @@ namespace wp_kb_articles // Root namespace.
 						$body = base64_decode($blob['content']);
 					else $body = $blob['content'];
 
-					// Set $article vars based on data from GitHub
+					// Set $article vars based on data from GitHub.
 					$article = array('sha' => $a);
 				}
-				else $body = $this->retrieve_file($a);
+				else if(!$body = $this->retrieve_file($a))
+					return FALSE; // Error.
 
-				// Reconstruct data if necessary
+				// Reconstruct data if necessary.
 				if(!$is_sha)
 					$article = array('sha' => sha1('blob '.strlen($body)."\0".$body));
 
