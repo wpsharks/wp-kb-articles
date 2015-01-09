@@ -193,6 +193,21 @@ namespace wp_kb_articles // Root namespace.
 
 				                '<hr />'.
 
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Default Post Author:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. johndoe', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_author',
+						                'current_value' => $current_value_for('github_mirror_author'),
+						                'notes_after'   => '<p>'.sprintf(__('If your %1$s does not specify an <code>author:</code>, who should be set as a default author?', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                '<hr />'.
+
 				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these credentials in place, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
 
 				                ' </table>'.
