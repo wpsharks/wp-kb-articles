@@ -321,8 +321,9 @@ namespace wp_kb_articles // Root namespace.
 				}
 				$this->status = strtolower($this->status);
 
-				if($this->body && preg_match('/\.md$/i', $this->path))
-					$this->body = $this->plugin->utils_string->markdown($this->body);
+				if($this->body && $this->plugin->options['github_markdown_parse'])
+					if($this->plugin->utils_fs->extension($this->path) === 'md') // Parse Markdown?
+						$this->body = $this->plugin->utils_string->markdown($this->body);
 
 				$this->comment_status = strtolower($this->comment_status);
 				$this->ping_status    = strtolower($this->ping_status);
