@@ -422,6 +422,8 @@ namespace wp_kb_articles
 
 				add_action('init', array($this, 'register_post_type'), 10, 0);
 
+				add_shortcode('kb_articles_list', array($this, 'sc_articles_list'));
+
 				/*
 				 * Setup CRON-related hooks.
 				 */
@@ -1091,6 +1093,16 @@ namespace wp_kb_articles
 			public function github_processor()
 			{
 				new github_processor();
+			}
+
+			/*
+			 * Shortcode-related.
+			 */
+
+			public function sc_articles_list(array $attr, $content = '')
+			{
+				$sc_articles_list = new sc_articles_list($attr, $content);
+				return $sc_articles_list->parse();
 			}
 
 			/*
