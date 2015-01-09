@@ -20,7 +20,6 @@ namespace wp_kb_articles // Root namespace.
 		 */
 		class github_api extends abs_base
 		{
-
 			/**
 			 * Repo owner; e.g. `https://github.com/[owner]`.
 			 *
@@ -74,6 +73,31 @@ namespace wp_kb_articles // Root namespace.
 			 * @var string GitHub password or API key; e.g. `https://[username]:[password]@github.com/`.
 			 */
 			protected $password;
+
+			/**
+			 * Supported file extensions.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Supported file extensions.
+			 */
+			protected $supported_file_extensions = array('md', 'html');
+
+			/**
+			 * Excluded file basenames.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Excluded file basenames.
+			 */
+			protected $excluded_file_basenames = array(
+				'readme',
+				'changelog',
+				'changes',
+				'license',
+				'package',
+				'index',
+			);
 
 			/**
 			 * Class constructor.
@@ -139,8 +163,17 @@ namespace wp_kb_articles // Root namespace.
 					if($_blob['type'] !== 'blob')
 						continue; // Not a blob.
 
-					if(!preg_match('/\.(md|html)$/i', $_blob['path']))
-						continue; // Not a Markdown file.
+					$_extension = $this->plugin->utils_fs->extension($_blob['path']);
+					$_basename  = basename($_blob['path'], $_extension ? '.'.$_extension : NULL);
+
+					if(strpos($_basename, '.') === 0)
+						continue; // Exlude all dot files.
+
+					if(!in_array($_extension, $this->supported_file_extensions, TRUE))
+						continue; // Not a supported file extension.
+
+					if(in_array(strtolower($_basename), $this->excluded_file_basenames, TRUE))
+						continue; // Auto-exclude these basenames.
 
 					$_post = array(
 						'sha' => $_blob['sha'],
@@ -154,6 +187,8 @@ namespace wp_kb_articles // Root namespace.
 					}
 					$posts[$_blob['path']] = $_post;
 				}
+				unset($_blob, $_extension, $_basename); // Housekeeping.
+
 				return $posts;
 			}
 
