@@ -351,10 +351,11 @@ namespace wp_kb_articles
 					/* Related to GitHub integration. */
 
 					'github_processing_enable'            => '0', // `0|1`; enable?
+
 					'github_mirror_user_id'               => '0', // A WP User ID.
 					'github_mirror_owner'                 => '', // Repo owner.
 					'github_mirror_repo'                  => '', // Repo owner.
-					'github_mirror_branch'                => 'HEAD', // Branch.
+					'github_mirror_branch'                => '', // Branch.
 					'github_mirror_username'              => '', // Username.
 					'github_mirror_password'              => '', // Password.
 					'github_mirror_api_key'               => '', // API key.

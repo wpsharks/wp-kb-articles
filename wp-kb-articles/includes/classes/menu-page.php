@@ -117,41 +117,87 @@ namespace wp_kb_articles // Root namespace.
 
 				/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-				$_panel_body = '<table>'.
+				$_panel_body = '<table style="margin-bottom:0;">'.
 				               '  <tbody>'.
 				               $form_fields->select_row(
 					               array(
-						               'label'           => sprintf(__('Display %1$s&trade; Logo in Admin Area?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						               'label'           => sprintf(__('Enable GitHub API Integration and Pull KB Articles from a Repo?', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						               'field_class'     => 'pmp-if-change', // JS change handler.
 						               'name'            => 'github_processing_enable',
 						               'current_value'   => $current_value_for('github_processing_enable'),
 						               'allow_arbitrary' => FALSE,
 						               'options'         => array(
-							               '1' => sprintf(__('Yes, I want to pull %1$s&trade; from a GitHub repo', $this->plugin->text_domain), esc_html($this->plugin->name)),
-							               '0' => sprintf(__('No, disable GitHub repo integration', $this->plugin->text_domain), esc_html($this->plugin->name)),
+							               '0' => __('No, disable GitHub repo integration', $this->plugin->text_domain),
+							               '1' => __('Yes, I want to pull KB articles from a GitHub repo', $this->plugin->text_domain),
 						               ),
-						               'notes_after'     => '<p>'.sprintf(__('Enabling/disabling the logo in back-end areas does not impact any functionality; it\'s simply a personal preference.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
+						               'notes_after'     => '<p>'.sprintf(__('This allows you to pull KB articles (written in Markdown) from a GitHub repo and even integrate %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
 
-				$_panel_body .= '<table>'.
-				                '  <tbody>'.
-				                $form_fields->select_row(
+				$_panel_body .= '<div class="pmp-if-enabled-show"><hr />'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
 					                array(
-						                'label'           => sprintf(__('Display %1$s&trade; Logo in Admin Area?', $this->plugin->text_domain), esc_html($this->plugin->name)),
-						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
-						                'name'            => 'github_processing_enable',
-						                'current_value'   => $current_value_for('github_processing_enable'),
-						                'allow_arbitrary' => FALSE,
-						                'options'         => array(
-							                '1' => sprintf(__('Yes, I want to pull %1$s&trade; from a GitHub repo', $this->plugin->text_domain), esc_html($this->plugin->name)),
-							                '0' => sprintf(__('No, disable GitHub repo integration', $this->plugin->text_domain), esc_html($this->plugin->name)),
-						                ),
-						                'notes_after'     => '<p>'.sprintf(__('Enabling/disabling the logo in back-end areas does not impact any functionality; it\'s simply a personal preference.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
+						                'label'         => __('Repo Owner:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. johndoe, acme-corp', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_owner',
+						                'current_value' => $current_value_for('github_mirror_owner'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/<code>owner</code>', $this->plugin->text_domain).'</p>',
 					                )).
-				                '  </tbody>'.
-				                '</table>';
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Repo Name:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. kb, acme-kb', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_repo',
+						                'current_value' => $current_value_for('github_mirror_repo'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/owner/<code>repo</code>', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Repo Branch:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. HEAD, master, 000000-dev', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_branch',
+						                'current_value' => $current_value_for('github_mirror_branch'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/owner/repo/tree/<code>branch</code>', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'type'          => 'password',
+						                'label'         => __('oAuth Token (or Personal Access Token):', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. x6x3g9tpxuebatqn3ssbb9nabv8ymmc6z3ba7tbg', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_api_key',
+						                'current_value' => $current_value_for('github_mirror_api_key'),
+						                'notes_after'   => '<p>'.sprintf(__('Required for private repos and to remove API connection limits imposed on public access. Please generate your %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/settings/applications', __('personal access token', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                '<hr />'.
+
+				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these credentials in place, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+
+				                ' </table>'.
+
+				                '</div>';
 
 				echo $this->panel(__('GitHub Repo Integration', $this->plugin->text_domain), $_panel_body, array());
 
