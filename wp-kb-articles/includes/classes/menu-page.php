@@ -206,7 +206,25 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
-				                '<hr />'.
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->select_row(
+					                array(
+						                'label'           => sprintf(__('Parse Markdown (<code>.md</code> files) Into HTML?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						                'name'            => 'github_markdown_parse',
+						                'current_value'   => $current_value_for('github_markdown_parse'),
+						                'allow_arbitrary' => FALSE,
+						                'options'         => array(
+							                '1' => __('Yes, parse Markdown files into HTML and save the post content as HTML markup', $this->plugin->text_domain),
+							                '0' => __('No, leave as-is; I am using a Markdown parser in WordPress already', $this->plugin->text_domain),
+						                ),
+						                'notes_after'     => '<p>'.__('This should almost always be Yes. However, if you are running a theme that parses Markdown in Posts already, you could set this to no.', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <hr />'.
 
 				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these credentials in place, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
 
