@@ -294,10 +294,14 @@ namespace wp_kb_articles // Root namespace.
 			 *    See {@link set_scheme()} method for further details.
 			 *
 			 * @return string URL with only a `page` var (if applicable).
+			 *
+			 * @note In this plugin we do allow `post_type` together on
+			 *    plugin menu pages. The plugin rides on the menu for its post type.
 			 */
 			public function page_only($page = '', $url = '', $scheme = 'admin')
 			{
-				$page = trim((string)$page);
+				$page      = trim((string)$page);
+				$post_type = ''; // Initialize.
 
 				if(!($url = trim((string)$url)))
 					$url = $this->current();
@@ -312,8 +316,18 @@ namespace wp_kb_articles // Root namespace.
 				if(!$page && !empty($_REQUEST['page']))
 					$page = trim(stripslashes((string)$_REQUEST['page']));
 
+				if($page && strpos($page, __NAMESPACE__) === 0)
+				{
+					if(!$post_type && !empty($query_vars['post_type']))
+						$post_type = trim((string)$query_vars['post_type']);
+
+					if(!$post_type && !empty($_REQUEST['post_type']))
+						$post_type = trim(stripslashes((string)$_REQUEST['post_type']));
+				}
 				$args = $page ? array('page' => $page) : array();
-				$url  = add_query_arg(urlencode_deep($args), $url);
+				if($args && $page && $post_type && $post_type === $this->plugin->post_type)
+					$args = array_merge($args, compact('post_type'));
+				$url = add_query_arg(urlencode_deep($args), $url);
 
 				return $this->set_scheme($url, $scheme);
 			}
@@ -356,7 +370,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function main_menu_page_only($scheme = 'admin')
 			{
-				$url = admin_url('/admin.php');
+				$url = admin_url('/edit.php?post_type='.urlencode($this->plugin->post_type));
 
 				return $this->page_only(__NAMESPACE__, $url, $scheme);
 			}
@@ -393,7 +407,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function import_export_menu_page_only($scheme = 'admin')
 			{
-				$url = admin_url('/admin.php');
+				$url = admin_url('/edit.php?post_type='.urlencode($this->plugin->post_type));
 
 				return $this->page_only(__NAMESPACE__.'_import_export', $url, $scheme);
 			}
@@ -410,7 +424,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function site_templates_menu_page_only($scheme = 'admin')
 			{
-				$url = admin_url('/admin.php');
+				$url = admin_url('/edit.php?post_type='.urlencode($this->plugin->post_type));
 
 				return $this->page_only(__NAMESPACE__.'_site_templates', $url, $scheme);
 			}

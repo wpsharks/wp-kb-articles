@@ -163,9 +163,8 @@ namespace wp_kb_articles // Root namespace.
 				if(empty($request_args['key']))
 					return; // Not possible.
 
-				if(!current_user_can($this->plugin->manage_cap))
-					if(!current_user_can($this->plugin->cap))
-						return; // Unauthenticated; ignore.
+				if(!current_user_can($this->plugin->cap))
+					return; // Unauthenticated; ignore.
 
 				$notices = get_option(__NAMESPACE__.'_notices');
 				if(!is_array($notices)) $notices = array();

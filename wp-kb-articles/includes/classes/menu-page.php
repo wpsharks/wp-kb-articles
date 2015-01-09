@@ -96,10 +96,10 @@ namespace wp_kb_articles // Root namespace.
 						               'current_value'   => $current_value_for('uninstall_safeguards_enable'),
 						               'allow_arbitrary' => FALSE, // Must be one of these.
 						               'options'         => array(
-							               '1' => __('Safeguards on; i.e. protect my plugin options &amp; comment subscriptions (recommended)', $this->plugin->text_domain),
+							               '1' => __('Safeguards on; i.e. protect my plugin options &amp; articles (recommended)', $this->plugin->text_domain),
 							               '0' => sprintf(__('Safeguards off; uninstall (completely erase) %1$s on plugin deletion', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						               ),
-						               'notes_after'     => '<p>'.sprintf(__('By default, if you delete %1$s using the plugins menu in WordPress, no data is lost. However, if you want to completely uninstall %1$s you should turn Safeguards off, and <strong>THEN</strong> deactivate &amp; delete %1$s from the plugins menu in WordPress. This way %1$s will erase your options for the plugin, erase database tables created by the plugin, remove subscriptions, terminate CRON jobs, etc. In short, when Safeguards are off, %1$s erases itself from existence completely when you delete it.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
+						               'notes_after'     => '<p>'.sprintf(__('By default, if you delete %1$s using the plugins menu in WordPress, no data is lost. However, if you want to completely uninstall %1$s you should turn Safeguards off, and <strong>THEN</strong> deactivate &amp; delete %1$s from the plugins menu in WordPress. This way %1$s will erase your options for the plugin, erase database tables created by the plugin, remove articles, terminate CRON jobs, etc. In short, when Safeguards are off, %1$s erases itself from existence completely when you delete it.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
@@ -117,64 +117,89 @@ namespace wp_kb_articles // Root namespace.
 
 				/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-				$_panel_body = '<table style="margin:0;">'.
-				               ' <tbody>'.
+				$_panel_body = '<table style="margin-bottom:0;">'.
+				               '  <tbody>'.
 				               $form_fields->select_row(
 					               array(
-						               'label'           => __('Enable IP Region/Country Tracking?', $this->plugin->text_domain),
+						               'label'           => sprintf(__('Enable GitHub API Integration and Pull KB Articles from a Repo?', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
-						               'name'            => 'geo_location_tracking_enable',
-						               'current_value'   => $current_value_for('geo_location_tracking_enable'),
-						               'allow_arbitrary' => FALSE, // Must be one of these.
+						               'field_class'     => 'pmp-if-change', // JS change handler.
+						               'name'            => 'github_processing_enable',
+						               'current_value'   => $current_value_for('github_processing_enable'),
+						               'allow_arbitrary' => FALSE,
 						               'options'         => array(
-							               '0' => __('No, do not enable geographic location tracking for IP addresses', $this->plugin->text_domain),
-							               '1' => __('Yes, automatically gather geographic region/country codes for each subscription (recommended)', $this->plugin->text_domain),
+							               '0' => __('No, disable GitHub repo integration', $this->plugin->text_domain),
+							               '1' => __('Yes, I want to pull KB articles from a GitHub repo', $this->plugin->text_domain),
 						               ),
-						               'notes_after'     => '<p>'.sprintf(__('If you enable this feature, %1$s will post user IP addresses to the remote %2$s API behind-the-scenes, asking for geographic data associated with each subscription. %1$s will store this information locally in your WP database so that the data can be exported easily, and even used in statistical reporting. <span class="pmp-hilite">This option is highly recommended, but disabled by default</span> since it requires that you understand a remote connection takes place behind-the-scenes when %1$s speaks to the %2$s API.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('http://www.geoplugin.com/', 'geoPlugin')).'</p>',
-					               )).
-				               ' </tbody>'.
-				               '</table>';
-
-				$_panel_body .= '<hr />';
-
-				$_panel_body .= '<table>'.
-				                ' <tbody>'.
-				                $form_fields->select_row(
-					                array(
-						                'label'           => __('Give Precedence to <code>$_SERVER[REMOTE_ADDR]</code>?', $this->plugin->text_domain),
-						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
-						                'name'            => 'prioritize_remote_addr',
-						                'current_value'   => $current_value_for('prioritize_remote_addr'),
-						                'allow_arbitrary' => FALSE, // Must be one of these.
-						                'options'         => array(
-							                '0' => __('No, search through proxies and other forwarded IP address headers first; in the most logical order (recommended)', $this->plugin->text_domain),
-							                '1' => __('Yes, always use $_SERVER[REMOTE_ADDR]; my server deals with advanced IP logic already', $this->plugin->text_domain),
-						                ),
-						                'notes_after'     => '<p>'.sprintf(__('Most hosting companies do NOT adequately fill <code>$_SERVER[REMOTE_ADDR]</code>. Instead, this is left up to your software (e.g. %1$s). So, unless you know for sure that your hosting company <em>is</em> properly analyzing forwarded IP address headers before filling the <code>$_SERVER[REMOTE_ADDR]</code> environment variable, it is suggested that you simply leave this set to <code>No</code>. This way %1$s will always get a visitor\'s real IP address, even if they\'re behind a proxy; or if your server uses a load balancer that alters <code>$_SERVER[REMOTE_ADDR]</code> inadvertently. You\'ll be happy to know that %1$s supports both IPv4 and IPv6 addresses.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
-					                )).
-				                ' </tbody>'.
-				                '</table>';
-
-				echo $this->panel(__('Geo IP Region/Country Tracking', $this->plugin->text_domain), $_panel_body, array());
-
-				unset($_panel_body); // Housekeeping.
-
-				/* ----------------------------------------------------------------------------------------- */
-
-				$_panel_body = '<table>'.
-				               '  <tbody>'.
-				               $form_fields->input_row(
-					               array(
-						               'label'         => __('WordPress Capability Required to Manage Subscriptions', $this->plugin->text_domain),
-						               'placeholder'   => __('e.g. moderate_comments', $this->plugin->text_domain),
-						               'name'          => 'manage_cap',
-						               'current_value' => $current_value_for('manage_cap'),
-						               'notes_after'   => '<p>'.sprintf(__('If you can <code>%2$s</code>, you can always manage subscriptions and %1$s options, no matter what you configure here. However, if you have other users that help manage your site, you can set a specific %3$s they\'ll need in order for %1$s to allow them access. Users w/ this capability will be allowed to manage subscriptions, the mail queue, event logs, and statistics; i.e. everything <em>except</em> change %1$s options. To alter %1$s options you\'ll always need the <code>%2$s</code> capability.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('http://codex.wordpress.org/Roles_and_Capabilities#'.$this->plugin->cap, $this->plugin->cap), $this->plugin->utils_markup->x_anchor('http://codex.wordpress.org/Roles_and_Capabilities', __('WordPress Capability', $this->plugin->text_domain))).'</p>',
+						               'notes_after'     => '<p>'.sprintf(__('This allows you to pull KB articles (written in Markdown) from a GitHub repo and even integrate %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
 
-				echo $this->panel(__('Subscription Management Access', $this->plugin->text_domain), $_panel_body, array());
+				$_panel_body .= '<div class="pmp-if-enabled-show"><hr />'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Repo Owner:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. johndoe, acme-corp', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_owner',
+						                'current_value' => $current_value_for('github_mirror_owner'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/<code>owner</code>', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Repo Name:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. kb, acme-kb', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_repo',
+						                'current_value' => $current_value_for('github_mirror_repo'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/owner/<code>repo</code>', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Repo Branch:', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. HEAD, master, 000000-dev', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_branch',
+						                'current_value' => $current_value_for('github_mirror_branch'),
+						                'notes_after'   => '<p>'.__('i.e. https://github.com/owner/repo/tree/<code>branch</code>', $this->plugin->text_domain).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table>'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'type'          => 'password',
+						                'label'         => __('oAuth Token (or Personal Access Token):', $this->plugin->text_domain),
+						                'placeholder'   => __('e.g. x6x3g9tpxuebatqn3ssbb9nabv8ymmc6z3ba7tbg', $this->plugin->text_domain),
+						                'name'          => 'github_mirror_api_key',
+						                'current_value' => $current_value_for('github_mirror_api_key'),
+						                'notes_after'   => '<p>'.sprintf(__('Required for private repos and to remove API connection limits imposed on public access. Please generate your %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/settings/applications', __('personal access token', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                '<hr />'.
+
+				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these credentials in place, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+
+				                ' </table>'.
+
+				                '</div>';
+
+				echo $this->panel(__('GitHub Repo Integration', $this->plugin->text_domain), $_panel_body, array());
 
 				unset($_panel_body); // Housekeeping.
 
@@ -194,7 +219,7 @@ namespace wp_kb_articles // Root namespace.
 							               'a' => __('Advanced PHP-based templates (for developers and advanced site owners)', $this->plugin->text_domain),
 						               ),
 						               'notes_after'     => '<p>'.__('<strong>Note:</strong> If you change this setting, any template customizations that you\'ve made in one mode, will need to be done again for the new mode that you select; i.e. when this setting is changed, a new set of templates is loaded for the mode you select. You can always switch back though, and any changes that you made in the previous mode will be restored automatically.', $this->plugin->text_domain).'</p>'.
-						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> You\'ll notice that by changing this setting, all of the customizable templates in %1$s will be impacted; i.e. when you select %2$s or %3$s from the menu at the top, a new set of templates will load-up; based on the mode that you choose here. You can also switch modes <em>while</em> you\'re editing templates (see: %2$s and/or %3$s). That will impact this setting in the exact same way. Change it here or change it there, no difference.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor($this->plugin->utils_url->email_templates_menu_page_only(), __('Email Templates', $this->plugin->text_domain)), $this->plugin->utils_markup->x_anchor($this->plugin->utils_url->site_templates_menu_page_only(), __('Site Templates', $this->plugin->text_domain))).'</p>',
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> You\'ll notice that by changing this setting, all of the customizable templates in %1$s will be impacted; i.e. when you select %2$s from the menu at the top, a new set of templates will load-up; based on the mode that you choose here. You can also switch modes <em>while</em> you\'re editing templates (see: %2$s). That will impact this setting in the exact same way. Change it here or change it there, no difference.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor($this->plugin->utils_url->site_templates_menu_page_only(), __('Site Templates', $this->plugin->text_domain))).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
@@ -215,8 +240,8 @@ namespace wp_kb_articles // Root namespace.
 						               'current_value'   => $current_value_for('menu_pages_logo_icon_enable'),
 						               'allow_arbitrary' => FALSE,
 						               'options'         => array(
-							               '1' => sprintf(__('Yes, enable logo in back-end administrative areas for %1$s&trade;', $this->plugin->text_domain), esc_html($this->plugin->name)),
-							               '0' => sprintf(__('No, disable logo in back-end administrative areas for %1$s&trade;', $this->plugin->text_domain), esc_html($this->plugin->name)),
+							               '1' => sprintf(__('Yes, enable %1$s&trade; logo in back-end administrative areas', $this->plugin->text_domain), esc_html($this->plugin->name)),
+							               '0' => sprintf(__('No, disable %1$s&trade; logo in back-end administrative areas', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						               ),
 						               'notes_after'     => '<p>'.sprintf(__('Enabling/disabling the logo in back-end areas does not impact any functionality; it\'s simply a personal preference.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
 					               )).
