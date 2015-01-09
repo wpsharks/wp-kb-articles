@@ -21,81 +21,154 @@ namespace wp_kb_articles // Root namespace.
 		class github_mirror extends abs_base
 		{
 			/**
+			 * Arguments.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var array Args.
 			 */
 			protected $args;
 
 			/**
-			 * @var string GitHub sha1 hash.
+			 * Current user.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var \WP_User Current user.
+			 */
+			protected $current_user;
+
+			/**
+			 * SHA1 hash.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string SHA1 hash.
 			 */
 			protected $sha;
 
 			/**
-			 * @var string GitHub file path.
+			 * File path.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string File path.
 			 */
 			protected $path;
 
 			/**
+			 * Post.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var \WP_Post|null Post.
 			 */
 			protected $post;
 
 			/**
+			 * It's new?
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var boolean It's new?
 			 */
 			protected $is_new;
 
 			/**
+			 * Slug.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Slug.
 			 */
 			protected $slug;
 
 			/**
+			 * Title.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Title.
 			 */
 			protected $title;
 
 			/**
+			 * Categories.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var array Categories.
 			 */
 			protected $categories;
 
 			/**
+			 * Tags.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var array Tags.
 			 */
 			protected $tags;
 
 			/**
+			 * Author.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var integer Author.
 			 */
 			protected $author;
 
 			/**
+			 * Status.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Status.
 			 */
 			protected $status;
 
 			/**
+			 * Pub date.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Pub date.
 			 */
 			protected $pubdate;
 
 			/**
+			 * Body.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Body.
 			 */
 			protected $body;
 
 			/**
+			 * Excerpt.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Excerpt.
 			 */
 			protected $excerpt;
 
 			/**
+			 * Comment status.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Comment status.
 			 */
 			protected $comment_status;
 
 			/**
+			 * Ping status.
+			 *
+			 * @since 141111 First documented version.
+			 *
 			 * @var string Ping status.
 			 */
 			protected $ping_status;
@@ -111,7 +184,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$default_args = array(
+				$default_args       = array(
 					'path'           => '', // e.g. `my/article.md`.
 					'sha'            => '', // SHA1 hash from GitHub.
 
@@ -131,12 +204,12 @@ namespace wp_kb_articles // Root namespace.
 					'comment_status' => '', // `open` or `closed`.
 					'ping_status'    => '', // `open` or `closed`.
 				);
-				$args         = array_merge($default_args, $args);
-				$args         = array_intersect_key($args, $default_args);
-				$this->args   = $args; // Set arguments property.
+				$args               = array_merge($default_args, $args);
+				$args               = array_intersect_key($args, $default_args);
+				$this->args         = $args; // Set arguments property.
+				$this->current_user = wp_get_current_user();
 
-				$this->normalize_props(); // Normalize all properties.
-
+				$this->normalize_props(); // Normalize.
 				$this->mirror(); // Mirror headers/body.
 			}
 
@@ -194,7 +267,7 @@ namespace wp_kb_articles // Root namespace.
 						$this->title = $this->plugin->utils_github->body_title($this->body);
 
 					if(!$this->author) // Use default author in this case.
-						$this->author = (integer)$this->plugin->options['github_mirror_user_id'];
+						$this->author = $this->plugin->options['github_mirror_author'];
 
 					if(!$this->status) // Default status.
 						$this->status = 'pending'; // Pending review.
@@ -220,16 +293,37 @@ namespace wp_kb_articles // Root namespace.
 				$this->tags = $this->plugin->utils_string->trim_deep($this->tags);
 				$this->tags = $this->plugin->utils_array->remove_emptys($this->tags);
 
-				if($this->author && !is_numeric($this->author))
-					if(($_author_user = \WP_User::get_data_by('login', $this->author)))
-						$this->author = $_author_user->ID; // User ID.
-				unset($_author_user); // A little housekeeping.
+				if($this->author && is_numeric($this->author))
+				{
+					if(($_author_user = \WP_User::get_data_by('id', $this->author)))
+						$this->author = (integer)$_author_user->ID; // User ID.
 
-				$this->author = (integer)$this->author;
+					else if($this->plugin->options['github_mirror_author'] && is_numeric($this->plugin->options['github_mirror_author']))
+						$this->author = (integer)$this->plugin->options['github_mirror_author']; // User ID.
+
+					else if(($_author_user = \WP_User::get_data_by('login', $this->plugin->options['github_mirror_author'])))
+						$this->author = (integer)$_author_user->ID; // User ID.
+
+					unset($_author_user); // Housekeeping.
+				}
+				else if($this->author) // Convert username to a user ID.
+				{
+					if(($_author_user = \WP_User::get_data_by('login', $this->author)))
+						$this->author = (integer)$_author_user->ID; // User ID.
+
+					else if($this->plugin->options['github_mirror_author'] && is_numeric($this->plugin->options['github_mirror_author']))
+						$this->author = (integer)$this->plugin->options['github_mirror_author']; // User ID.
+
+					else if(($_author_user = \WP_User::get_data_by('login', $this->plugin->options['github_mirror_author'])))
+						$this->author = (integer)$_author_user->ID; // User ID.
+
+					unset($_author_user); // Housekeeping.
+				}
 				$this->status = strtolower($this->status);
 
-				if($this->body && preg_match('/\.md$/i', $this->path))
-					$this->body = $this->plugin->utils_string->markdown($this->body);
+				if($this->body && $this->plugin->options['github_markdown_parse'])
+					if($this->plugin->utils_fs->extension($this->path) === 'md') // Parse Markdown?
+						$this->body = $this->plugin->utils_string->markdown($this->body);
 
 				$this->comment_status = strtolower($this->comment_status);
 				$this->ping_status    = strtolower($this->ping_status);
@@ -242,9 +336,12 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function mirror()
 			{
-				if($this->is_new)
-					$this->insert();
-				else $this->update();
+				$this->set_current_author(); // To current author of this article.
+
+				if($this->is_new) $this->insert(); // Insert new article.
+				else $this->update(); // Update existing.
+
+				$this->restore_current_user(); // Restore actual current user.
 			}
 
 			/**
@@ -257,8 +354,6 @@ namespace wp_kb_articles // Root namespace.
 			protected function insert()
 			{
 				$data = array(
-					'guid'           => $this->plugin->utils_github->path_guid($this->path),
-
 					'post_type'      => $this->plugin->post_type,
 					'post_name'      => $this->slug,
 					'post_title'     => $this->title,
@@ -280,6 +375,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
 
+				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 
@@ -316,6 +412,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
 
+				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 
@@ -335,6 +432,35 @@ namespace wp_kb_articles // Root namespace.
 				if($this->tags) // Updating tags in this case?
 					if(is_wp_error(wp_set_object_terms($this->post->ID, $this->tags, $this->plugin->post_type.'_tag')))
 						throw new \exception(__('Tag update failure.', $this->plugin->text_domain));
+			}
+
+			/**
+			 * Sets the current user (author).
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function set_current_author()
+			{
+				if($this->author) // Always a user ID.
+					return wp_set_current_user($this->author);
+
+				if(!$this->is_new && $this->post->post_author)
+					return wp_set_current_user($this->post->post_author);
+
+				if(is_numeric($this->plugin->options['github_mirror_author']))
+					return wp_set_current_user((integer)$this->plugin->options['github_mirror_author']);
+
+				return wp_set_current_user(0, $this->plugin->options['github_mirror_author']);
+			}
+
+			/**
+			 * Restores the current user.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function restore_current_user()
+			{
+				return wp_set_current_user($this->current_user->ID);
 			}
 		}
 	}

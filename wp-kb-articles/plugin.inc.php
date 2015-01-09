@@ -352,13 +352,15 @@ namespace wp_kb_articles
 
 					'github_processing_enable'            => '0', // `0|1`; enable?
 
-					'github_mirror_user_id'               => '0', // A WP User ID.
 					'github_mirror_owner'                 => '', // Repo owner.
 					'github_mirror_repo'                  => '', // Repo owner.
 					'github_mirror_branch'                => '', // Branch.
 					'github_mirror_username'              => '', // Username.
 					'github_mirror_password'              => '', // Password.
 					'github_mirror_api_key'               => '', // API key.
+					'github_mirror_author'                => '', // User login|ID.
+
+					'github_markdown_parse'               => '1', // Parse Markdown?
 
 					'github_processor_max_time'           => '30', // In seconds.
 					'github_processor_delay'              => '250', // In milliseconds.
@@ -433,7 +435,7 @@ namespace wp_kb_articles
 					$this->options['crons_setup'] = (string)time();
 					update_option(__NAMESPACE__.'_options', $this->options);
 				}
-				add_action('_cron_'.__NAMESPACE__.'_queue_processor', array($this, 'github_processor'), 10);
+				add_action('_cron_'.__NAMESPACE__.'_github_processor', array($this, 'github_processor'), 10);
 
 				/*
 				 * Fire setup completion hooks.

@@ -193,6 +193,13 @@ namespace wp_kb_articles // Root namespace.
 				if(!$this->plugin->options['github_mirror_branch'])
 					return; // Not possible.
 
+				if(!$this->plugin->options['github_mirror_api_key'])
+					if(!$this->plugin->options['github_mirror_username'] || !$this->plugin->options['github_mirror_password'])
+						return; // possible.
+
+				if(!$this->plugin->options['github_mirror_author'])
+					return; // Not possible.
+
 				$this->github_api = new github_api(
 					array(
 						'owner'    => $this->plugin->options['github_mirror_owner'],

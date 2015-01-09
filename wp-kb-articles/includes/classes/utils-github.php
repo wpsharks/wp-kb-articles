@@ -83,28 +83,49 @@ namespace wp_kb_articles // Root namespace.
 			public function path_post_id($path)
 			{
 				$path = trim((string)$path);
-				$guid = $this->path_guid($path);
 
-				$sql = "SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
-				       " WHERE `guid` = '".esc_sql($guid)."' LIMIT 1";
+				$sql = "SELECT `post_id` FROM `".esc_sql($this->plugin->utils_db->wp->postmeta)."`".
+				       " WHERE `meta_key` = '".esc_sql(__NAMESPACE__.'_github_path')."'".
+				       " AND `meta_value` = '".esc_sql($path)."'".
+				       " ORDER BY `post_id` DESC LIMIT 1";
 
 				return (integer)$this->plugin->utils_db->wp->get_var($sql);
 			}
 
 			/**
-			 * Converts a repo path to a GUID.
+			 * Gets repo path for an article.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param string $path GitHub repo path to a file.
+			 * @param integer $post_id WordPress post ID.
 			 *
-			 * @return string Unique identifier.
+			 * @return string Repo path for the article.
 			 */
-			public function path_guid($path)
+			public function get_path($post_id)
 			{
-				$path = trim((string)$path);
+				if(!($post_id = (integer)$post_id))
+					return ''; // Not possible.
 
-				return 'github:'.$this->plugin->post_type_slug.':'.$path;
+				return trim((string)get_post_meta($post_id, __NAMESPACE__.'_github_path', TRUE));
+			}
+
+			/**
+			 * Updates repo path for an article.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param integer $post_id WordPress post ID.
+			 * @param string  $path The repo file path.
+			 */
+			public function update_path($post_id, $path)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($path = trim((string)$path)))
+					return; // Not possible.
+
+				update_post_meta($post_id, __NAMESPACE__.'_github_path', $path);
 			}
 
 			/**
@@ -121,7 +142,7 @@ namespace wp_kb_articles // Root namespace.
 				if(!($post_id = (integer)$post_id))
 					return ''; // Not possible.
 
-				return trim((string)get_post_meta($post_id, 'github_'.$this->plugin->post_type.'_sha', TRUE));
+				return trim((string)get_post_meta($post_id, __NAMESPACE__.'_github_sha', TRUE));
 			}
 
 			/**
@@ -140,7 +161,7 @@ namespace wp_kb_articles // Root namespace.
 				if(!($sha = trim((string)$sha)))
 					return; // Not possible.
 
-				update_post_meta($post_id, 'github_'.$this->plugin->post_type.'_sha', $sha);
+				update_post_meta($post_id, __NAMESPACE__.'_github_sha', $sha);
 			}
 		}
 	}
