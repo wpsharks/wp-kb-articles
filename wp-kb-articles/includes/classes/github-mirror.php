@@ -293,20 +293,32 @@ namespace wp_kb_articles // Root namespace.
 				$this->tags = $this->plugin->utils_string->trim_deep($this->tags);
 				$this->tags = $this->plugin->utils_array->remove_emptys($this->tags);
 
-				if($this->author && !is_numeric($this->author)) // Convert to user ID.
+				if($this->author && is_numeric($this->author))
 				{
-					if(($_author_user = \WP_User::get_data_by('login', $this->author)))
-						$this->author = $_author_user->ID; // User ID.
+					if(($_author_user = \WP_User::get_data_by('id', $this->author)))
+						$this->author = (integer)$_author_user->ID; // User ID.
 
-					else if($this->plugin->options['github_mirror_author'] && !is_numeric($this->plugin->options['github_mirror_author']))
-						$this->author = $this->plugin->options['github_mirror_author'];
+					else if($this->plugin->options['github_mirror_author'] && is_numeric($this->plugin->options['github_mirror_author']))
+						$this->author = (integer)$this->plugin->options['github_mirror_author']; // User ID.
 
 					else if(($_author_user = \WP_User::get_data_by('login', $this->plugin->options['github_mirror_author'])))
-						$this->author = $_author_user->ID;
+						$this->author = (integer)$_author_user->ID; // User ID.
 
 					unset($_author_user); // Housekeeping.
 				}
-				$this->author = (integer)$this->author;
+				else if($this->author) // Convert username to a user ID.
+				{
+					if(($_author_user = \WP_User::get_data_by('login', $this->author)))
+						$this->author = (integer)$_author_user->ID; // User ID.
+
+					else if($this->plugin->options['github_mirror_author'] && is_numeric($this->plugin->options['github_mirror_author']))
+						$this->author = (integer)$this->plugin->options['github_mirror_author']; // User ID.
+
+					else if(($_author_user = \WP_User::get_data_by('login', $this->plugin->options['github_mirror_author'])))
+						$this->author = (integer)$_author_user->ID; // User ID.
+
+					unset($_author_user); // Housekeeping.
+				}
 				$this->status = strtolower($this->status);
 
 				if($this->body && preg_match('/\.md$/i', $this->path))
