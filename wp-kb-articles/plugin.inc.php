@@ -83,13 +83,13 @@ namespace wp_kb_articles
 			public $short_name = 'WPKBA';
 
 			/**
-			 * Plugin name.
+			 * Site name.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Plugin name.
+			 * @var string Site name.
 			 */
-			public $site_name = 'wp-kb-articles.com';
+			public $site_name = 'websharks-inc.com';
 
 			/**
 			 * Plugin product page URL.
@@ -98,7 +98,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Plugin product page URL.
 			 */
-			public $product_url = 'http://wp-kb-articles.com';
+			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
 
 			/**
 			 * Post type w/ underscores.
@@ -195,17 +195,6 @@ namespace wp_kb_articles
 			 *    of any/all plugin options and/or advanced settings.
 			 */
 			public $cap; // Most important cap.
-
-			/**
-			 * Management capability requirement.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @var string Capability required to manage.
-			 *    i.e. to use/manage the plugin from the back-end,
-			 *    but NOT to allow for any config. changes.
-			 */
-			public $manage_cap;
 
 			/**
 			 * Auto-recompile capability requirement.
@@ -342,7 +331,6 @@ namespace wp_kb_articles
 				 * Setup class properties related to authentication/capabilities.
 				 */
 				$this->cap                = apply_filters(__METHOD__.'_cap', 'activate_plugins');
-				$this->manage_cap         = apply_filters(__METHOD__.'_manage_cap', 'manage_options');
 				$this->auto_recompile_cap = apply_filters(__METHOD__.'_auto_recompile_cap', 'activate_plugins');
 				$this->upgrade_cap        = apply_filters(__METHOD__.'_upgrade_cap', 'update_plugins');
 				$this->uninstall_cap      = apply_filters(__METHOD__.'_uninstall_cap', 'delete_plugins');
@@ -359,10 +347,6 @@ namespace wp_kb_articles
 					/* Related to data safeguards. */
 
 					'uninstall_safeguards_enable'         => '1', // `0|1`; safeguards on?
-
-					/* Related to user authentication. */
-
-					'manage_cap'                          => $this->manage_cap, // Capability.
 
 					/* Related to GitHub integration. */
 
@@ -401,9 +385,6 @@ namespace wp_kb_articles
 				$this->options = array_intersect_key($this->options, $this->default_options); // Valid keys only.
 				$this->options = apply_filters(__METHOD__.'__options', $this->options); // Allow filters.
 				$this->options = array_map('strval', $this->options); // Force string values.
-
-				if($this->options['manage_cap']) // This can be altered by plugin config. options.
-					$this->manage_cap = apply_filters(__METHOD__.'_manage_cap', $this->options['manage_cap']);
 
 				if(WP_KB_ARTICLE_ROLES_ALL_CAPS) // Specific Roles?
 					$this->roles_recieving_all_caps = // Convert these to an array.
@@ -680,9 +661,8 @@ namespace wp_kb_articles
 			 */
 			public function add_menu_pages()
 			{
-				if(!current_user_can($this->manage_cap))
-					if(!current_user_can($this->cap))
-						return; // Do not add meta boxes.
+				if(!current_user_can($this->cap))
+					return; // Do not add.
 
 				// Menu page icon uses an SVG graphic.
 				$icon = $this->utils_fs->inline_icon_svg();
@@ -697,31 +677,22 @@ namespace wp_kb_articles
 
 				/* ----------------------------------------- */
 
-				$_menu_title                          = $this->name;
-				$_page_title                          = $this->name.'&trade;';
-				$_menu_position                       = apply_filters(__METHOD__.'_position', '24.00001');
-				$this->menu_page_hooks[__NAMESPACE__] = add_menu_page($_page_title, $_menu_title, $this->cap, __NAMESPACE__, array($this, 'menu_page_options'), 'data:image/svg+xml;base64,'.base64_encode($icon), $_menu_position);
+				$_menu_title                          = __('Config. Options', $this->text_domain);
+				$_page_title                          = $this->name.'&trade; &#10609; '.__('Config. Options', $this->text_domain);
+				$this->menu_page_hooks[__NAMESPACE__] = add_submenu_page('edit.php?post_type='.$this->post_type, $_page_title, $_menu_title, $this->cap, __NAMESPACE__, array($this, 'menu_page_options'));
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__], array($this, 'menu_page_options_screen'));
-
-				unset($_menu_title, $_page_title, $_menu_position); // Housekeeping.
-
-				/* ----------------------------------------- */
-
-				$_menu_title = __('Config. Options', $this->text_domain);
-				$_page_title = $this->name.'&trade; &#10609; '.__('Config. Options', $this->text_domain);
-				add_submenu_page(__NAMESPACE__, $_page_title, $_menu_title, $this->cap, __NAMESPACE__, array($this, 'menu_page_options'));
 
 				$_menu_title                                           = // Visible on-demand only.
 					'<small><em>'.$child_branch_indent.__('Import/Export', $this->text_domain).'</em></small>';
 				$_page_title                                           = $this->name.'&trade; &#10609; '.__('Import/Export', $this->text_domain);
-				$_menu_parent                                          = $current_menu_page === __NAMESPACE__.'_import_export' ? __NAMESPACE__ : NULL;
+				$_menu_parent                                          = $current_menu_page === __NAMESPACE__.'_import_export' ? 'edit.php?post_type='.$this->post_type : NULL;
 				$this->menu_page_hooks[__NAMESPACE__.'_import_export'] = add_submenu_page($_menu_parent, $_page_title, $_menu_title, $this->cap, __NAMESPACE__.'_import_export', array($this, 'menu_page_import_export'));
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_import_export'], array($this, 'menu_page_import_export_screen'));
 
 				$_menu_title                                            = // Visible on-demand only.
 					'<small><em>'.$child_branch_indent.__('Site Templates', $this->text_domain).'</em></small>';
 				$_page_title                                            = $this->name.'&trade; &#10609; '.__('Site Templates', $this->text_domain);
-				$_menu_parent                                           = $current_menu_page === __NAMESPACE__.'_site_templates' ? __NAMESPACE__ : NULL;
+				$_menu_parent                                           = $current_menu_page === __NAMESPACE__.'_site_templates' ? 'edit.php?post_type='.$this->post_type : NULL;
 				$this->menu_page_hooks[__NAMESPACE__.'_site_templates'] = add_submenu_page($_menu_parent, $_page_title, $_menu_title, $this->cap, __NAMESPACE__.'_site_templates', array($this, 'menu_page_site_templates'));
 				add_action('load-'.$this->menu_page_hooks[__NAMESPACE__.'_site_templates'], array($this, 'menu_page_site_templates_screen'));
 
@@ -992,8 +963,7 @@ namespace wp_kb_articles
 
 				if(!$notices) return; // Nothing more to do in this case.
 
-				$user_can_view_notices // All notices require one of the following caps.
-					= current_user_can($this->manage_cap) || current_user_can($this->cap);
+				$user_can_view_notices = current_user_can($this->cap);
 
 				$original_notices = $notices; // Copy.
 
@@ -1133,9 +1103,14 @@ namespace wp_kb_articles
 			 */
 			public function register_post_type()
 			{
+				// Menu page icon uses an SVG graphic.
+				$icon = $this->utils_fs->inline_icon_svg();
+
 				$post_type_args           = array
 				(
-					'public'       => TRUE, 'has_archive' => $this->post_type_slug.'s',
+					'public'       => TRUE,
+					'has_archive'  => $this->post_type_slug.'s',
+					'menu_icon'    => 'data:image/svg+xml;base64,'.base64_encode($icon),
 					'map_meta_cap' => TRUE, 'capability_type' => array($this->post_type, $this->post_type.'s'),
 					'rewrite'      => array('slug' => $this->post_type_slug, 'with_front' => FALSE), // Like a Post (but no Post Formats).
 					'supports'     => array('title', 'editor', 'author', 'excerpt', 'revisions', 'thumbnail', 'custom-fields', 'comments', 'trackbacks')
