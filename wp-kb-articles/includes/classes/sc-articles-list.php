@@ -25,7 +25,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var array Shortcode attributes.
+			 * @var \stdClass Shortcode attributes.
 			 */
 			protected $attr;
 
@@ -50,17 +50,24 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$default_attr  = array(
-					'' => ''
+				$default_attr = array(
+					'max_limit' => '25',
 				);
-				$attr          = array_merge($default_attr, $attr);
-				$attr          = array_intersect_key($attr, $default_attr);
-				$this->attr    = $attr; // Set properties.
+				$attr         = array_merge($default_attr, $attr);
+				$attr         = array_intersect_key($attr, $default_attr);
+
+				$this->attr    = (object)$attr;
 				$this->content = (string)$content;
+
+				foreach($this->attr as $_prop => &$_value)
+					if(in_array($_prop, array('max_limit'), TRUE))
+						$_value = (integer)trim($_value);
+					else $_value = trim((string)$_value);
+				unset($_prop, $_value); // Housekeeping.
 			}
 
 			/**
-			 * Class constructor.
+			 * Shortcode parser.
 			 *
 			 * @since 141111 First documented version.
 			 *
@@ -68,7 +75,10 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function parse()
 			{
-				return do_shortcode('');
+				$template_vars = get_defined_vars();
+				$template      = new template('site/articles/list.php');
+
+				return $template->parse($template_vars);
 			}
 		}
 	}
