@@ -145,7 +145,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @throws \exception If the `sha` or `path` args are empty.
+			 * @throws \exception If the `path` or `sha` args are empty.
 			 */
 			protected function normalize_props()
 			{

@@ -9,7 +9,7 @@
 /*
 Version: 141206
 Text Domain: wp-kb-articles
-Plugin Name: Comment Mail
+Plugin Name: WP KB Articles
 
 Author: WebSharks, Inc.
 Author URI: http://www.websharks-inc.com

@@ -37,24 +37,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$this->maybe_do_webhook_actions();
 				$this->maybe_do_menu_page_actions();
-			}
-
-			/**
-			 * Webhook actions.
-			 *
-			 * @since 141111 First documented version.
-			 */
-			protected function maybe_do_webhook_actions()
-			{
-				if(is_admin())
-					return; // Not applicable.
-
-				if(empty($_REQUEST[__NAMESPACE__]))
-					return; // Nothing to do.
-
-				new webhook_actions();
 			}
 
 			/**

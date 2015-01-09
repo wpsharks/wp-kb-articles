@@ -252,26 +252,24 @@ namespace wp_kb_articles // Root namespace.
 						throw new \exception(__('Article retrieval failure.', $this->plugin->text_domain));
 
 					$github_mirror = new github_mirror(
-						array_merge(array(
-							            'path' => $path,
-							            'sha'  => $file['sha'],
-							            'body' => $article['body'],
-						            ), $article['headers'])
-					);
+						array_merge($article['headers'], array(
+							'path' => $path,
+							'sha'  => $file['sha'],
+							'body' => $article['body'],
+						)));
 					$this->processed_file_counter++; // Bump the counter.
 				}
-				else if($file['sha'] !== $this->plugin->utils_github->get_sha($post_id))
+				else if($this->plugin->utils_github->get_sha($post_id) !== $file['sha'])
 				{
 					if(!($article = $this->github_api->retrieve_article($file['sha'])))
 						throw new \exception(__('Article retrieval failure.', $this->plugin->text_domain));
 
 					$github_mirror = new github_mirror(
-						array_merge(array(
-							            'path' => $path,
-							            'sha'  => $file['sha'],
-							            'body' => $article['body'],
-						            ), $article['headers'])
-					);
+						array_merge($article['headers'], array(
+							'path' => $path,
+							'sha'  => $file['sha'],
+							'body' => $article['body'],
+						)));
 					$this->processed_file_counter++; // Bump the counter.
 				}
 			}
