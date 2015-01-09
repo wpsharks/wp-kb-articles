@@ -197,7 +197,7 @@ namespace wp_kb_articles // Root namespace.
 				                '    <tbody>'.
 				                $form_fields->input_row(
 					                array(
-						                'label'         => __('Default Post Author:', $this->plugin->text_domain),
+						                'label'         => __('Default Post Author (WP Username):', $this->plugin->text_domain),
 						                'placeholder'   => __('e.g. johndoe', $this->plugin->text_domain),
 						                'name'          => 'github_mirror_author',
 						                'current_value' => $current_value_for('github_mirror_author'),
