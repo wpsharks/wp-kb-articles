@@ -257,8 +257,6 @@ namespace wp_kb_articles // Root namespace.
 			protected function insert()
 			{
 				$data = array(
-					'guid'           => $this->plugin->utils_github->path_guid($this->path),
-
 					'post_type'      => $this->plugin->post_type,
 					'post_name'      => $this->slug,
 					'post_title'     => $this->title,
@@ -280,6 +278,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
 
+				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 
@@ -316,6 +315,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->maybe_update_terms(); // Updates terms; i.e. categories/tags.
 
+				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
 			}
 

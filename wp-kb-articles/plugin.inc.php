@@ -433,7 +433,7 @@ namespace wp_kb_articles
 					$this->options['crons_setup'] = (string)time();
 					update_option(__NAMESPACE__.'_options', $this->options);
 				}
-				add_action('_cron_'.__NAMESPACE__.'_queue_processor', array($this, 'github_processor'), 10);
+				add_action('_cron_'.__NAMESPACE__.'_github_processor', array($this, 'github_processor'), 10);
 
 				/*
 				 * Fire setup completion hooks.
