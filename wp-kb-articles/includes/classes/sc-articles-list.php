@@ -129,6 +129,9 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function parse()
 			{
+				$attr  = $this->attr;
+				$query = $this->query();
+
 				$template_vars = get_defined_vars();
 				$template      = new template('site/articles/list.php');
 
