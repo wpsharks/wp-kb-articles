@@ -377,6 +377,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
+				$this->plugin->utils_post->update_popularity($this->post->ID, 0);
 			}
 
 			/**
@@ -414,6 +415,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->plugin->utils_github->update_path($this->post->ID, $this->path);
 				$this->plugin->utils_github->update_sha($this->post->ID, $this->sha);
+				$this->plugin->utils_post->update_popularity($this->post->ID, 0);
 			}
 
 			/**

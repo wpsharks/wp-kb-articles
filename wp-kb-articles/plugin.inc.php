@@ -43,6 +43,7 @@ namespace wp_kb_articles
 		 * @property-read utils_markup          $utils_markup
 		 * @property-read utils_math            $utils_math
 		 * @property-read utils_php             $utils_php
+		 * @property-read utils_post            $utils_post
 		 * @property-read utils_string          $utils_string
 		 * @property-read utils_url             $utils_url
 		 * @property-read utils_user            $utils_user
@@ -117,6 +118,15 @@ namespace wp_kb_articles
 			 * @var string Post type w/ dashes.
 			 */
 			public $post_type_slug = 'kb-article';
+
+			/**
+			 * Query var prefix.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Query var prefix.
+			 */
+			public $qv_prefix = 'kb_';
 
 			/**
 			 * Used by the plugin's uninstall handler.
@@ -421,6 +431,8 @@ namespace wp_kb_articles
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
 
 				add_action('init', array($this, 'register_post_type'), 10, 0);
+
+				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
 
 				add_shortcode('kb_articles_list', array($this, 'sc_articles_list'));
 
@@ -1055,50 +1067,48 @@ namespace wp_kb_articles
 			 * Front-Side Scripts
 			 */
 
+			/**
+			 * Enqueues front-side scripts.
+			 *
+			 * @since 141111 First documented version.
+			 */
 			public function enqueue_front_scripts()
 			{
 				new front_scripts();
 			}
 
 			/*
-			 * CRON-Related Methods
+			 * Article-Related Methods
 			 */
 
 			/**
-			 * Extends WP-Cron schedules.
+			 * Handle article-save actions.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @attaches-to `cron_schedules` filter.
+			 * @attaches-to `save_post_kb_article` hook.
 			 *
-			 * @param array $schedules An array of the current schedules.
-			 *
-			 * @return array Revised array of WP-Cron schedules.
+			 * @param integer $post_id Post ID.
 			 */
-			public function extend_cron_schedules(array $schedules)
+			public function save_article($post_id)
 			{
-				$schedules['every5m']  = array('interval' => 300, 'display' => __('Every 5 Minutes', $this->text_domain));
-				$schedules['every15m'] = array('interval' => 900, 'display' => __('Every 15 Minutes', $this->text_domain));
-
-				return apply_filters(__METHOD__, $schedules, get_defined_vars());
-			}
-
-			/**
-			 * GitHub processor.
-			 *
-			 * @since 141111 First documented version.
-			 *
-			 * @attaches-to `_cron_'.__NAMESPACE__.'_github_processor` action.
-			 */
-			public function github_processor()
-			{
-				new github_processor();
+				$this->utils_post->update_popularity($post_id, 0);
 			}
 
 			/*
-			 * Shortcode-related.
+			 * Shortcode-Related Methods
 			 */
 
+			/**
+			 * Parses shortcode for articles list.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param array  $attr Shortcode attributes.
+			 * @param string $content Shortcode content.
+			 *
+			 * @return string Parsed shortcode; i.e. HTML markup.
+			 */
 			public function sc_articles_list(array $attr, $content = '')
 			{
 				$sc_articles_list = new sc_articles_list($attr, $content);
@@ -1244,6 +1254,41 @@ namespace wp_kb_articles
 							break; // Break switch handler.
 					}
 				unset($_roles, $_role, $_cap); // Housekeeping.
+			}
+
+			/*
+			 * CRON-Related Methods
+			 */
+
+			/**
+			 * Extends WP-Cron schedules.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `cron_schedules` filter.
+			 *
+			 * @param array $schedules An array of the current schedules.
+			 *
+			 * @return array Revised array of WP-Cron schedules.
+			 */
+			public function extend_cron_schedules(array $schedules)
+			{
+				$schedules['every5m']  = array('interval' => 300, 'display' => __('Every 5 Minutes', $this->text_domain));
+				$schedules['every15m'] = array('interval' => 900, 'display' => __('Every 15 Minutes', $this->text_domain));
+
+				return apply_filters(__METHOD__, $schedules, get_defined_vars());
+			}
+
+			/**
+			 * GitHub processor.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `_cron_'.__NAMESPACE__.'_github_processor` action.
+			 */
+			public function github_processor()
+			{
+				new github_processor();
 			}
 		}
 
