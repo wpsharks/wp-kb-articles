@@ -145,9 +145,8 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function parse()
 			{
-				$attr  = $this->attr;
-				$query = $this->query();
-
+				$attr          = $this->attr;
+				$query         = $this->query();
 				$template_vars = get_defined_vars();
 				$template      = new template('site/articles/list.php');
 
@@ -212,7 +211,7 @@ namespace wp_kb_articles // Root namespace.
 				if($this->attr->q)
 					$args['s'] = $this->attr->q;
 
-				$query = new \WP_Query($args);
+				return new \WP_Query($args);
 			}
 		}
 	}

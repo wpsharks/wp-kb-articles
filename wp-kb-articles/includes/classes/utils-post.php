@@ -60,10 +60,7 @@ namespace wp_kb_articles // Root namespace.
 				if(!($post_id = (integer)$post_id))
 					return; // Not possible.
 
-				if(!($by = (integer)$by))
-					return; // Not possible.
-
-				$popularity = $this->get_popularity($post_id) + $by;
+				$popularity = $this->get_popularity($post_id) + (integer)$by;
 
 				update_post_meta($post_id, __NAMESPACE__.'_popularity', $popularity);
 			}

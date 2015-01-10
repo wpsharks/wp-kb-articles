@@ -16,24 +16,27 @@ namespace wp_kb_articles;
  */
 ?>
 <?php if($query->have_posts()): ?>
-	<?php while($query->have_posts): $query->the_post(); ?>
+	<?php while($query->have_posts()): $query->the_post(); ?>
 
 		<div class="<?php echo esc_attr(__NAMESPACE__.'-item'); ?>">
 
 			<div class="<?php echo esc_attr(__NAMESPACE__.'-title'); ?>">
-				<?php echo esc_html(get_the_title()); ?>
+				<a href="<?php echo get_permalink(); ?>"><?php echo esc_html(get_the_title()); ?></a>
 			</div>
 
 			<div class="<?php echo esc_attr(__NAMESPACE__.'-popularity'); ?>">
-				<?php echo $plugin->utils_post->get_popularity(get_the_ID()); ?>
+				<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
 			</div>
 
 			<div class="<?php echo esc_attr(__NAMESPACE__.'-author'); ?>">
-				<a href="<?php echo esc_attr(get_author_posts_url(get_the_author_meta('ID'))); ?>"><span><?php echo __('by:', $plugin->text_domain); ?></span> <?php echo esc_html(get_the_author()); ?></a>
+				<span><?php echo __('by:', $plugin->text_domain); ?></span>
+				<a href="#" data-author="<?php echo esc_attr(get_the_author_meta('ID')); ?>"><?php echo esc_html(get_the_author()); ?></a>
 			</div>
 
 			<div class="<?php echo esc_attr(__NAMESPACE__.'-tags'); ?>">
-				<?php echo implode(', ', (array)get_the_terms(get_the_ID(), $plugin->post_type.'_tag')); ?>
+				<?php foreach((array)get_the_terms(get_the_ID(), $plugin->post_type.'_tag') as $_tag): if($_tag): ?>
+					<a href="#" data-tag="<?php echo esc_attr($_tag->term_id); ?>"><?php echo esc_attr($_tag->name); ?></a>
+				<?php endif; endforeach; // End the iteration of each tag. ?>
 			</div>
 
 			<?php if(comments_open() || get_comments_number()): ?>

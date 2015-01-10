@@ -184,7 +184,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$default_args       = array(
+				$default_args = array(
 					'path'           => '', // e.g. `my/article.md`.
 					'sha'            => '', // SHA1 hash from GitHub.
 
@@ -204,6 +204,12 @@ namespace wp_kb_articles // Root namespace.
 					'comment_status' => '', // `open` or `closed`.
 					'ping_status'    => '', // `open` or `closed`.
 				);
+				if(isset($args['category']) && !isset($args['categories']))
+					$args['categories'] = $args['category'];
+
+				if(isset($args['tag']) && !isset($args['tags']))
+					$args['tags'] = $args['tag'];
+
 				$args               = array_merge($default_args, $args);
 				$args               = array_intersect_key($args, $default_args);
 				$this->args         = $args; // Set arguments property.
@@ -428,12 +434,12 @@ namespace wp_kb_articles // Root namespace.
 			protected function maybe_update_terms()
 			{
 				if($this->categories) // Updating categories in this case?
-					if(is_wp_error(wp_set_object_terms($this->post->ID, $this->categories, $this->plugin->post_type.'_category')))
-						throw new \exception(__('Category update failure.', $this->plugin->text_domain));
+					if(is_wp_error($_ = wp_set_object_terms($this->post->ID, $this->categories, $this->plugin->post_type.'_category')))
+						throw new \exception(__('Category update failure. '.$_->get_error_message(), $this->plugin->text_domain));
 
 				if($this->tags) // Updating tags in this case?
-					if(is_wp_error(wp_set_object_terms($this->post->ID, $this->tags, $this->plugin->post_type.'_tag')))
-						throw new \exception(__('Tag update failure.', $this->plugin->text_domain));
+					if(is_wp_error($_ = wp_set_object_terms($this->post->ID, $this->tags, $this->plugin->post_type.'_tag')))
+						throw new \exception(__('Tag update failure. '.$_->get_error_message(), $this->plugin->text_domain));
 			}
 
 			/**

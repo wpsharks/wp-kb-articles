@@ -416,6 +416,7 @@ namespace wp_kb_articles
 				/*
 				 * Setup all secondary plugin hooks.
 				 */
+				add_action('init', array($this, 'register_post_type'), -11, 0);
 				add_action('init', array($this, 'actions'), -10, 0);
 
 				add_action('admin_init', array($this, 'check_version'), 10, 0);
@@ -428,12 +429,8 @@ namespace wp_kb_articles
 				add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
 				add_filter('plugin_action_links_'.plugin_basename($this->file), array($this, 'add_settings_link'), 10, 1);
 
-				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
-
-				add_action('init', array($this, 'register_post_type'), 10, 0);
-
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
-
+				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
 				add_shortcode('kb_articles_list', array($this, 'sc_articles_list'));
 
 				/*
@@ -1104,14 +1101,14 @@ namespace wp_kb_articles
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @param array  $attr Shortcode attributes.
-			 * @param string $content Shortcode content.
+			 * @param array|string $attr Shortcode attributes.
+			 * @param string       $content Shortcode content.
 			 *
 			 * @return string Parsed shortcode; i.e. HTML markup.
 			 */
-			public function sc_articles_list(array $attr, $content = '')
+			public function sc_articles_list($attr, $content = '')
 			{
-				$sc_articles_list = new sc_articles_list($attr, $content);
+				$sc_articles_list = new sc_articles_list((array)$attr, $content);
 				return $sc_articles_list->parse();
 			}
 
