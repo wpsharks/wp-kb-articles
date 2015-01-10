@@ -56,6 +56,7 @@ namespace wp_kb_articles // Root namespace.
 
 					'orderby'  => 'popularity:DESC,comment_count:DESC,date:DESC',
 
+					'author'   => '', // Satisfy all; comma-delimited slugs/IDs.
 					'category' => '', // Satisfy all; comma-delimited slugs.
 					'tag'      => '', // Satisfy all; comma-delimited slugs.
 					'q'        => '', // Search query.
@@ -113,6 +114,21 @@ namespace wp_kb_articles // Root namespace.
 				if(!$this->attr->orderby) // Use default orderby values?
 					$this->attr->orderby = array('meta_value_num' => 'DESC', 'comment_count' => 'DESC', 'date' => 'DESC');
 
+				$_authors           = preg_split('/,+/', $this->attr->author, NULL, PREG_SPLIT_NO_EMPTY);
+				$_authors           = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_authors));
+				$this->attr->author = array(); // Reset; convert to an array of author IDs.
+				foreach($_authors as $_author) // Validate each author.
+				{
+					if(!is_numeric($_author)) // Convert username to ID.
+					{
+						$_author = \WP_User::get_data_by('login', $_author);
+						$_author = $_author ? $_author->ID : 0;
+					}
+					if(($_author = (integer)$_author))
+						$this->attr->author[] = $_author;
+				}
+				unset($_authors, $_author); // Housekeeping.
+
 				$this->attr->category = preg_split('/,+/', $this->attr->category, NULL, PREG_SPLIT_NO_EMPTY);
 				$this->attr->category = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($this->attr->category));
 
@@ -164,6 +180,10 @@ namespace wp_kb_articles // Root namespace.
 					),
 					'ignore_sticky_posts' => FALSE, // Allow stickies.
 				);
+				if($this->attr->author)
+				{
+					$args['author__in'] = $this->attr->author;
+				}
 				if($this->attr->category)
 				{
 					if(empty($args['tax_query']['relation']))
