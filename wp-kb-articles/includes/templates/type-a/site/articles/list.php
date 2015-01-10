@@ -2,13 +2,15 @@
 namespace wp_kb_articles;
 
 /**
- * @var plugin    $plugin Plugin class.
- * @var template  $template Template class.
+ * @var plugin      $plugin Plugin class.
+ * @var template    $template Template class.
  *
  * Other variables made available in this template file:
  *
- * @var \stdClass $attr Parsed/normalized/validated shortcode attributes.
- * @var \WP_Query $query WP Query class instance ready for iteration.
+ * @var \stdClass[] $categories An array of categories; for tabs.
+ * @var \stdClass[] $tags An array of all KB article tags.
+ * @var \stdClass   $attr Parsed/normalized/validated shortcode attributes.
+ * @var \WP_Query   $query WP Query class instance ready for iteration.
  *
  * -------------------------------------------------------------------
  * @note In addition to plugin-specific variables & functionality,
