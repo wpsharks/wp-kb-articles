@@ -431,7 +431,8 @@ namespace wp_kb_articles
 
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
-				add_shortcode('kb_articles_list', array($this, 'sc_articles_list'));
+				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
+				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 
 				/*
 				 * Setup CRON-related hooks.
@@ -1061,17 +1062,31 @@ namespace wp_kb_articles
 			}
 
 			/*
-			 * Front-Side Scripts
+			 * Front-Side Scripts/Styles
 			 */
 
 			/**
 			 * Enqueues front-side scripts.
 			 *
 			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `wp_print_scripts` hook.
 			 */
 			public function enqueue_front_scripts()
 			{
 				new front_scripts();
+			}
+
+			/**
+			 * Enqueues front-side styles.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `wp_print_styles` hook.
+			 */
+			public function enqueue_front_styles()
+			{
+				new front_styles();
 			}
 
 			/*
@@ -1106,10 +1121,10 @@ namespace wp_kb_articles
 			 *
 			 * @return string Parsed shortcode; i.e. HTML markup.
 			 */
-			public function sc_articles_list($attr, $content = '')
+			public function sc_list($attr, $content = '')
 			{
-				$sc_articles_list = new sc_articles_list((array)$attr, $content);
-				return $sc_articles_list->parse();
+				$sc_list = new sc_list((array)$attr, $content);
+				return $sc_list->parse(); // Parse shortcode.
 			}
 
 			/*

@@ -11,14 +11,14 @@ namespace wp_kb_articles // Root namespace.
 	if(!defined('WPINC')) // MUST have WordPress.
 		exit('Do NOT access this file directly: '.basename(__FILE__));
 
-	if(!class_exists('\\'.__NAMESPACE__.'\\sc_articles_list'))
+	if(!class_exists('\\'.__NAMESPACE__.'\\sc_list'))
 	{
 		/**
 		 * Shortcode for Articles List
 		 *
 		 * @since 150107 First documented version.
 		 */
-		class sc_articles_list extends abs_base
+		class sc_list extends abs_base
 		{
 			/**
 			 * Shortcode attributes.
