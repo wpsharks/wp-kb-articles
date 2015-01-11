@@ -189,13 +189,17 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function parse()
 			{
-				$attr           = $this->attr;
-				$tab_categories = $this->tab_categories();
-				$tags           = $this->tags();
-				$query          = $this->query();
-
-				$template_vars = get_defined_vars();
-				$template      = new template('site/articles/list.php');
+				$attr            = $this->attr;
+				$tab_categories  = $this->tab_categories();
+				$tags            = $this->tags();
+				$query           = $this->query();
+				$pagination_vars = (object)array(
+					'per_page'     => $this->attr->per_page,
+					'current_page' => $this->attr->page,
+					'total_pages'  => $query->max_num_pages,
+				);
+				$template_vars   = get_defined_vars();
+				$template        = new template('site/articles/list.php');
 
 				return $template->parse($template_vars);
 			}

@@ -11,6 +11,7 @@ namespace wp_kb_articles;
  * @var \stdClass[] $tags An array of all KB article tags.
  * @var \stdClass   $attr Parsed/normalized/validated shortcode attributes.
  * @var \WP_Query   $query WP Query class instance ready for iteration.
+ * @var \stdClass   $pagination_vars Object containing pagination vars.
  *
  * -------------------------------------------------------------------
  * @note In addition to plugin-specific variables & functionality,
@@ -77,6 +78,40 @@ namespace wp_kb_articles;
 			<?php endwhile; ?>
 		</div>
 		<?php wp_reset_postdata(); ?>
+	<?php endif; ?>
+
+	<?php if($pagination_vars->total_pages > 1): ?>
+		<div class="<?php echo esc_attr(__NAMESPACE__.'-pagination'); ?>">
+			<div class="<?php echo esc_attr(__NAMESPACE__.'-pagination-current-page'); ?>">
+				<?php echo sprintf(__('Page %1$s of %2$s', $plugin->text_domain), esc_html($pagination_vars->current_page), esc_html($pagination_vars->total_pages)); ?>
+			</div>
+			<div class="<?php echo esc_attr(__NAMESPACE__.'-pagination-pages'); ?>">
+				<ul>
+					<?php if($pagination_vars->current_page > 1): // Create a previous page link? ?>
+						<li><a href="#" data-page="<?php echo esc_attr($pagination_vars->current_page - 1); ?>">&laquo;</a></li>
+					<?php else: // Not possible; this is the first page. ?>
+						<li class="<?php echo esc_attr(__NAMESPACE__.'-pagination-page-disabled'); ?>"><a href="#">&laquo;</a></li>
+					<?php endif; ?>
+
+					<?php // Individual page links now.
+					$_max_page_links           = 5; // Max individual page links to show on each page.
+					$_page_links_start_at_page = // This is a mildly complex calculation that we can do w/ help from the plugin class.
+						$plugin->utils_db->pagination_links_start_page($pagination_vars->current_page, $pagination_vars->total_pages, $_max_page_links);
+
+					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $pagination_vars->total_pages; $_i++ && $_page++): ?>
+						<li<?php if($_page === $pagination_vars->current_page): ?> class="<?php echo esc_attr(__NAMESPACE__.'-pagination-page-current'); ?>"<?php endif; ?>>
+							<a href="#" data-page="<?php echo esc_attr($_page); ?>"><?php echo esc_html($_page); ?></a>
+						</li>
+					<?php endfor; ?>
+
+					<?php if($pagination_vars->current_page < $pagination_vars->total_pages): // Create a next page link? ?>
+						<li><a href="#" data-page="<?php echo esc_attr($pagination_vars->current_page + 1); ?>">&raquo;</a></li>
+					<?php else: // Not possible; this is the last page. ?>
+						<li class="<?php echo esc_attr(__NAMESPACE__.'-pagination-page-disabled'); ?>"><a href="#">&raquo;</a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+		</div>
 	<?php endif; ?>
 
 </div>
