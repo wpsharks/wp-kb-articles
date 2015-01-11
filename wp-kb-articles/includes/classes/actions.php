@@ -41,6 +41,22 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Front-side actions.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function maybe_do_front_side_actions()
+			{
+				if(is_admin())
+					return; // Not applicable.
+
+				if(empty($_REQUEST[__NAMESPACE__]))
+					return; // Nothing to do.
+
+				new front_side_actions();
+			}
+
+			/**
 			 * Menu page actions.
 			 *
 			 * @since 141111 First documented version.
