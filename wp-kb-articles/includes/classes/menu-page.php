@@ -462,8 +462,8 @@ namespace wp_kb_articles // Root namespace.
 				if($this->plugin->options['template_type'] === 's') // Simple snippet-based templates.
 				{
 					echo '         <h2 class="pmp-section-heading">'.
-					     '            '.__('Site Header/Footer Templates', $this->plugin->text_domain).
-					     '            <small>'.__('These are used in all portions of the front-end UI; i.e. global header/footer.', $this->plugin->text_domain).'</small>'.
+					     '            '.__('Templates for Articles List Shortcode', $this->plugin->text_domain).
+					     '            <small>'.__('These are used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
 					     '         </h2>';
 
 					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -472,25 +472,31 @@ namespace wp_kb_articles // Root namespace.
 					               '  <tbody>'.
 					               $form_fields->textarea_row(
 						               array(
-							               'label'         => __('Site Header Tag Template', $this->plugin->text_domain),
+							               'label'         => __('Single Article Listing', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'text/html',
-							               'name'          => 'template__type_s__site__snippet__header_tag',
-							               'current_value' => $current_value_for('template__type_s__site__snippet__header_tag'),
+							               'name'          => 'template__type_s__site__articles__snippet__list_article',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__list_article'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
-							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this template represents the meat of the front-end header design. If you would like to rebrand or enhance site templates, this is the file that we suggest you edit. This file contains the <code>&lt;header&gt;</code> tag, which is pulled together into a full, final, and complete HTML document. In other words, there is no reason to use <code>&lt;html&gt;&lt;body&gt;</code> tags here, they are produced elsewhere. Please note, while this template is focused on the <code>&lt;header&gt;</code> tag, you are not limited to <em>just</em> the <code>&lt;header&gt;</code>; i.e. you can add any HTML that you like.', $this->plugin->text_domain).'</p>',
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes a single row in the list; i.e. the details displayed for each article as the shortcode iterates over all of the results in the current list.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
 							               'cm_details'    => $shortcode_details(array(
-								                                                     '[home_url]'          => __('Site home page URL; i.e. back to main site.', $this->plugin->text_domain),
-								                                                     '[blog_name_clip]'    => __('A clip of the blog\'s name; as configured in WordPress.', $this->plugin->text_domain),
-								                                                     '[current_host_path]' => __('Current <code>host/path</code> with support for multisite network child blogs.', $this->plugin->text_domain),
-								                                                     '[icon_bubbles_url]'  => __('Icon URL; to the plugin\'s icon image.', $this->plugin->text_domain),
+								                                                     'comments_open'          => __('Are comments open on the current article?', $this->plugin->text_domain),
+								                                                     'comments_number'        => __('How many comments the current article has.', $this->plugin->text_domain),
+								                                                     '[permalink]'            => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
+								                                                     '[title]'                => __('Title of the current article.', $this->plugin->text_domain),
+								                                                     '[popularity]'           => __('Popularity score for the current article.', $this->plugin->text_domain),
+								                                                     '[author_posts_url]'     => __('URL leading to other posts by the author of the current article.', $this->plugin->text_domain),
+								                                                     '[author]'               => __('Author of the current article; i.e. author\'s display name.', $this->plugin->text_domain),
+								                                                     '[tags]'                 => __('A comma-delimited list of clickable tags the current article has.', $this->plugin->text_domain),
+								                                                     '[comments_number_text]' => __('How many comments the current article has; e.g. No Comments, 1 Comment, 4 Comments.', $this->plugin->text_domain),
+								                                                     '[date]'                 => __('The current article\'s publication date.', $this->plugin->text_domain),
 							                                                     )),
 						               )).
 					               '  </tbody>'.
 					               '</table>';
 
-					echo $this->panel(__('Site Header Tag', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>', 'note' => 'Recommended for Simple Branding Changes'));
+					echo $this->panel(__('Single Article Listing', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 				}
@@ -499,8 +505,8 @@ namespace wp_kb_articles // Root namespace.
 				else if($this->plugin->options['template_type'] === 'a') // Advanced PHP-based templates.
 				{
 					echo '         <h2 class="pmp-section-heading">'.
-					     '            '.__('Site Header/Footer Templates', $this->plugin->text_domain).
-					     '            <small>'.__('These are used in all portions of the front-end UI; i.e. global header/footer.', $this->plugin->text_domain).'</small>'.
+					     '            '.__('Templates for Articles List Shortcode', $this->plugin->text_domain).
+					     '            <small>'.__('These are used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
 					     '         </h2>';
 
 					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -509,19 +515,19 @@ namespace wp_kb_articles // Root namespace.
 					               '  <tbody>'.
 					               $form_fields->textarea_row(
 						               array(
-							               'label'         => __('Site Header Template', $this->plugin->text_domain),
+							               'label'         => __('Articles List Shortcode', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'application/x-httpd-php',
-							               'name'          => 'template__type_a__site__header',
-							               'current_value' => $current_value_for('template__type_a__site__header'),
+							               'name'          => 'template__type_a__site__articles__list',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
-							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes the opening <code>&lt;html&gt;&lt;body&gt;</code> tags, and it pulls together a few other components; i.e. the Header Styles, Header Scripts, and Header Tag templates. These other components can be configured separately. For this reason, it is normally not necessary to edit this file. Instead, we suggest editing the "Site Header Tag" template. The choice is yours though.', $this->plugin->text_domain).'</p>',
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output by the <code>[kb_articles_list /]</code> shortcode. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
 						               )).
 					               '  </tbody>'.
 					               '</table>';
 
-					echo $this->panel(__('Site Header', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+					echo $this->panel(__('Articles List Shortcode', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 				}

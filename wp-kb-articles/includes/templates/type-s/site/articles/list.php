@@ -57,7 +57,8 @@ namespace wp_kb_articles;
 						if(!$_tags) // There are no tags selected right now?
 							$_tags = '<strong>'.__('None', $plugin->text_domain).'</strong>'.
 							         ' '.__('(select some tags) and click `filter by tags`', $this->plugin->text_domain);
-						echo $_tags; // Currently selected tag names.
+						echo $_tags; // Currently selected tags.
+
 						unset($_term, $_tags); // Housekeeping. ?>
 					</div>
 					<ul class="-list">
@@ -80,46 +81,33 @@ namespace wp_kb_articles;
 		<?php if($query->have_posts()): ?>
 			<?php while($query->have_posts()): $query->the_post(); ?>
 				<div class="-article">
+					<?php $_tags = ''; // Initialize.
+					if(($_tag_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))):
+						foreach($_tag_terms as $_term) // Iterate the tags that it has.
+							$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
+							          '<a href="#" data-click-tag="'.esc_attr($_term->term_id).'">'.esc_attr($_term->name).'</a>';
+					endif; // End if article has tags.
+					unset($_tag_terms, $_term); // Housekeeping.
 
-					<h3 class="-title">
-						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
-					</h3>
+					echo $template->snippet(
+						'list-article.php', array(
+						'tags'                   => $_tags,
+						'comments_open'          => comments_open(),
+						'comments_number'        => get_comments_number(),
 
-					<div class="-meta">
-						<div class="-popularity">
-							<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
-						</div>
+						'[permalink]'            => esc_attr(get_permalink()),
+						'[title]'                => esc_html(get_the_title()),
 
-						<div class="-author">
-							<span><?php echo __('by:', $plugin->text_domain); ?></span>
-							<a href="<?php echo esc_attr(get_author_posts_url(get_the_author_meta('ID'))); ?>"
-								><?php echo esc_html(get_the_author()); ?></a>
-						</div>
+						'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
+						'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
+						'[author]'               => esc_html(get_the_author()),
 
-						<?php if(($_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))): ?>
-							<div class="-tags">
-								<span><?php echo __('tagged:', $plugin->text_domain); ?></span>
-								<?php $_tags = ''; // Initialize.
-								foreach($_terms as $_term) // Iterate the tags that it has.
-									$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
-									          '<a href="#" data-click-tag="'.esc_attr($_term->term_id).'">'.esc_attr($_term->name).'</a>';
-								echo $_tags; // Display the tags now; with possible commas.
-								unset($_tags, $_term); // Housekeeping. ?>
-							</div>
-						<?php endif; // End if article has tags.
-						unset($_terms); // Housekeeping. ?>
+						'[tags]'                 => $_tags, // Contains raw HTML markup.
 
-						<?php if(comments_open() || get_comments_number()): ?>
-							<div class="-comments">
-								<?php echo esc_html(get_comments_number_text()); ?>
-							</div>
-						<?php endif; ?>
-
-						<div class="-date">
-							<?php echo esc_html(get_the_date()); ?>
-						</div>
-					</div>
-
+						'[comments_number_text]' => esc_html(get_comments_number_text()),
+						'[date]'                 => esc_html(get_the_date()),
+					));
+					unset($_tags); // Housekeeping. ?>
 				</div>
 			<?php endwhile; ?>
 			<?php wp_reset_postdata(); ?>
