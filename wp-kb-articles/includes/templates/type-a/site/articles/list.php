@@ -10,6 +10,7 @@ namespace wp_kb_articles;
  * @var \stdClass[] $tab_categories An array of categories; for tabs.
  * @var \stdClass[] $tags An array of all KB article tags.
  * @var \stdClass   $attr Parsed/normalized/validated shortcode attributes.
+ * @var array       $attr_ Unparsed/raw shortcode attributes.
  * @var \WP_Query   $query WP Query class instance ready for iteration.
  * @var \stdClass   $pagination_vars Object containing pagination vars.
  *
@@ -113,5 +114,7 @@ namespace wp_kb_articles;
 			</div>
 		</div>
 	<?php endif; ?>
+
+	<div class="<?php echo esc_attr(__NAMESPACE__.'-attr'); ?>" data-attr="<?php echo esc_attr($plugin->utils_enc->encrypt(serialize($attr_))); ?>"></div>
 
 </div>

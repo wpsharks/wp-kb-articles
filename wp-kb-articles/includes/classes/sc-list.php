@@ -21,6 +21,15 @@ namespace wp_kb_articles // Root namespace.
 		class sc_list extends abs_base
 		{
 			/**
+			 * Raw shortcode attributes.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Raw shortcode attributes.
+			 */
+			protected $attr_;
+
+			/**
 			 * Shortcode attributes.
 			 *
 			 * @since 141111 First documented version.
@@ -50,6 +59,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
+				$this->attr_  = $attr;
 				$default_attr = array(
 					'page'           => '1', // Page number.
 					'per_page'       => '25', // Cannot exceed max limit.
@@ -190,6 +200,7 @@ namespace wp_kb_articles // Root namespace.
 			public function parse()
 			{
 				$attr            = $this->attr;
+				$attr_           = $this->attr_;
 				$tab_categories  = $this->tab_categories();
 				$tags            = $this->tags();
 				$query           = $this->query();
