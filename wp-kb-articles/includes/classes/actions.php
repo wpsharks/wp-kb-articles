@@ -37,6 +37,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
+				$this->maybe_do_front_side_actions();
 				$this->maybe_do_menu_page_actions();
 			}
 

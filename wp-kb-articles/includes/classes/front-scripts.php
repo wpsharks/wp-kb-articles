@@ -50,9 +50,13 @@ namespace wp_kb_articles // Root namespace.
 
 				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_vars', array(
 					'pluginUrl'    => rtrim($this->plugin->utils_url->to('/'), '/'),
-					'ajaxEndpoint' => rtrim(home_url('/'), '/'),
+					'ajaxEndpoint' => home_url('/'),
 				));
-				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_i18n', array());
+				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_i18n', array(
+					'tagsSelected'     => __('Tags Selected', $this->plugin->text_domain),
+					'selectedTagsNone' => __('None', $this->plugin->text_domain),
+					'selectSomeTags'   => __('(select some tags) and click `filter by tags`', $this->plugin->text_domain),
+				));
 			}
 		}
 	}

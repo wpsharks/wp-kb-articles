@@ -59,7 +59,8 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$this->attr_  = $attr;
+				$this->attr_ = $attr; // Originals.
+
 				$default_attr = array(
 					'page'           => '1', // Page number.
 					'per_page'       => '25', // Cannot exceed max limit.
@@ -72,14 +73,26 @@ namespace wp_kb_articles // Root namespace.
 					'tag'            => '', // Satisfy all; comma-delimited slugs/IDs.
 					'q'              => '', // Search query.
 				);
-				$attr         = array_merge($default_attr, $attr);
-				$attr         = array_intersect_key($attr, $default_attr);
+				if(isset($attr['orderbys']) && !isset($attr['orderby']))
+					$attr['orderby'] = $attr['orderbys'];
+
+				if(isset($attr['authors']) && !isset($attr['author']))
+					$attr['author'] = $attr['authors'];
+
+				if(isset($attr['categories']) && !isset($attr['category']))
+					$attr['category'] = $attr['categories'];
+
+				if(isset($attr['tags']) && !isset($attr['tag']))
+					$attr['tag'] = $attr['tags'];
+
+				$attr = array_merge($default_attr, $attr);
+				$attr = array_intersect_key($attr, $default_attr);
 
 				$this->attr    = (object)$attr;
 				$this->content = (string)$content;
 
 				foreach($this->attr as $_prop => &$_value)
-					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, array('page', 'orderby', 'category', 'tag'), TRUE))
+					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, array('page', 'orderby', 'author', 'category', 'tag', 'q'), TRUE))
 						$_value = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_prop]));
 				unset($_prop, $_value); // Housekeeping.
 
@@ -99,9 +112,10 @@ namespace wp_kb_articles // Root namespace.
 				if($this->attr->per_page > $upper_max_limit)
 					$this->attr->per_page = $upper_max_limit;
 
-				$_orderbys           = preg_split('/,+/', $this->attr->orderby, NULL, PREG_SPLIT_NO_EMPTY);
-				$_orderbys           = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_orderbys));
-				$this->attr->orderby = array(); // Reset; convert to an associative array.
+				$_orderbys            = preg_split('/,+/', $this->attr->orderby, NULL, PREG_SPLIT_NO_EMPTY);
+				$_orderbys            = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_orderbys));
+				$this->attr->orderbys = $_orderbys; // Preserve the array of orderby clauses for templates.
+				$this->attr->orderby  = array(); // Reset; convert to an associative array.
 				foreach($_orderbys as $_orderby) // Validate each orderby.
 				{
 					if(strpos($_orderby, ':', 1) === FALSE)

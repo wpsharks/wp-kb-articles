@@ -45,7 +45,8 @@ namespace wp_kb_articles // Root namespace.
 				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list') === FALSE)
 					return; // Current singular post/page does not contain the shortcode.
 
-				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/list.min.css'), array(), $this->plugin->version, 'all');
+				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
+				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/list.min.css'), array('font-awesome'), $this->plugin->version, 'all');
 			}
 		}
 	}
