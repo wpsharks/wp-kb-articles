@@ -211,14 +211,13 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function tab_categories()
 			{
-				if(!$this->attr->tab_categories)
-					return array();
-
 				$args = array(
 					'orderby'    => 'none',
 					'hide_empty' => FALSE,
 					'include'    => $this->attr->tab_categories,
 				);
+				if(!$args['include']) return array();
+
 				if(is_wp_error($_ = $categories = get_terms($this->plugin->post_type.'_category', $args)))
 					throw new \exception(sprintf(__('Failure to retreive tab categories. %1$s', $this->plugin->text_domain), $_->get_error_message()));
 
@@ -236,13 +235,10 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function tags()
 			{
-				if(!$this->attr->tab_categories)
-					return array();
-
 				$args = array(
 					'orderby'    => 'name',
 					'order'      => 'ASC',
-					'hide_empty' => TRUE,
+					'hide_empty' => FALSE,
 				);
 				if(is_wp_error($_ = $tags = get_terms($this->plugin->post_type.'_tag', $args)))
 					throw new \exception(sprintf(__('Failure to retreive tags. %1$s', $this->plugin->text_domain), $_->get_error_message()));

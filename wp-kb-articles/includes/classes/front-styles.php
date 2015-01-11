@@ -45,7 +45,7 @@ namespace wp_kb_articles // Root namespace.
 				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list') === FALSE)
 					return; // Current singular post/page does not contain the shortcode.
 
-				wp_enqueue_style(__NAMESPACE__.'_list', $this->utils_url->to('/client-s/css/list.min.css'), array(), $this->version, 'all');
+				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/list.min.css'), array(), $this->plugin->version, 'all');
 			}
 		}
 	}
