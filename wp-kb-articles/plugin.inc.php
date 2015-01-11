@@ -440,6 +440,7 @@ namespace wp_kb_articles
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
+				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
 				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 
 				/*
@@ -1113,6 +1114,27 @@ namespace wp_kb_articles
 			public function save_article($post_id)
 			{
 				$this->utils_post->update_popularity($post_id, 0);
+			}
+
+			/**
+			 * Handle article footer.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `the_content` filter.
+			 *
+			 * @param string $content The content.
+			 *
+			 * @return string The original `$content` w/ possible footer appendage.
+			 */
+			public function article_footer($content)
+			{
+				if(!$GLOBALS['post'] || $GLOBALS['post']->post_type !== $this->post_type)
+					return $content; // Not applicable.
+
+				$footer = new footer();
+
+				return $content.$footer->content();
 			}
 
 			/*

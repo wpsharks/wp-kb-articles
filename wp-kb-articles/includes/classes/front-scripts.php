@@ -30,6 +30,7 @@ namespace wp_kb_articles // Root namespace.
 				parent::__construct();
 
 				$this->maybe_enqueue_list_scripts();
+				$this->maybe_enqueue_footer_scripts();
 			}
 
 			/**
@@ -39,7 +40,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function maybe_enqueue_list_scripts()
 			{
-				if(!is_singular() || empty($GLOBALS['post']))
+				if(empty($GLOBALS['post']) || !is_singular())
 					return; // Not a post/page.
 
 				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list') === FALSE)
@@ -57,6 +58,29 @@ namespace wp_kb_articles // Root namespace.
 					'selectedTagsNone' => __('None', $this->plugin->text_domain),
 					'selectSomeTags'   => __('(select some tags) and click `filter by tags`', $this->plugin->text_domain),
 				));
+			}
+
+			/**
+			 * Enqueue front-side scripts for article footer.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function maybe_enqueue_footer_scripts()
+			{
+				if(empty($GLOBALS['post']) || !is_singular())
+					return; // Not a post/page.
+
+				if($GLOBALS['post']->post_type !== $this->plugin->post_type)
+					return; // It's not a KB article post type.
+
+				wp_enqueue_script('jquery'); // Need jQuery.
+				wp_enqueue_script(__NAMESPACE__.'_footer', $this->plugin->utils_url->to('/client-s/js/footer.min.js'), array('jquery'), $this->plugin->version, TRUE);
+
+				wp_localize_script(__NAMESPACE__.'_footer', __NAMESPACE__.'_footer_vars', array(
+					'pluginUrl'    => rtrim($this->plugin->utils_url->to('/'), '/'),
+					'ajaxEndpoint' => home_url('/'),
+				));
+				wp_localize_script(__NAMESPACE__.'_footer', __NAMESPACE__.'_footer_i18n', array());
 			}
 		}
 	}
