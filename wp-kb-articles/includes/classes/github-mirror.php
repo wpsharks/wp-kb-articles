@@ -435,11 +435,11 @@ namespace wp_kb_articles // Root namespace.
 			{
 				if($this->categories) // Updating categories in this case?
 					if(is_wp_error($_ = wp_set_object_terms($this->post->ID, $this->categories, $this->plugin->post_type.'_category')))
-						throw new \exception(__('Category update failure. '.$_->get_error_message(), $this->plugin->text_domain));
+						throw new \exception(sprintf(__('Category update failure. %1$s', $this->plugin->text_domain), $_->get_error_message()));
 
 				if($this->tags) // Updating tags in this case?
 					if(is_wp_error($_ = wp_set_object_terms($this->post->ID, $this->tags, $this->plugin->post_type.'_tag')))
-						throw new \exception(__('Tag update failure. '.$_->get_error_message(), $this->plugin->text_domain));
+						throw new \exception(sprintf(__('Tag update failure. %1$s', $this->plugin->text_domain), $_->get_error_message()));
 			}
 
 			/**

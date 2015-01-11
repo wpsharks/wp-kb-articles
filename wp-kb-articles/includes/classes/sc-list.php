@@ -51,15 +51,16 @@ namespace wp_kb_articles // Root namespace.
 				parent::__construct();
 
 				$default_attr = array(
-					'page'     => '1',
-					'per_page' => '25', // Cannot exceed max limit.
+					'page'           => '1', // Page number.
+					'per_page'       => '25', // Cannot exceed max limit.
 
-					'orderby'  => 'popularity:DESC,comment_count:DESC,date:DESC',
+					'orderby'        => 'popularity:DESC,comment_count:DESC,date:DESC',
 
-					'author'   => '', // Satisfy all; comma-delimited slugs/IDs.
-					'category' => '', // Satisfy all; comma-delimited slugs.
-					'tag'      => '', // Satisfy all; comma-delimited slugs.
-					'q'        => '', // Search query.
+					'author'         => '', // Satisfy all; comma-delimited slugs/IDs.
+					'category'       => '', // Satisfy all; comma-delimited slugs/IDs.
+					'tab_categories' => '', // For tabs; comma-delimited slugs/IDs.
+					'tag'            => '', // Satisfy all; comma-delimited slugs/IDs.
+					'q'              => '', // Search query.
 				);
 				$attr         = array_merge($default_attr, $attr);
 				$attr         = array_intersect_key($attr, $default_attr);
@@ -93,7 +94,7 @@ namespace wp_kb_articles // Root namespace.
 				$this->attr->orderby = array(); // Reset; convert to an associative array.
 				foreach($_orderbys as $_orderby) // Validate each orderby.
 				{
-					if(!$_orderby || strpos($_orderby, ':', 1) === FALSE)
+					if(strpos($_orderby, ':', 1) === FALSE)
 						continue; // Invalid syntax.
 
 					list($_orderby, $_order) = explode(':', $_orderby, 2);
@@ -114,26 +115,69 @@ namespace wp_kb_articles // Root namespace.
 				if(!$this->attr->orderby) // Use default orderby values?
 					$this->attr->orderby = array('meta_value_num' => 'DESC', 'comment_count' => 'DESC', 'date' => 'DESC');
 
-				$_authors           = preg_split('/,+/', $this->attr->author, NULL, PREG_SPLIT_NO_EMPTY);
-				$_authors           = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_authors));
-				$this->attr->author = array(); // Reset; convert to an array of author IDs.
-				foreach($_authors as $_author) // Validate each author.
+				$this->attr->author = preg_split('/,+/', $this->attr->author, NULL, PREG_SPLIT_NO_EMPTY);
+				$this->attr->author = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($this->attr->author));
+				foreach($this->attr->author as $_key => &$_author) // Validate each author.
 				{
-					if(!is_numeric($_author)) // Convert username to ID.
+					if(is_numeric($_author)) // Convert username to ID.
 					{
-						$_author = \WP_User::get_data_by('login', $_author);
-						$_author = $_author ? $_author->ID : 0;
+						if(!($_author = (integer)$_author))
+							unset($this->attr->author[$_key]);
+						continue; // All done here.
 					}
-					if(($_author = (integer)$_author))
-						$this->attr->author[] = $_author;
+					$_author = \WP_User::get_data_by('login', $_author);
+					if(!$_author || !($_author = $_author->ID))
+						unset($this->attr->author[$_key]);
 				}
-				unset($_authors, $_author); // Housekeeping.
+				unset($_key, $_author); // Housekeeping.
 
 				$this->attr->category = preg_split('/,+/', $this->attr->category, NULL, PREG_SPLIT_NO_EMPTY);
 				$this->attr->category = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($this->attr->category));
+				foreach($this->attr->category as $_key => &$_category) // Validate each category.
+				{
+					if(is_numeric($_category))
+					{
+						if(!($_category = (integer)$_category))
+							unset($this->attr->category[$_key]);
+						continue; // All done here.
+					}
+					$_term = get_term_by('slug', $_category, $this->plugin->post_type.'_category');
+					if(!$_term || !($_category = (integer)$_term->term_id))
+						unset($this->attr->category[$_key]);
+				}
+				unset($_key, $_category, $_term); // Housekeeping.
+
+				$this->attr->tab_categories = preg_split('/,+/', $this->attr->tab_categories, NULL, PREG_SPLIT_NO_EMPTY);
+				$this->attr->tab_categories = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($this->attr->tab_categories));
+				foreach($this->attr->tab_categories as $_key => &$_category) // Validate each category.
+				{
+					if(is_numeric($_category))
+					{
+						if(!($_category = (integer)$_category))
+							unset($this->attr->tab_categories[$_key]);
+						continue; // All done here.
+					}
+					$_term = get_term_by('slug', $_category, $this->plugin->post_type.'_category');
+					if(!$_term || !($_category = (integer)$_term->term_id))
+						unset($this->attr->tab_categories[$_key]);
+				}
+				unset($_key, $_category, $_term); // Housekeeping.
 
 				$this->attr->tag = preg_split('/,+/', $this->attr->tag, NULL, PREG_SPLIT_NO_EMPTY);
 				$this->attr->tag = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($this->attr->tag));
+				foreach($this->attr->tag as $_key => &$_tag) // Validate each tag.
+				{
+					if(is_numeric($_tag))
+					{
+						if(!($_tag = (integer)$_tag))
+							unset($this->attr->tag[$_key]);
+						continue; // All done here.
+					}
+					$_term = get_term_by('slug', $_tag, $this->plugin->post_type.'_tag');
+					if(!$_term || !($_tag = (integer)$_term->term_id))
+						unset($this->attr->tag[$_key]);
+				}
+				unset($_key, $_tag, $_term); // Housekeeping.
 			}
 
 			/**
@@ -145,12 +189,61 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function parse()
 			{
-				$attr          = $this->attr;
-				$query         = $this->query();
+				$attr           = $this->attr;
+				$tab_categories = $this->tab_categories();
+				$tags           = $this->tags();
+				$query          = $this->query();
+
 				$template_vars = get_defined_vars();
 				$template      = new template('site/articles/list.php');
 
 				return $template->parse($template_vars);
+			}
+
+			/**
+			 * Categories for tabs.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @return array An array of category terms.
+			 *
+			 * @throws \exception On failure to retrieve tab categories.
+			 */
+			protected function tab_categories()
+			{
+				$args = array(
+					'orderby'    => 'none',
+					'hide_empty' => FALSE,
+					'include'    => $this->attr->tab_categories,
+				);
+				if(!$args['include']) return array();
+
+				if(is_wp_error($_ = $categories = get_terms($this->plugin->post_type.'_category', $args)))
+					throw new \exception(sprintf(__('Failure to retreive tab categories. %1$s', $this->plugin->text_domain), $_->get_error_message()));
+
+				return $categories;
+			}
+
+			/**
+			 * All of the KB article tags.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @return array An array of tag terms.
+			 *
+			 * @throws \exception On failure to retrieve tags.
+			 */
+			protected function tags()
+			{
+				$args = array(
+					'orderby'    => 'name',
+					'order'      => 'ASC',
+					'hide_empty' => FALSE,
+				);
+				if(is_wp_error($_ = $tags = get_terms($this->plugin->post_type.'_tag', $args)))
+					throw new \exception(sprintf(__('Failure to retreive tags. %1$s', $this->plugin->text_domain), $_->get_error_message()));
+
+				return $tags;
 			}
 
 			/**
@@ -191,7 +284,7 @@ namespace wp_kb_articles // Root namespace.
 					$args['tax_query'][] = array(
 						'taxonomy'         => $this->plugin->post_type.'_category',
 						'terms'            => $this->attr->category,
-						'field'            => 'slug',
+						'field'            => 'id',
 						'include_children' => TRUE,
 						'operator'         => 'AND',
 					);
@@ -204,7 +297,7 @@ namespace wp_kb_articles // Root namespace.
 					$args['tax_query'][] = array(
 						'taxonomy' => $this->plugin->post_type.'_tag',
 						'terms'    => $this->attr->tag,
-						'field'    => 'slug',
+						'field'    => 'id',
 						'operator' => 'AND',
 					);
 				}

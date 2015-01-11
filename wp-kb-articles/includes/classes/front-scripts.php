@@ -46,7 +46,7 @@ namespace wp_kb_articles // Root namespace.
 					return; // Current singular post/page does not contain the shortcode.
 
 				wp_enqueue_script('jquery'); // Need jQuery.
-				wp_enqueue_script(__NAMESPACE__.'_list', $this->utils_url->to('/client-s/js/list.min.js'), array('jquery'), $this->version, TRUE);
+				wp_enqueue_script(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/js/list.min.js'), array('jquery'), $this->plugin->version, TRUE);
 			}
 		}
 	}
