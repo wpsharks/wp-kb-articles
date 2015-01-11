@@ -49,7 +49,7 @@ namespace wp_kb_articles // Root namespace.
 				wp_enqueue_script(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/js/list.min.js'), array('jquery'), $this->plugin->version, TRUE);
 
 				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_vars', array(
-					'pluginUrl'    => rtrim($this->utils_url->to('/'), '/'),
+					'pluginUrl'    => rtrim($this->plugin->utils_url->to('/'), '/'),
 					'ajaxEndpoint' => rtrim(home_url('/'), '/'),
 				));
 				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_i18n', array());
