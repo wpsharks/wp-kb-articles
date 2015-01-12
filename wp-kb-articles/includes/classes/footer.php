@@ -39,7 +39,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$post = $GLOBALS['post'];
 
-				if(!$post || $post->post_type !== $this->post_type)
+				if(!$post || $post->post_type !== $this->plugin->post_type)
 					return ''; // Not applicable.
 
 				if(!is_singular()) // Singulars articles only.

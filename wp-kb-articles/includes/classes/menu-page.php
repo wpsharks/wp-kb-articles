@@ -483,10 +483,14 @@ namespace wp_kb_articles // Root namespace.
 							               'cm_details'    => $shortcode_details(array(
 								                                                     'comments_open'          => __('Are comments open on the current article?', $this->plugin->text_domain),
 								                                                     'comments_number'        => __('How many comments the current article has.', $this->plugin->text_domain),
+								                                                     'show_avatars'           => __('Has the blog been configured to display avatars?', $this->plugin->text_domain),
+								                                                     '[namespace]'            => __('The plugin\'s namespace; used in class/id/name generation.', $this->plugin->text_domain),
+								                                                     '[post_id]'              => __('The numeric WP post ID for the current article.', $this->plugin->text_domain),
 								                                                     '[permalink]'            => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
 								                                                     '[title]'                => __('Title of the current article.', $this->plugin->text_domain),
 								                                                     '[popularity]'           => __('Popularity score for the current article.', $this->plugin->text_domain),
 								                                                     '[author_posts_url]'     => __('URL leading to other posts by the author of the current article.', $this->plugin->text_domain),
+								                                                     '[author_avatar]'        => __('An HTML &lt;img&gt; tag with an avatar for the current article\'s author.', $this->plugin->text_domain),
 								                                                     '[author]'               => __('Author of the current article; i.e. author\'s display name.', $this->plugin->text_domain),
 								                                                     '[tags]'                 => __('A comma-delimited list of clickable tags the current article has.', $this->plugin->text_domain),
 								                                                     '[comments_number_text]' => __('How many comments the current article has; e.g. No Comments, 1 Comment, 4 Comments.', $this->plugin->text_domain),
@@ -497,6 +501,51 @@ namespace wp_kb_articles // Root namespace.
 					               '</table>';
 
 					echo $this->panel(__('Single Article Listing', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
+					echo '         <h2 class="pmp-section-heading">'.
+					     '            '.__('Templates for Article Footer', $this->plugin->text_domain).
+					     '            <small>'.__('These are used at the bottom of each KB article.', $this->plugin->text_domain).'</small>'.
+					     '         </h2>';
+
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article Footer', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/html',
+							               'name'          => 'template__type_s__site__articles__snippet__footer',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__footer'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the bottom of KB articles.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+							               'cm_details'    => $shortcode_details(array(
+								                                                     'comments_open'          => __('Are comments open on the current article?', $this->plugin->text_domain),
+								                                                     'comments_number'        => __('How many comments the current article has.', $this->plugin->text_domain),
+								                                                     'show_avatars'           => __('Has the blog been configured to display avatars?', $this->plugin->text_domain),
+								                                                     '[namespace]'            => __('The plugin\'s namespace; used in class/id/name generation.', $this->plugin->text_domain),
+								                                                     '[post_id]'              => __('The numeric WP post ID for the current article.', $this->plugin->text_domain),
+								                                                     '[permalink]'            => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
+								                                                     '[title]'                => __('Title of the current article.', $this->plugin->text_domain),
+								                                                     '[popularity]'           => __('Popularity score for the current article.', $this->plugin->text_domain),
+								                                                     '[author_posts_url]'     => __('URL leading to other posts by the author of the current article.', $this->plugin->text_domain),
+								                                                     '[author_avatar]'        => __('An HTML &lt;img&gt; tag with an avatar for the current article\'s author.', $this->plugin->text_domain),
+								                                                     '[author]'               => __('Author of the current article; i.e. author\'s display name.', $this->plugin->text_domain),
+								                                                     '[tags]'                 => __('A comma-delimited list of clickable tags the current article has.', $this->plugin->text_domain),
+								                                                     '[comments_number_text]' => __('How many comments the current article has; e.g. No Comments, 1 Comment, 4 Comments.', $this->plugin->text_domain),
+								                                                     '[date]'                 => __('The current article\'s publication date.', $this->plugin->text_domain),
+							                                                     )),
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article Footer', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 				}
@@ -528,6 +577,35 @@ namespace wp_kb_articles // Root namespace.
 					               '</table>';
 
 					echo $this->panel(__('Articles List Shortcode', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
+					echo '         <h2 class="pmp-section-heading">'.
+					     '            '.__('Templates for Article Footer', $this->plugin->text_domain).
+					     '            <small>'.__('These are used at the bottom of each KB article.', $this->plugin->text_domain).'</small>'.
+					     '         </h2>';
+
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article Footer', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__footer',
+							               'current_value' => $current_value_for('template__type_a__site__articles__footer'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the bottom of KB articles. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article Footer', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 				}

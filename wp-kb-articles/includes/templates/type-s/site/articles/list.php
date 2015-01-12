@@ -82,24 +82,30 @@ namespace wp_kb_articles;
 			<?php while($query->have_posts()): $query->the_post(); ?>
 				<div class="-article">
 					<?php $_tags = ''; // Initialize.
-					if(($_tag_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))):
-						foreach($_tag_terms as $_term) // Iterate the tags that it has.
+					if(($_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))):
+						foreach($_terms as $_term) // Iterate the tags that it has.
 							$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
 							          '<a href="#" data-click-tag="'.esc_attr($_term->term_id).'">'.esc_attr($_term->name).'</a>';
 					endif; // End if article has tags.
-					unset($_tag_terms, $_term); // Housekeeping.
+					unset($_terms, $_term); // Housekeeping.
 
 					echo $template->snippet(
 						'list-article.php', array(
+
 						'tags'                   => $_tags,
 						'comments_open'          => comments_open(),
 						'comments_number'        => get_comments_number(),
+						'show_avatars'           => get_option('show_avatars'),
 
+						'[namespace]'            => esc_attr(__NAMESPACE__),
+
+						'[post_id]'              => esc_html(get_the_ID()),
 						'[permalink]'            => esc_attr(get_permalink()),
 						'[title]'                => esc_html(get_the_title()),
 
 						'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
 						'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
+						'[author_avatar]'        => get_avatar(get_the_author_meta('ID'), 32),
 						'[author]'               => esc_html(get_the_author()),
 
 						'[tags]'                 => $_tags, // Contains raw HTML markup.

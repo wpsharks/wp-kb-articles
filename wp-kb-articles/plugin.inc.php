@@ -84,22 +84,22 @@ namespace wp_kb_articles
 			public $short_name = 'WPKBA';
 
 			/**
-			 * Site name.
+			 * Transient prefix.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Site name.
+			 * @var string 8-character transient prefix.
 			 */
-			public $site_name = 'websharks-inc.com';
+			public $transient_prefix = 'wpkbart_';
 
 			/**
-			 * Plugin product page URL.
+			 * Query var prefix.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Plugin product page URL.
+			 * @var string Query var prefix.
 			 */
-			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
+			public $qv_prefix = 'kb_';
 
 			/**
 			 * Post type w/ underscores.
@@ -120,13 +120,22 @@ namespace wp_kb_articles
 			public $post_type_slug = 'kb-article';
 
 			/**
-			 * Query var prefix.
+			 * Site name.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Query var prefix.
+			 * @var string Site name.
 			 */
-			public $qv_prefix = 'kb_';
+			public $site_name = 'websharks-inc.com';
+
+			/**
+			 * Plugin product page URL.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Plugin product page URL.
+			 */
+			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
 
 			/**
 			 * Used by the plugin's uninstall handler.
@@ -393,10 +402,12 @@ namespace wp_kb_articles
 					# Advanced HTML, PHP-based templates for the site.
 
 					'template__type_a__site__articles__list'                  => '', // HTML/PHP code.
+					'template__type_a__site__articles__footer'                => '', // HTML/PHP code.
 
 					# Simple snippet-based templates for the site.
 
 					'template__type_s__site__articles__snippet__list_article' => '', // HTML code.
+					'template__type_s__site__articles__snippet__footer'       => '', // HTML code.
 
 				); // Default options are merged with those defined by the site owner.
 				$this->default_options = apply_filters(__METHOD__.'__default_options', $this->default_options); // Allow filters.
@@ -1220,6 +1231,9 @@ namespace wp_kb_articles
 				                                                   'delete_terms' => 'delete_others_'.$this->post_type.'s')
 				);
 				register_taxonomy($this->post_type.'_tag', array($this->post_type), $tag_taxonomy_args);
+
+				//add_rewrite_rule('('.$this->post_type_slug.'s)/(.+)$', 'index.php?pagename=$matches[1]&'.$this->qv_prefix.'=$matches[2]', 'top');
+				//add_rewrite_tag('%s2_video_playlist%', '(.+?)');
 			}
 
 			/**
