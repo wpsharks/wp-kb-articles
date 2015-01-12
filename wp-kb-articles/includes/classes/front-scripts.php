@@ -47,17 +47,13 @@ namespace wp_kb_articles // Root namespace.
 					return; // Current singular post/page does not contain the shortcode.
 
 				wp_enqueue_script('jquery'); // Need jQuery.
-				wp_enqueue_script(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/js/list.min.js'), array('jquery'), $this->plugin->version, TRUE);
 
-				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_vars', array(
-					'pluginUrl'    => rtrim($this->plugin->utils_url->to('/'), '/'),
-					'ajaxEndpoint' => home_url('/'),
-				));
-				wp_localize_script(__NAMESPACE__.'_list', __NAMESPACE__.'_list_i18n', array(
-					'tagsSelected'     => __('Tags Selected', $this->plugin->text_domain),
-					'selectedTagsNone' => __('None', $this->plugin->text_domain),
-					'selectSomeTags'   => __('(select some tags) and click `filter by tags`', $this->plugin->text_domain),
-				));
+				add_action('wp_footer', function ()
+				{
+					$template = new template('site/articles/list-scripts.php');
+					echo $template->parse(); // Inline `<script></script>`.
+
+				}, PHP_INT_MAX - 10); // Very low priority; after WP footer scripts!
 			}
 
 			/**
@@ -74,13 +70,13 @@ namespace wp_kb_articles // Root namespace.
 					return; // It's not a KB article post type.
 
 				wp_enqueue_script('jquery'); // Need jQuery.
-				wp_enqueue_script(__NAMESPACE__.'_footer', $this->plugin->utils_url->to('/client-s/js/footer.min.js'), array('jquery'), $this->plugin->version, TRUE);
 
-				wp_localize_script(__NAMESPACE__.'_footer', __NAMESPACE__.'_footer_vars', array(
-					'pluginUrl'    => rtrim($this->plugin->utils_url->to('/'), '/'),
-					'ajaxEndpoint' => home_url('/'),
-				));
-				wp_localize_script(__NAMESPACE__.'_footer', __NAMESPACE__.'_footer_i18n', array());
+				add_action('wp_footer', function ()
+				{
+					$template = new template('site/articles/footer-scripts.php');
+					echo $template->parse(); // Inline `<script></script>`.
+
+				}, PHP_INT_MAX - 10); // Very low priority; after WP footer scripts!
 			}
 		}
 	}
