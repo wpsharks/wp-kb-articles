@@ -29,6 +29,9 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
+				if(is_admin())
+					return; // Not applicable.
+
 				$this->maybe_enqueue_list_styles();
 				$this->maybe_enqueue_footer_styles();
 			}
@@ -47,7 +50,11 @@ namespace wp_kb_articles // Root namespace.
 					return; // Current singular post/page does not contain the shortcode.
 
 				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
-				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/list.min.css'), array('font-awesome'), $this->plugin->version, 'all');
+
+				echo '<style type="text/css">'."\n";
+				$template = new template('site/articles/list.css');
+				echo $template->parse()."\n";
+				echo '</style>';
 			}
 
 			/**
@@ -64,7 +71,11 @@ namespace wp_kb_articles // Root namespace.
 					return; // It's not a KB article post type.
 
 				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
-				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/footer.min.css'), array('font-awesome'), $this->plugin->version, 'all');
+
+				echo '<style type="text/css">'."\n";
+				$template = new template('site/articles/footer.css');
+				echo $template->parse()."\n";
+				echo '</style>';
 			}
 		}
 	}

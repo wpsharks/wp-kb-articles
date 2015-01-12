@@ -334,7 +334,7 @@
 				& > .-comments::before,
 				& > .-date::before
 				{
-					content : '•';
+					content : '\2022';
 
 					float   : left;
 					margin  : 0 .5em 0 0;

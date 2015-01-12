@@ -29,6 +29,9 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
+				if(is_admin())
+					return; // Not applicable.
+
 				$this->maybe_enqueue_list_scripts();
 				$this->maybe_enqueue_footer_scripts();
 			}
@@ -50,10 +53,10 @@ namespace wp_kb_articles // Root namespace.
 
 				add_action('wp_footer', function ()
 				{
-					$template = new template('site/articles/list-scripts.php');
+					$template = new template('site/articles/list.js.php');
 					echo $template->parse(); // Inline `<script></script>`.
 
-				}, PHP_INT_MAX - 10); // Very low priority; after WP footer scripts!
+				}, PHP_INT_MAX - 10); // After WP footer scripts!
 			}
 
 			/**
@@ -73,10 +76,10 @@ namespace wp_kb_articles // Root namespace.
 
 				add_action('wp_footer', function ()
 				{
-					$template = new template('site/articles/footer-scripts.php');
+					$template = new template('site/articles/footer.js.php');
 					echo $template->parse(); // Inline `<script></script>`.
 
-				}, PHP_INT_MAX - 10); // Very low priority; after WP footer scripts!
+				}, PHP_INT_MAX - 10); // After WP footer scripts!
 			}
 		}
 	}

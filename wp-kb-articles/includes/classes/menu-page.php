@@ -475,8 +475,8 @@ namespace wp_kb_articles // Root namespace.
 							               'label'         => __('Single Article Listing', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'text/html',
-							               'name'          => 'template__type_s__site__articles__snippet__list_article',
-							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__list_article'),
+							               'name'          => 'template__type_s__site__articles__snippet__list_article___php',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__list_article___php'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
 							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes a single row in the list; i.e. the details displayed for each article as the shortcode iterates over all of the results in the current list.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
@@ -520,8 +520,8 @@ namespace wp_kb_articles // Root namespace.
 							               'label'         => __('Article Footer', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'text/html',
-							               'name'          => 'template__type_s__site__articles__snippet__footer',
-							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__footer'),
+							               'name'          => 'template__type_s__site__articles__snippet__footer___php',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__footer___php'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
 							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the bottom of KB articles.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
@@ -567,8 +567,8 @@ namespace wp_kb_articles // Root namespace.
 							               'label'         => __('Articles List Shortcode', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'application/x-httpd-php',
-							               'name'          => 'template__type_a__site__articles__list',
-							               'current_value' => $current_value_for('template__type_a__site__articles__list'),
+							               'name'          => 'template__type_a__site__articles__list___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list___php'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
 							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output by the <code>[kb_articles_list /]</code> shortcode. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
@@ -577,6 +577,42 @@ namespace wp_kb_articles // Root namespace.
 					               '</table>';
 
 					echo $this->panel(__('Articles List Shortcode', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Articles List Styles', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/css',
+							               'name'          => 'template__type_a__site__articles__list___css',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list___css'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the CSS used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Articles List Styles', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Articles List Scripts', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__list___js___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list___js___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the JavaScript used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Articles List Scripts', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 
@@ -596,8 +632,8 @@ namespace wp_kb_articles // Root namespace.
 							               'label'         => __('Article Footer', $this->plugin->text_domain),
 							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
 							               'cm_mode'       => 'application/x-httpd-php',
-							               'name'          => 'template__type_a__site__articles__footer',
-							               'current_value' => $current_value_for('template__type_a__site__articles__footer'),
+							               'name'          => 'template__type_a__site__articles__footer___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__footer___php'),
 							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
 							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the bottom of KB articles. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
 							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
@@ -606,6 +642,42 @@ namespace wp_kb_articles // Root namespace.
 					               '</table>';
 
 					echo $this->panel(__('Article Footer', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article Footer Styles', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/css',
+							               'name'          => 'template__type_a__site__articles__footer___css',
+							               'current_value' => $current_value_for('template__type_a__site__articles__footer___css'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the CSS used by the the Article Footer template.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article Footer Styles', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article Footer Scripts', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__footer___js___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__footer___js___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the JavaScript used by the the Article Footer template.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article Footer Scripts', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
 
 					unset($_panel_body); // Housekeeping.
 				}
