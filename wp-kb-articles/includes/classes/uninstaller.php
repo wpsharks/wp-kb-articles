@@ -52,6 +52,8 @@ namespace wp_kb_articles // Root namespace.
 				$this->delete_options();
 				$this->delete_notices();
 				$this->delete_install_time();
+				$this->delete_option_keys();
+				$this->delete_transient_keys();
 				$this->delete_post_meta_keys();
 				$this->delete_user_meta_keys();
 				$this->deactivate_post_type_role_caps();
@@ -120,13 +122,52 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Delete option keys.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function delete_option_keys()
+			{
+				$like = // e.g. Delete all keys LIKE `%wp\_kb\_articles%`.
+					'%'.$this->plugin->utils_db->wp->esc_like(__NAMESPACE__).'%';
+
+				$sql = // Removes any other option keys for this plugin.
+					"DELETE FROM `".esc_sql($this->plugin->utils_db->wp->options)."`".
+					" WHERE `option_name` LIKE '".esc_sql($like)."'";
+
+				$this->plugin->utils_db->wp->query($sql);
+			}
+
+			/**
+			 * Delete transient keys.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function delete_transient_keys()
+			{
+				$like1 = // e.g. Delete all keys LIKE `%\_transient\_wpkbart\_%`.
+					'%'.$this->plugin->utils_db->wp->esc_like('_transient_'.$this->plugin->transient_prefix).'%';
+
+				$like2 = // e.g. Delete all keys LIKE `%\_transient\_timeout\_wpkbart\_%`.
+					'%'.$this->plugin->utils_db->wp->esc_like('_transient_timeout_'.$this->plugin->transient_prefix).'%';
+
+				// Note: the above LIKE queries need to match `_site_transient_*` also; and they do.
+
+				$sql = // This will remove our transients/timeouts.
+					"DELETE FROM `".esc_sql($this->plugin->utils_db->wp->options)."`".
+					" WHERE `option_name` LIKE '".esc_sql($like1)."' OR `option_name` LIKE '".esc_sql($like2)."'";
+
+				$this->plugin->utils_db->wp->query($sql);
+			}
+
+			/**
 			 * Delete post meta keys.
 			 *
 			 * @since 141111 First documented version.
 			 */
 			protected function delete_post_meta_keys()
 			{
-				$like = // e.g. Delete all keys LIKE `%comment\_mail%`.
+				$like = // e.g. Delete all keys LIKE `%wp\_kb\_articles%`.
 					'%'.$this->plugin->utils_db->wp->esc_like(__NAMESPACE__).'%';
 
 				$sql = // This will remove our StCR import history also.
@@ -148,8 +189,8 @@ namespace wp_kb_articles // Root namespace.
 					$ms_prefix = $this->plugin->utils_db->wp->prefix;
 
 					$like = $this->plugin->utils_db->wp->esc_like($ms_prefix).
-					        // e.g. Delete all keys LIKE `wp\_5\_%comment\_mail%`.
-					        // Or, on the main site it might be: `wp\_%comment\_mail%`.
+					        // e.g. Delete all keys LIKE `wp\_5\_%wp\_kb\_articles%`.
+					        // Or, on the main site it might be: `wp\_%wp\_kb\_articles%`.
 					        '%'.$this->plugin->utils_db->wp->esc_like(__NAMESPACE__).'%';
 
 					$sql = // This will delete all screen options too.
@@ -158,7 +199,7 @@ namespace wp_kb_articles // Root namespace.
 				}
 				else // No special considerations; there is only one blog.
 				{
-					$like = // e.g. Delete all keys LIKE `%comment\_mail%`.
+					$like = // e.g. Delete all keys LIKE `%wp\_kb\_articles%`.
 						'%'.$this->plugin->utils_db->wp->esc_like(__NAMESPACE__).'%';
 
 					$sql = // This will delete all screen options too.

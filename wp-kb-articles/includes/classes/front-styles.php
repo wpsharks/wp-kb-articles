@@ -29,7 +29,11 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
+				if(is_admin())
+					return; // Not applicable.
+
 				$this->maybe_enqueue_list_styles();
+				$this->maybe_enqueue_footer_styles();
 			}
 
 			/**
@@ -39,13 +43,39 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function maybe_enqueue_list_styles()
 			{
-				if(!is_singular() || empty($GLOBALS['post']))
+				if(empty($GLOBALS['post']) || !is_singular())
 					return; // Not a post/page.
 
 				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list') === FALSE)
 					return; // Current singular post/page does not contain the shortcode.
 
-				wp_enqueue_style(__NAMESPACE__.'_list', $this->plugin->utils_url->to('/client-s/css/list.min.css'), array(), $this->plugin->version, 'all');
+				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
+
+				echo '<style type="text/css">'."\n";
+				$template = new template('site/articles/list.css');
+				echo $template->parse()."\n";
+				echo '</style>';
+			}
+
+			/**
+			 * Enqueue front-side styles for article footer.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected function maybe_enqueue_footer_styles()
+			{
+				if(empty($GLOBALS['post']) || !is_singular())
+					return; // Not a post/page.
+
+				if($GLOBALS['post']->post_type !== $this->plugin->post_type)
+					return; // It's not a KB article post type.
+
+				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
+
+				echo '<style type="text/css">'."\n";
+				$template = new template('site/articles/footer.css');
+				echo $template->parse()."\n";
+				echo '</style>';
 			}
 		}
 	}

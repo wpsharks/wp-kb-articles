@@ -38,6 +38,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->valid_actions = array(
 					'sc_list_via_ajax',
+					'cast_popularity_vote',
 				);
 				$this->maybe_handle();
 			}
@@ -75,7 +76,25 @@ namespace wp_kb_articles // Root namespace.
 				$attr    = (array)maybe_unserialize($attr);
 				$sc_list = new sc_list($attr, '');
 
+				status_header(200); // Return response.
+				header('Content-Type: text/html; charset=UTF-8');
 				exit($sc_list->parse());
+			}
+
+			/**
+			 * Cast popularity vote via AJAX.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param mixed $request_args Input argument(s).
+			 */
+			protected function cast_popularity_vote($request_args)
+			{
+				$post_id = (integer)$request_args;
+
+				status_header(200); // Return response.
+				header('Content-Type: text/plain; charset=UTF-8');
+				exit((string)(integer)$this->plugin->utils_post->cast_popularity_vote($post_id));
 			}
 		}
 	}

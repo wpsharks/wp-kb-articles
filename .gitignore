@@ -8,6 +8,13 @@
 *~
 *.bak
 
+# Node
+node_modules/
+npm-debug.log
+
+# SASS
+.sass-cache/
+
 # IntelliJ
 .idea/
 *.iml

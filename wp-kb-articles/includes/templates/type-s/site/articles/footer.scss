@@ -1,0 +1,220 @@
+@mixin clearfix
+{
+	&::after
+	{
+		content : '';
+		display : table;
+		clear   : both;
+	}
+}
+.wp_kb_articles-footer
+{
+	@include clearfix;
+	position : relative;
+
+	& *,
+	& *:focus,
+	& *:hover
+	{
+		outline : 0;
+	}
+	& > .-meta
+	{
+		@include clearfix;
+
+		margin-top : 1em;
+		border-top : 1px solid #E5E5E5;
+
+		& > .-popularity-tags
+		{
+			@include clearfix;
+			margin : 1em 0 1em 0;
+
+			& > .-popularity
+			{
+				display : inline-block;
+				margin  : 0 1em 0 0;
+
+				&::before
+				{
+					content                : '\f004';
+					font-family            : FontAwesome;
+					-webkit-font-smoothing : antialiased;
+
+					float                  : left;
+					margin                 : 0 .25em 0 0;
+
+					color                  : #E0373B;
+				}
+			}
+			& > .-tags
+			{
+				display : inline-block;
+
+				&::before
+				{
+					content                : '\f02c';
+					font-family            : FontAwesome;
+					-webkit-font-smoothing : antialiased;
+
+					float                  : left;
+					margin                 : 0 .25em 0 0;
+				}
+			}
+		}
+		& > .-author-popularity
+		{
+			@include clearfix;
+			font-size : 90%;
+
+			& > .-author
+			{
+				@include clearfix;
+
+				width         : 49%;
+				float         : left;
+				display       : block;
+				box-sizing    : border-box;
+
+				padding       : 1em 2em 1em 2em;
+				border        : 1px solid #E5E5E5;
+				border-radius : .35em;
+
+				background    : #FFFFFF;
+				box-shadow    : 0 4px 4px -4px rgba(0, 0, 0, 0.5);
+				transition    : all 0.2s ease-in-out;
+
+				& > .-avatar
+				{
+					float  : left;
+					margin : 0 2em 0 0;
+
+					& > a > img
+					{
+						border        : 0 !important;
+						box-shadow    : none !important;
+						border-radius : 50% !important;
+
+						width         : 64px !important;
+						height        : 64px !important;
+					}
+				}
+				& > .-byline
+				{
+					& > .-by
+					{
+						display : block;
+						margin  : .8em 0 0 0;
+					}
+					& > a.-author,
+					& > a.-author:hover,
+					& > a.-author:focus
+					{
+						display : inline-block;
+					}
+					& > .-date
+					{
+						opacity    : 0.5;
+						font-size  : 90%;
+						font-style : italic;
+						display    : inline-block;
+						margin     : 0 0 0 1em;
+
+						&::before
+						{
+							content                : '\f133';
+							font-family            : FontAwesome;
+							-webkit-font-smoothing : antialiased;
+
+							float                  : left;
+							margin                 : 0 .5em 0 0;
+
+							font-style             : normal;
+						}
+					}
+				}
+			}
+			& > .-popularity
+			{
+				@include clearfix;
+
+				width           : 49.8%;
+				float           : right;
+				display         : block;
+				box-sizing      : border-box;
+
+				padding         : 1em 2em 1em 2em;
+				border          : 1px solid #E5E5E5;
+				border-radius   : .35em;
+
+				text-decoration : none;
+
+				color           : #000000;
+				background      : #FFFFFF;
+				box-shadow      : 0 4px 4px -4px rgba(0, 0, 0, 0.5);
+				transition      : all 0.2s ease-in-out;
+
+				&:hover,
+				&:focus
+				{
+					background   : #FEE8E3;
+					border-color : #F38176;
+				}
+				&::before
+				{
+					content                : '\f004';
+					font-family            : FontAwesome;
+					-webkit-font-smoothing : antialiased;
+
+					float                  : left;
+					margin                 : 0 .5em 0 0;
+
+					width                  : 64px;
+					height                 : 64px;
+
+					font-size              : 64px;
+					line-height            : 64px;
+
+					color                  : #E0373B;
+				}
+				& > .-vote,
+				& > .-thank-you
+				{
+					display : block;
+					margin  : .8em 0 0 0;
+
+					& > strong
+					{
+						display   : block;
+						font-size : 110%;
+					}
+				}
+				& > .-thank-you
+				{
+					display : none;
+				}
+				&.-active,
+				&.-active:hover,
+				&.-active:focus
+				{
+					color        : #FFFFFF;
+					background   : #E0373B;
+					border-color : #E0373B;
+
+					&::before
+					{
+						color : #FFFFFF;
+					}
+				}
+				&.-active > .-vote
+				{
+					display : none;
+				}
+				&.-active > .-thank-you
+				{
+					display : block;
+				}
+			}
+		}
+	}
+}

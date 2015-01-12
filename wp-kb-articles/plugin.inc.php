@@ -84,22 +84,22 @@ namespace wp_kb_articles
 			public $short_name = 'WPKBA';
 
 			/**
-			 * Site name.
+			 * Transient prefix.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Site name.
+			 * @var string 8-character transient prefix.
 			 */
-			public $site_name = 'websharks-inc.com';
+			public $transient_prefix = 'wpkbart_';
 
 			/**
-			 * Plugin product page URL.
+			 * Query var prefix.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Plugin product page URL.
+			 * @var string Query var prefix.
 			 */
-			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
+			public $qv_prefix = 'kb_';
 
 			/**
 			 * Post type w/ underscores.
@@ -120,13 +120,22 @@ namespace wp_kb_articles
 			public $post_type_slug = 'kb-article';
 
 			/**
-			 * Query var prefix.
+			 * Site name.
 			 *
 			 * @since 141111 First documented version.
 			 *
-			 * @var string Query var prefix.
+			 * @var string Site name.
 			 */
-			public $qv_prefix = 'kb_';
+			public $site_name = 'websharks-inc.com';
+
+			/**
+			 * Plugin product page URL.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Plugin product page URL.
+			 */
+			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
 
 			/**
 			 * Used by the plugin's uninstall handler.
@@ -351,44 +360,59 @@ namespace wp_kb_articles
 				$this->default_options = array(
 					/* Core/systematic option keys. */
 
-					'version'                             => $this->version,
-					'crons_setup'                         => '0', // `0` or timestamp.
+					'version'                                                       => $this->version,
+					'crons_setup'                                                   => '0', // `0` or timestamp.
 
 					/* Related to data safeguards. */
 
-					'uninstall_safeguards_enable'         => '1', // `0|1`; safeguards on?
+					'uninstall_safeguards_enable'                                   => '1', // `0|1`; safeguards on?
 
 					/* Related to GitHub integration. */
 
-					'github_processing_enable'            => '0', // `0|1`; enable?
+					'github_processing_enable'                                      => '0', // `0|1`; enable?
 
-					'github_mirror_owner'                 => '', // Repo owner.
-					'github_mirror_repo'                  => '', // Repo owner.
-					'github_mirror_branch'                => '', // Branch.
-					'github_mirror_username'              => '', // Username.
-					'github_mirror_password'              => '', // Password.
-					'github_mirror_api_key'               => '', // API key.
-					'github_mirror_author'                => '', // User login|ID.
+					'github_mirror_owner'                                           => '', // Repo owner.
+					'github_mirror_repo'                                            => '', // Repo owner.
+					'github_mirror_branch'                                          => '', // Branch.
+					'github_mirror_username'                                        => '', // Username.
+					'github_mirror_password'                                        => '', // Password.
+					'github_mirror_api_key'                                         => '', // API key.
+					'github_mirror_author'                                          => '', // User login|ID.
 
-					'github_markdown_parse'               => '1', // Parse Markdown?
+					'github_markdown_parse'                                         => '1', // Parse Markdown?
 
-					'github_processor_max_time'           => '30', // In seconds.
-					'github_processor_delay'              => '250', // In milliseconds.
-					'github_processor_max_limit'          => '100', // Total files.
-					'github_processor_realtime_max_limit' => '5', // Total files.
+					'github_processor_max_time'                                     => '30', // In seconds.
+					'github_processor_delay'                                        => '250', // In milliseconds.
+					'github_processor_max_limit'                                    => '100', // Total files.
+					'github_processor_realtime_max_limit'                           => '5', // Total files.
 
 					/* Related to IP tracking. */
 
-					'prioritize_remote_addr'              => '0', // `0|1`; enable?
-					'geo_location_tracking_enable'        => '0', // `0|1`; enable?
+					'prioritize_remote_addr'                                        => '0', // `0|1`; enable?
+					'geo_location_tracking_enable'                                  => '0', // `0|1`; enable?
 
 					/* Related to menu pages; i.e. logo display. */
 
-					'menu_pages_logo_icon_enable'         => '0', // `0|1`; display?
+					'menu_pages_logo_icon_enable'                                   => '0', // `0|1`; display?
 
 					/* Template-related config. options. */
 
-					'template_type'                       => 's', // `a|s`.
+					'template_type'                                                 => 's', // `a|s`.
+
+					# Advanced HTML, PHP-based templates for the site.
+
+					'template__type_a__site__articles__list___php'                  => '', // HTML/PHP code.
+					'template__type_a__site__articles__list___js___php'             => '', // HTML/PHP code.
+					'template__type_a__site__articles__list___css'                  => '', // CSS code.
+
+					'template__type_a__site__articles__footer___php'                => '', // HTML/PHP code.
+					'template__type_a__site__articles__footer___js___php'           => '', // HTML/PHP code.
+					'template__type_a__site__articles__footer___css'                => '', // CSS code.
+
+					# Simple snippet-based templates for the site.
+
+					'template__type_s__site__articles__snippet__list_article___php' => '', // HTML code.
+					'template__type_s__site__articles__snippet__footer___php'       => '', // HTML code.
 
 				); // Default options are merged with those defined by the site owner.
 				$this->default_options = apply_filters(__METHOD__.'__default_options', $this->default_options); // Allow filters.
@@ -432,6 +456,7 @@ namespace wp_kb_articles
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
+				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
 				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 
 				/*
@@ -1107,6 +1132,27 @@ namespace wp_kb_articles
 				$this->utils_post->update_popularity($post_id, 0);
 			}
 
+			/**
+			 * Handle article footer.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @attaches-to `the_content` filter.
+			 *
+			 * @param string $content The content.
+			 *
+			 * @return string The original `$content` w/ possible footer appendage.
+			 */
+			public function article_footer($content)
+			{
+				if(!$GLOBALS['post'] || $GLOBALS['post']->post_type !== $this->post_type)
+					return $content; // Not applicable.
+
+				$footer = new footer();
+
+				return $content.$footer->content();
+			}
+
 			/*
 			 * Shortcode-Related Methods
 			 */
@@ -1190,6 +1236,9 @@ namespace wp_kb_articles
 				                                                   'delete_terms' => 'delete_others_'.$this->post_type.'s')
 				);
 				register_taxonomy($this->post_type.'_tag', array($this->post_type), $tag_taxonomy_args);
+
+				//add_rewrite_rule('('.$this->post_type_slug.'s)/(.+)$', 'index.php?pagename=$matches[1]&'.$this->qv_prefix.'=$matches[2]', 'top');
+				//add_rewrite_tag('%s2_video_playlist%', '(.+?)');
 			}
 
 			/**
