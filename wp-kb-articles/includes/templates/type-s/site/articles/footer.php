@@ -37,6 +37,8 @@ echo $template->snippet(
 	'[title]'                => esc_html(get_the_title()),
 
 	'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
+
+	'[author_id]'            => esc_attr(get_the_author_meta('ID')),
 	'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
 	'[author_avatar]'        => get_avatar(get_the_author_meta('ID'), 64),
 	'[author]'               => esc_html(get_the_author()),

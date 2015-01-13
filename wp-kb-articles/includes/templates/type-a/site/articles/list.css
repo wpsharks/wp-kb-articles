@@ -150,6 +150,24 @@
 .wp_kb_articles-list > .-navigation > .-tags > .-overlay > .-button:hover, .wp_kb_articles-list > .-navigation > .-tags > .-overlay > .-button:focus {
   background: #00A9DB;
 }
+.wp_kb_articles-list > .-navigation > .-search {
+  float: right;
+  margin: 1em 1em 0 0;
+}
+.wp_kb_articles-list > .-navigation > .-search > form > .-q, .wp_kb_articles-list > .-navigation > .-search > form > .-q:hover, .wp_kb_articles-list > .-navigation > .-search > form > .-q:focus {
+  width: 10em;
+  border-radius: .35em;
+  padding: .1em .25em;
+}
+.wp_kb_articles-list > .-navigation > .-search > form > .-button, .wp_kb_articles-list > .-navigation > .-search > form > .-button:hover, .wp_kb_articles-list > .-navigation > .-search > form > .-button:focus {
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  border: none;
+  -webkit-appearance: none;
+}
 .wp_kb_articles-list > .-articles {
   border-top: 1px solid #DFDFDF;
   padding: 1em .5em 1em .5em;

@@ -27,7 +27,8 @@ namespace wp_kb_articles;
 				<ul class="-list">
 					<?php foreach($tab_categories as $_term): ?>
 						<li>
-							<a href="#" data-category="<?php echo esc_attr($_term->term_id); ?>"
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('category' => $_term->slug, 'page' => 1))); ?>"
+							   data-category="<?php echo esc_attr($_term->term_id); ?>"
 								<?php if(in_array((integer)$_term->term_id, $attr->category, TRUE)): ?> class="-active"<?php endif; ?>
 								><?php echo esc_html($_term->name); ?></a>
 						</li>
@@ -75,6 +76,16 @@ namespace wp_kb_articles;
 				</div>
 			</div>
 		<?php endif; ?>
+
+		<div class="-search">
+			<form novalidate>
+				<input type="search" class="-q" value="<?php echo esc_attr($attr->q); ?>"
+				       placeholder="<?php echo esc_attr(__('Search KB Articles...', $plugin->text_domain)); ?>" />
+				<button type="button" class="-button">
+					<i class="fa fa-search"></i>
+				</button>
+			</form>
+		</div>
 	</div>
 
 	<div class="-articles">
@@ -104,6 +115,8 @@ namespace wp_kb_articles;
 						'[title]'                => esc_html(get_the_title()),
 
 						'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
+
+						'[author_id]'            => esc_attr(get_the_author_meta('ID')),
 						'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
 						'[author_avatar]'        => get_avatar(get_the_author_meta('ID'), 32),
 						'[author]'               => esc_html(get_the_author()),
@@ -128,7 +141,8 @@ namespace wp_kb_articles;
 				<ul class="-list">
 					<?php if($pagination_vars->current_page > 1): // Create a previous page link? ?>
 						<li class="-prev -prev-next">
-							<a href="#" data-click-page="<?php echo esc_attr($pagination_vars->current_page - 1); ?>">&laquo; <?php echo __('prev', $plugin->text_domain); ?></a>
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $pagination_vars->current_page - 1))); ?>"
+							   data-click-page="<?php echo esc_attr($pagination_vars->current_page - 1); ?>">&laquo; <?php echo __('prev', $plugin->text_domain); ?></a>
 						</li>
 					<?php else: // Not possible; this is the first page. ?>
 						<li class="-prev -prev-next">
@@ -143,7 +157,8 @@ namespace wp_kb_articles;
 
 					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $pagination_vars->total_pages; $_i++ && $_page++): ?>
 						<li>
-							<a href="#" data-click-page="<?php echo esc_attr($_page); ?>"
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $_page))); ?>"
+							   data-click-page="<?php echo esc_attr($_page); ?>"
 								<?php if($_page === $pagination_vars->current_page): ?> class="-active"<?php endif; ?>
 								><?php echo esc_html($_page); ?></a>
 						</li>
@@ -152,7 +167,8 @@ namespace wp_kb_articles;
 
 					<?php if($pagination_vars->current_page < $pagination_vars->total_pages): // Create a next page link? ?>
 						<li class="-next -prev-next">
-							<a href="#" data-click-page="<?php echo esc_attr($pagination_vars->current_page + 1); ?>"><?php echo __('next', $plugin->text_domain); ?> &raquo;</a>
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $pagination_vars->current_page + 1))); ?>"
+							   data-click-page="<?php echo esc_attr($pagination_vars->current_page + 1); ?>"><?php echo __('next', $plugin->text_domain); ?> &raquo;</a>
 						</li>
 					<?php else: // Not possible; this is the last page. ?>
 						<li class="-next -prev-next">

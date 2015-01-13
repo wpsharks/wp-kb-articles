@@ -210,6 +210,25 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Current path info; e.g. `index.php/path/info/`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @return string Current path info; e.g. `index.php/path/info/`.
+			 */
+			public function current_path_info()
+			{
+				if(!is_null($path_info = &$this->static_key(__FUNCTION__)))
+					return $path_info; // Cached this already.
+
+				$path_info = isset($_SERVER['PATH_INFO']) ? (string)$_SERVER['PATH_INFO'] : '';
+				if(strpos($path_info, '?') !== FALSE) list($path_info) = explode('?', $path_info);
+				$path_info = $this->plugin->utils_string->trim($path_info, '', '/');
+
+				return ($path_info = str_replace('%', '%25', $path_info));
+			}
+
+			/**
 			 * Current URL; i.e. scheme.host.URI put together.
 			 *
 			 * @since 141111 First documented version.
@@ -657,6 +676,83 @@ namespace wp_kb_articles // Root namespace.
 					return TRUE; // Valid `_wpnonce` value.
 
 				return FALSE; // Unauthenticated; failure.
+			}
+
+			/**
+			 * Shortcode list w/ possible query vars.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string      $url A specific URL to work from?
+			 *    Defaults to the current URL. Pass `index` to force Page w/ shortcode.
+			 *    Note: using `index` when `sc_articles_list_index_post_id` is empty
+			 *    will result in failure; i.e. this will return an empty string.
+			 *
+			 * @param array       $qvs Associative array of query vars.
+			 *    These should not be prefixed in any way.
+			 *
+			 * @param boolean     $exclude_current_qvs Defaults to a `FALSE` value.
+			 *    Set this to `TRUE` to exclude current query var values.
+			 *
+			 * @param string|null $scheme Optional. Defaults to `front` value.
+			 *    See {@link set_scheme()} method for further details.
+			 *
+			 * @return string Link to the shortcode list w/ possible query vars.
+			 *    Note: using `index` when `sc_articles_list_index_post_id` is empty
+			 *    will result in failure; i.e. this will return an empty string.
+			 */
+			public function sc_list($url = '', array $qvs = array(), $exclude_current_qvs = FALSE, $scheme = 'front')
+			{
+				if(!($url = trim((string)$url)))
+					$url = $this->current();
+
+				else if($url === 'index' && (integer)$this->plugin->options['sc_articles_list_index_post_id'])
+					$url = get_permalink((integer)$this->plugin->options['sc_articles_list_index_post_id']);
+
+				if(!$url || $url === 'index')
+					return ''; // Not possible.
+
+				$url_has_query = strpos($url, '?') !== FALSE;
+
+				foreach($this->plugin->qv_keys as $_qv)
+				{
+					if($url_has_query) // Remove existing.
+						$url = remove_query_arg($this->plugin->qv_prefix.$_qv, $url);
+					$url = preg_replace('/\/'.preg_quote($this->plugin->rewrite_prefix.$_qv, '/').'\/[^\/]+/', '', $url);
+				}
+				if(!$exclude_current_qvs) foreach($this->plugin->qv_keys as $_qv)
+				{
+					if(isset($qvs[$_qv])) continue; // Set already.
+
+					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_qv]))
+						$qvs[$_qv] = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_qv]));
+
+					else if(($_qv_value = get_query_var($this->plugin->qv_prefix.$_qv)))
+						$qvs[$_qv] = (string)$_qv_value; // Current value.
+				}
+				unset($_qv, $_qv_value); // Housekeeping.
+
+				if($qvs && ($url_has_query || !get_option('permalink_structure')))
+				{
+					$args = array(); // Initialize.
+					foreach($qvs as $_key => $_value)
+						if($_key !== 'page' || $_value > 1)
+							$args[$this->plugin->qv_prefix.$_key] = $_value;
+					unset($_key, $_value); // Housekeeping.
+
+					$url = add_query_arg(urlencode_deep($args), $url);
+				}
+				else if($qvs) // Rewrite (default behavior).
+				{
+					$url = rtrim($url, '/');
+					foreach($qvs as $_key => $_value)
+						if($_key !== 'page' || $_value > 1)
+							$url .= '/'.urlencode($this->plugin->rewrite_prefix.$_key).'/'.urlencode($_value);
+					unset($_key, $_value); // Housekeeping.
+
+					$url = user_trailingslashit($url);
+				}
+				return $this->set_scheme($url, $scheme);
 			}
 		}
 	}

@@ -42,6 +42,11 @@ namespace wp_kb_articles;
 
 				$navigationTags = $list.find('> .-navigation > .-tags'),
 
+				$navigationSearch = $list.find('> .-navigation > .-search'),
+				$navigationSearchForm = $navigationSearch.find('> form'),
+				$navigationSearchFormQ = $navigationSearchForm.find('> .-q'),
+				$navigationSearchFormButton = $navigationSearchForm.find('> .-button'),
+
 				$navigationTagsFilter = $navigationTags.find('> .-filter'),
 				$navigationTagsFilterAnchor = $navigationTagsFilter.find('> a'),
 
@@ -83,8 +88,25 @@ namespace wp_kb_articles;
 				requestAttrs['q'] = $attrQ.data('attr');
 
 				if(qvs) // Alter request?
+				{
 					$.extend(requestAttrs, qvs);
 
+					if(qvs.author) for(_prop in requestAttrs)
+						if(_prop !== 'author' && requestAttrs.hasOwnProperty(_prop))
+							requestAttrs[_prop] = '';
+
+					if(qvs.category) for(_prop in requestAttrs)
+						if(_prop !== 'category' && requestAttrs.hasOwnProperty(_prop))
+							requestAttrs[_prop] = '';
+
+					if(qvs.tag) for(_prop in requestAttrs)
+						if(_prop !== 'tag' && requestAttrs.hasOwnProperty(_prop))
+							requestAttrs[_prop] = '';
+
+					if(qvs.q) for(_prop in requestAttrs)
+						if(_prop !== 'q' && requestAttrs.hasOwnProperty(_prop))
+							requestAttrs[_prop] = '';
+				}
 				url = vars.ajaxEndpoint;
 				url += url.indexOf('?') === -1 ? '?' : '&';
 				url += encodeURIComponent(namespace + '[sc_list_via_ajax]') + '=' + encodeURIComponent(attrRaw);
@@ -185,6 +207,32 @@ namespace wp_kb_articles;
 				e.stopImmediatePropagation();
 
 				reload();
+			});
+			$navigationSearchForm.on('submit', function(e)
+			{
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			});
+			$navigationSearchFormQ.on('keydown', function(e)
+			{
+				if(e.which !== 13)
+					return; // Not applicable.
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				var $this = $(this);
+
+				reload({q: $.trim($this.val())});
+			});
+			$navigationSearchFormButton.on('click', function(e)
+			{
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				var $this = $(this);
+
+				reload({q: $.trim($navigationSearchFormQ.val())});
 			});
 			$clickPageAnchors.on('click', function(e)
 			{

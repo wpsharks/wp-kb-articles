@@ -8,7 +8,7 @@
 	</div>
 
 	<div class="-author">
-		<span>by:</span> <a href="[author_posts_url]">[author]</a>
+		<span>by:</span> <a href="#" data-click-author="[author_id]">[author]</a>
 	</div>
 
 	[if tags]

@@ -28,6 +28,13 @@ namespace wp_kb_articles // Root namespace.
 			protected $valid_actions;
 
 			/**
+			 * @var boolean Doing AJAX?
+			 *
+			 * @since 141111 First documented version.
+			 */
+			protected $is_doing_ajax = FALSE;
+
+			/**
 			 * Class constructor.
 			 *
 			 * @since 141111 First documented version.
@@ -38,9 +45,21 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->valid_actions = array(
 					'sc_list_via_ajax',
-					'cast_popularity_vote',
+					'cast_popularity_vote_via_ajax',
 				);
 				$this->maybe_handle();
+			}
+
+			/**
+			 * Read-only access to `is_doing_ajax`.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @return boolean `TRUE` if we are doing AJAX.
+			 */
+			public function is_doing_ajax()
+			{
+				return $this->is_doing_ajax;
 			}
 
 			/**
@@ -71,10 +90,11 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function sc_list_via_ajax($request_args)
 			{
-				$attr    = (string)$request_args;
-				$attr    = $this->plugin->utils_enc->decrypt($attr);
-				$attr    = (array)maybe_unserialize($attr);
-				$sc_list = new sc_list($attr, '');
+				$this->is_doing_ajax = TRUE;
+				$attr                = (string)$request_args;
+				$attr                = $this->plugin->utils_enc->decrypt($attr);
+				$attr                = (array)maybe_unserialize($attr);
+				$sc_list             = new sc_list($attr, '');
 
 				status_header(200); // Return response.
 				header('Content-Type: text/html; charset=UTF-8');
@@ -88,9 +108,10 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
-			protected function cast_popularity_vote($request_args)
+			protected function cast_popularity_vote_via_ajax($request_args)
 			{
-				$post_id = (integer)$request_args;
+				$this->is_doing_ajax = TRUE;
+				$post_id             = (integer)$request_args;
 
 				status_header(200); // Return response.
 				header('Content-Type: text/plain; charset=UTF-8');

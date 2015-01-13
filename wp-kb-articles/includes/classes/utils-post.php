@@ -93,6 +93,73 @@ namespace wp_kb_articles // Root namespace.
 
 				return TRUE; // The vote was cast :-)
 			}
+
+			/**
+			 * Filters author links that lead to article listings.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string  $link The URL/link that WordPress has.
+			 * @param integer $author_id The author ID.
+			 * @param string  $author_slug The author slug.
+			 *
+			 * @return string The filtered author link; w/ possible alterations.
+			 */
+			public function author_link_filter($link, $author_id, $author_slug)
+			{
+				if(!$this->plugin->options['sc_articles_list_index_post_id'])
+					return $link; // Not applicable.
+
+				if(is_admin()) // Not in the admin area.
+					return $link; // Not applicable.
+
+				if(!is_singular()) // Not singular?
+					return $link; // Not applicable.
+
+				if(empty($GLOBALS['post']) || $GLOBALS['post']->post_type !== $this->plugin->post_type)
+					return $link; // Not applicable.
+
+				$link        = trim((string)$link);
+				$author_id   = (integer)$author_id;
+				$author_slug = trim((string)$author_slug);
+
+				if(!$author_slug) // Might be empty; WP core bug in filter.
+					if(($author = get_userdata($author_id)) && !empty($author->user_nicename))
+						$author_slug = $author->user_nicename;
+
+				return ($link = $this->plugin->utils_url->sc_list('index', array('author' => $author_slug), TRUE));
+			}
+
+			/**
+			 * Filters term links that lead to article listings.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string    $link The URL/link that WordPress has.
+			 * @param \stdClass $term The term object associated w/ this link.
+			 * @param string    $taxonomy The taxonomy that we are dealing with.
+			 *
+			 * @return string The filtered term link; w/ possible alterations.
+			 */
+			public function term_link_filter($link, \stdClass $term, $taxonomy)
+			{
+				if(!$this->plugin->options['sc_articles_list_index_post_id'])
+					return $link; // Not applicable.
+
+				if(is_admin()) // Not in the admin area.
+					return $link; // Not applicable.
+
+				$link     = trim((string)$link);
+				$taxonomy = trim((string)$taxonomy);
+
+				if($taxonomy === $this->plugin->post_type.'_category')
+					return ($link = $this->plugin->utils_url->sc_list('index', array('category' => $term->slug), TRUE));
+
+				if($taxonomy === $this->plugin->post_type.'_tag')
+					return ($link = $this->plugin->utils_url->sc_list('index', array('tag' => $term->slug), TRUE));
+
+				return $link; // Not applicable.
+			}
 		}
 	}
 }

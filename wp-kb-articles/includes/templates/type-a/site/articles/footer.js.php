@@ -50,7 +50,7 @@ namespace wp_kb_articles;
 				{
 					url = vars.ajaxEndpoint;
 					url += url.indexOf('?') === -1 ? '?' : '&';
-					url += encodeURIComponent(namespace + '[cast_popularity_vote]') + '=' + encodeURIComponent(postId);
+					url += encodeURIComponent(namespace + '[cast_popularity_vote_via_ajax]') + '=' + encodeURIComponent(postId);
 
 					$.get(url, function(data) // Attempt to cast vote and update popularity counter.
 					{

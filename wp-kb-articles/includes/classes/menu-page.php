@@ -106,7 +106,28 @@ namespace wp_kb_articles // Root namespace.
 
 				echo $this->panel(__('Data Safeguards', $this->plugin->text_domain), $_panel_body, array());
 
-				unset($_panel_body); // Housekeeping.
+				$_page_options = array('' => '');
+				if(($_pages = get_pages())) foreach($_pages as $_page)
+					$_page_options[$_page->ID] = $_page->post_title;
+
+				$_panel_body = '<table>'.
+				               '  <tbody>'.
+				               $form_fields->select_row(
+					               array(
+						               'label'           => __('Articles List Shortcode Page', $this->plugin->text_domain),
+						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						               'name'            => 'sc_articles_list_index_post_id',
+						               'current_value'   => $current_value_for('sc_articles_list_index_post_id'),
+						               'allow_arbitrary' => FALSE, // Must be one of these.
+						               'options'         => $_page_options,
+						               'notes_after'     => '<p>'.sprintf(__('If you\'re using the <code>[kb_articles_list /]</code> shortcode on a specific Page in WordPress, please choose that Page from the list. This will tell %1$s to use that Page for any links within WordPress that reference categories/tags associated with KB Articles; i.e. clicking a link which leads to the list of articles associated with a specific category/tag will lead users to this Page where your list is displayed by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain), esc_html($this->plugin->name)).'</p>',
+					               )).
+				               '  </tbody>'.
+				               '</table>';
+
+				echo $this->panel(__('Articles List Shortcode Page', $this->plugin->text_domain), $_panel_body, array());
+
+				unset($_page_options, $_pages, $_panel_body); // Housekeeping.
 
 				/* ----------------------------------------------------------------------------------------- */
 
@@ -489,6 +510,7 @@ namespace wp_kb_articles // Root namespace.
 								                                                     '[permalink]'            => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
 								                                                     '[title]'                => __('Title of the current article.', $this->plugin->text_domain),
 								                                                     '[popularity]'           => __('Popularity score for the current article.', $this->plugin->text_domain),
+								                                                     '[author_id]'            => __('The numeric WP author ID; for the current article author.', $this->plugin->text_domain),
 								                                                     '[author_posts_url]'     => __('URL leading to other posts by the author of the current article.', $this->plugin->text_domain),
 								                                                     '[author_avatar]'        => __('An HTML &lt;img&gt; tag with an avatar for the current article\'s author.', $this->plugin->text_domain),
 								                                                     '[author]'               => __('Author of the current article; i.e. author\'s display name.', $this->plugin->text_domain),
@@ -534,6 +556,7 @@ namespace wp_kb_articles // Root namespace.
 								                                                     '[permalink]'            => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
 								                                                     '[title]'                => __('Title of the current article.', $this->plugin->text_domain),
 								                                                     '[popularity]'           => __('Popularity score for the current article.', $this->plugin->text_domain),
+								                                                     '[author_id]'            => __('The numeric WP author ID; for the current article author.', $this->plugin->text_domain),
 								                                                     '[author_posts_url]'     => __('URL leading to other posts by the author of the current article.', $this->plugin->text_domain),
 								                                                     '[author_avatar]'        => __('An HTML &lt;img&gt; tag with an avatar for the current article\'s author.', $this->plugin->text_domain),
 								                                                     '[author]'               => __('Author of the current article; i.e. author\'s display name.', $this->plugin->text_domain),

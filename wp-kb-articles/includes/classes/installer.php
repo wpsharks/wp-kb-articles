@@ -32,8 +32,8 @@ namespace wp_kb_articles // Root namespace.
 				$this->plugin->setup();
 
 				$this->activate_post_type_role_caps();
-				$this->flush_rewrite_rules();
 				$this->maybe_enqueue_notice();
+				$this->flush_rewrite_rules();
 				$this->set_install_time();
 			}
 
@@ -45,16 +45,6 @@ namespace wp_kb_articles // Root namespace.
 			public function activate_post_type_role_caps()
 			{
 				$this->plugin->post_type_role_caps('activate');
-			}
-
-			/**
-			 * Flush rewrite rules.
-			 *
-			 * @since 141111 First documented version.
-			 */
-			public function flush_rewrite_rules()
-			{
-				flush_rewrite_rules();
 			}
 
 			/**
@@ -72,6 +62,16 @@ namespace wp_kb_articles // Root namespace.
 				                             esc_html($this->plugin->name), esc_attr($this->plugin->utils_url->main_menu_page_only()));
 
 				$this->plugin->enqueue_user_notice($notice_markup); // A quick reminder to configure options.
+			}
+
+			/**
+			 * Flush rewrite rules.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function flush_rewrite_rules()
+			{
+				flush_rewrite_rules();
 			}
 
 			/**

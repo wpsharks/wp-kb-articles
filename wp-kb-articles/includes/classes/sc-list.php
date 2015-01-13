@@ -59,8 +59,6 @@ namespace wp_kb_articles // Root namespace.
 			{
 				parent::__construct();
 
-				$this->attr_ = $attr; // Originals.
-
 				$default_attr = array(
 					'page'           => '1', // Page number.
 					'per_page'       => '25', // Cannot exceed max limit.
@@ -72,6 +70,8 @@ namespace wp_kb_articles // Root namespace.
 					'tab_categories' => '', // For tabs; comma-delimited slugs/IDs.
 					'tag'            => '', // Satisfy all; comma-delimited slugs/IDs.
 					'q'              => '', // Search query.
+
+					'url'            => $this->plugin->utils_url->current(),
 				);
 				if(isset($attr['orderbys']) && !isset($attr['orderby']))
 					$attr['orderby'] = $attr['orderbys'];
@@ -89,10 +89,16 @@ namespace wp_kb_articles // Root namespace.
 				$attr = array_intersect_key($attr, $default_attr);
 
 				$this->attr    = (object)$attr;
+				$this->attr_   = $attr; // Originals.
 				$this->content = (string)$content;
 
-				foreach($this->attr as $_prop => &$_value)
-					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, array('page', 'orderby', 'author', 'category', 'tag', 'q'), TRUE))
+				foreach($this->attr as $_prop => &$_value) // e.g. `page`, `author`, etc.
+					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && ($_qv = get_query_var($this->plugin->qv_prefix.$_prop)))
+						$_value = (string)$_qv; // e.g. `page`, `author`, etc.
+				unset($_prop, $_value, $_qv); // Housekeeping.
+
+				foreach($this->attr as $_prop => &$_value) // e.g. `page`, `author`, etc.
+					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, $this->plugin->qv_keys, TRUE))
 						$_value = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_prop]));
 				unset($_prop, $_value); // Housekeeping.
 
@@ -202,6 +208,9 @@ namespace wp_kb_articles // Root namespace.
 						unset($this->attr->tag[$_key]);
 				}
 				unset($_key, $_tag, $_term); // Housekeeping.
+
+				$this->attr->q   = trim((string)$this->attr->q);
+				$this->attr->url = trim((string)$this->attr->url);
 			}
 
 			/**

@@ -240,6 +240,35 @@
 				}
 			}
 		}
+		& > .-search
+		{
+			float  : right;
+			margin : 1em 1em 0 0;
+
+			& > form
+			{
+				& > .-q,
+				& > .-q:hover,
+				& > .-q:focus
+				{
+					width         : 10em;
+					border-radius : .35em;
+					padding       : .1em .25em;
+				}
+				& > .-button,
+				& > .-button:hover,
+				& > .-button:focus
+				{
+					margin             : 0;
+					padding            : 0;
+					width              : auto;
+					height             : auto;
+					background         : none;
+					border             : none;
+					-webkit-appearance : none;
+				}
+			}
+		}
 	}
 	& > .-articles
 	{

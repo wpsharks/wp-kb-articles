@@ -93,6 +93,15 @@ namespace wp_kb_articles
 			public $transient_prefix = 'wpkbart_';
 
 			/**
+			 * Rewrite prefix.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var string Rewrite prefix.
+			 */
+			public $rewrite_prefix = 'kb-';
+
+			/**
 			 * Query var prefix.
 			 *
 			 * @since 141111 First documented version.
@@ -101,6 +110,20 @@ namespace wp_kb_articles
 			 */
 			public $qv_prefix = 'kb_';
 
+			/**
+			 * Query var keys.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @var array Query var keys.
+			 */
+			public $qv_keys = array(
+				'page',
+				'author',
+				'category',
+				'tag',
+				'q',
+			);
 			/**
 			 * Post type w/ underscores.
 			 *
@@ -334,18 +357,15 @@ namespace wp_kb_articles
 				if(!is_null($setup = &$this->cache_key(__FUNCTION__)))
 					return; // Already setup. Once only!
 				$setup = TRUE; // Once only please.
-
 				/*
 				 * Fire pre-setup hooks.
 				 */
 				if($this->enable_hooks) // Hooks enabled?
 					do_action('before__'.__METHOD__, get_defined_vars());
-
 				/*
 				 * Load the plugin's text domain for translations.
 				 */
 				load_plugin_textdomain($this->text_domain); // Translations.
-
 				/*
 				 * Setup class properties related to authentication/capabilities.
 				 */
@@ -353,7 +373,6 @@ namespace wp_kb_articles
 				$this->auto_recompile_cap = apply_filters(__METHOD__.'_auto_recompile_cap', 'activate_plugins');
 				$this->upgrade_cap        = apply_filters(__METHOD__.'_upgrade_cap', 'update_plugins');
 				$this->uninstall_cap      = apply_filters(__METHOD__.'_uninstall_cap', 'delete_plugins');
-
 				/*
 				 * Setup the array of all plugin options.
 				 */
@@ -395,6 +414,10 @@ namespace wp_kb_articles
 
 					'menu_pages_logo_icon_enable'                                   => '0', // `0|1`; display?
 
+					/* Article index-related options. */
+
+					'sc_articles_list_index_post_id'                                => '',
+
 					/* Template-related config. options. */
 
 					'template_type'                                                 => 's', // `a|s`.
@@ -430,17 +453,16 @@ namespace wp_kb_articles
 				if(WP_KB_ARTICLE_ROLES_EDIT_CAPS) // Specific Roles?
 					$this->roles_recieving_edit_caps = // Convert these to an array.
 						preg_split('/[\s;,]+/', WP_KB_ARTICLE_ROLES_EDIT_CAPS, NULL, PREG_SPLIT_NO_EMPTY);
-
 				/*
 				 * With or without hooks?
 				 */
 				if(!$this->enable_hooks) // Without hooks?
 					return; // Stop here; setup without hooks.
-
 				/*
 				 * Setup all secondary plugin hooks.
 				 */
 				add_action('init', array($this, 'register_post_type'), -11, 0);
+				add_action('init', array($this, 'register_rewrite_rules'), -11, 0);
 				add_action('init', array($this, 'actions'), -10, 0);
 
 				add_action('admin_init', array($this, 'check_version'), 10, 0);
@@ -453,12 +475,15 @@ namespace wp_kb_articles
 				add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
 				add_filter('plugin_action_links_'.plugin_basename($this->file), array($this, 'add_settings_link'), 10, 1);
 
-				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
 				add_action('wp_print_scripts', array($this, 'enqueue_front_scripts'), 10, 0);
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
-				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
-				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 
+				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
+				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
+
+				add_shortcode('kb_articles_list', array($this, 'sc_list'));
+				add_filter('author_link', array($this, 'sc_author_link'), 10, 3);
+				add_filter('term_link', array($this, 'sc_term_link'), 10, 3);
 				/*
 				 * Setup CRON-related hooks.
 				 */
@@ -473,7 +498,6 @@ namespace wp_kb_articles
 					update_option(__NAMESPACE__.'_options', $this->options);
 				}
 				add_action('_cron_'.__NAMESPACE__.'_github_processor', array($this, 'github_processor'), 10);
-
 				/*
 				 * Fire setup completion hooks.
 				 */
@@ -629,6 +653,8 @@ namespace wp_kb_articles
 					$_default_template, $_option_template_nws, $_default_template_nws);
 
 				update_option(__NAMESPACE__.'_options', $this->options); // DB update.
+
+				flush_rewrite_rules(); // Flush on save in case of changes.
 			}
 
 			/*
@@ -1148,7 +1174,7 @@ namespace wp_kb_articles
 				if(!$GLOBALS['post'] || $GLOBALS['post']->post_type !== $this->post_type)
 					return $content; // Not applicable.
 
-				$footer = new footer();
+				$footer = new footer(); // Footer class instance.
 
 				return $content.$footer->content();
 			}
@@ -1170,7 +1196,40 @@ namespace wp_kb_articles
 			public function sc_list($attr, $content = '')
 			{
 				$sc_list = new sc_list((array)$attr, $content);
+
 				return $sc_list->parse(); // Parse shortcode.
+			}
+
+			/**
+			 * Filters author links.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string  $link The URL/link that WordPress has.
+			 * @param integer $author_id The author ID.
+			 * @param string  $author_slug The author slug.
+			 *
+			 * @return string The filtered author link; w/ possible alterations.
+			 */
+			public function sc_author_link($link, $author_id, $author_slug)
+			{
+				return $this->utils_post->author_link_filter($link, $author_id, $author_slug);
+			}
+
+			/**
+			 * Filters term links.
+			 *
+			 * @since 141111 First documented version.
+			 *
+			 * @param string    $link The URL/link that WordPress has.
+			 * @param \stdClass $term The term object associated w/ this link.
+			 * @param string    $taxonomy The taxonomy that we are dealing with.
+			 *
+			 * @return string The filtered term link; w/ possible alterations.
+			 */
+			public function sc_term_link($link, \stdClass $term, $taxonomy)
+			{
+				return $this->utils_post->term_link_filter($link, $term, $taxonomy);
 			}
 
 			/*
@@ -1236,9 +1295,6 @@ namespace wp_kb_articles
 				                                                   'delete_terms' => 'delete_others_'.$this->post_type.'s')
 				);
 				register_taxonomy($this->post_type.'_tag', array($this->post_type), $tag_taxonomy_args);
-
-				//add_rewrite_rule('('.$this->post_type_slug.'s)/(.+)$', 'index.php?pagename=$matches[1]&'.$this->qv_prefix.'=$matches[2]', 'top');
-				//add_rewrite_tag('%s2_video_playlist%', '(.+?)');
 			}
 
 			/**
@@ -1317,6 +1373,59 @@ namespace wp_kb_articles
 				unset($_roles, $_role, $_cap); // Housekeeping.
 			}
 
+			/**
+			 * Registers rewrite rules/tags.
+			 *
+			 * @since 141111 First documented version.
+			 */
+			public function register_rewrite_rules()
+			{
+				foreach($this->qv_keys as $_qv) // e.g. `page`, `author`, etc.
+					add_rewrite_endpoint($this->rewrite_prefix.$_qv, EP_PERMALINK | EP_PAGES, $this->qv_prefix.$_qv);
+				unset($_qv); // Housekeeping.
+				/*
+				 * Endpoints are not that powerful; i.e. there's no way to collect them in any
+				 *    sequence; or with more than one at a time. So we filter query vars.
+				 */
+				$_this = $this; // Needed by closure below.
+				add_filter('request', function ($query_vars) use ($_this)
+				{
+					$current_path           = trim($_this->utils_url->current_path(), '/');
+					$current_path_info      = trim($_this->utils_url->current_path_info(), '/');
+					$current_path_with_info = trim($current_path.'/'.$current_path_info, '/');
+
+					if(stripos($current_path_with_info, $_this->rewrite_prefix) === FALSE)
+						return $query_vars; // Not applicable.
+
+					if(($home_path = trim(parse_url(home_url(), PHP_URL_PATH), '/')))
+						$current_path_with_info = preg_replace('/^'.preg_quote($home_path, '/').'/', '', $current_path_with_info);
+
+					$rewrite_prefix_length        = strlen($_this->rewrite_prefix);
+					$current_path_with_info_parts = explode('/', $current_path_with_info);
+
+					for($_i = 0; $_i < count($current_path_with_info_parts); $_i++)
+					{
+						$_part = $current_path_with_info_parts[$_i];
+						if(isset($current_path_with_info_parts[$_i + 1]))
+							$_next_part = $current_path_with_info_parts[$_i + 1];
+						else break; // Last item in this case.
+
+						if(strpos($_part, $_this->rewrite_prefix) !== 0)
+							continue; // Not applicable.
+
+						$_unprefixed_part = substr($_part, $rewrite_prefix_length);
+						if(!in_array($_unprefixed_part, $_this->qv_keys, TRUE))
+							continue; // Not applicable.
+
+						$query_vars[$_this->qv_prefix.$_unprefixed_part] = $_next_part;
+						$_i++; // Skip the next part in this case.
+					}
+					unset($_i, $_part, $_next_part, $_unprefixed_part);
+
+					return $query_vars; // Filter through.
+				});
+			}
+
 			/*
 			 * CRON-Related Methods
 			 */
@@ -1392,11 +1501,11 @@ namespace wp_kb_articles
 
 	else if(empty($GLOBALS[__NAMESPACE__.'_uninstalling'])) add_action('all_admin_notices', function ()
 	{
-		echo '<div class="error">'. // Notify the site owner.
-		     '   <p>'.
-		     '      '.sprintf(__('Please disable the lite version of <code>%1$s</code> before activating the pro version.',
-		                         str_replace('_', '-', __NAMESPACE__)), esc_html(str_replace('_', '-', __NAMESPACE__))).
-		     '   </p>'.
-		     '</div>';
+		echo ' < div class="error" > '. // Notify the site owner.
+		     '   <p > '.
+		     '      '.sprintf(__('Please disable the lite version of < code>%1$s </code > before activating the pro version.',
+		                         str_replace('_', ' - ', __NAMESPACE__)), esc_html(str_replace('_', ' - ', __NAMESPACE__))).
+		     ' </p > '.
+		     '</div > ';
 	});
 }
