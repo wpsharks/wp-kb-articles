@@ -2,7 +2,7 @@
 /**
  * File System Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * File System Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_fs extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Adds tmp suffix to a directory|file `/path`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $path Directory|file `/path`.
 			 *
@@ -50,7 +50,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Lowercase file extension.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $path Directory|file `/path`.
 			 *
@@ -64,7 +64,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes `/path` separators.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed   $path Directory|file `/path`.
 			 *
@@ -102,7 +102,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Checks an uploaded file `/path`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $path A file `/path` to check.
 			 *    If it's an uploaded file, use the `tmp_name`.

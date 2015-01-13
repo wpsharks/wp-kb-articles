@@ -2,7 +2,7 @@
 /**
  * Front-Side Actions
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,28 +16,28 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Front-Side Actions
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class front_side_actions extends abs_base
 		{
 			/**
 			 * @var array Valid actions.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $valid_actions;
 
 			/**
 			 * @var boolean Doing AJAX?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $is_doing_ajax = FALSE;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -53,7 +53,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Read-only access to `is_doing_ajax`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return boolean `TRUE` if we are doing AJAX.
 			 */
@@ -65,7 +65,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Action handler.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_handle()
 			{
@@ -84,7 +84,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shortcode list via AJAX.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -104,7 +104,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Cast popularity vote via AJAX.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */

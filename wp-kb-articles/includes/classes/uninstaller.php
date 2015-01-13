@@ -2,7 +2,7 @@
 /**
  * Uninstall Routines
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Uninstall Routines
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class uninstaller extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -64,7 +64,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete plugin-related options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_options()
 			{
@@ -74,7 +74,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete plugin-related notices.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_notices()
 			{
@@ -84,7 +84,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete install time.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_install_time()
 			{
@@ -94,7 +94,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Deactivate post type role caps.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function deactivate_post_type_role_caps()
 			{
@@ -104,7 +104,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Flush rewrite rules.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function flush_rewrite_rules()
 			{
@@ -114,7 +114,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Clear scheduled CRON hooks.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function clear_cron_hooks()
 			{
@@ -124,7 +124,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete option keys.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_option_keys()
 			{
@@ -141,7 +141,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete transient keys.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_transient_keys()
 			{
@@ -163,7 +163,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete post meta keys.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_post_meta_keys()
 			{
@@ -180,7 +180,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Delete user meta keys.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function delete_user_meta_keys()
 			{

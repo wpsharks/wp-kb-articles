@@ -2,7 +2,7 @@
 /**
  * Front Scripts
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Front Scripts
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class front_scripts extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -39,7 +39,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Enqueue front-side scripts for articles list.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_enqueue_list_scripts()
 			{
@@ -62,7 +62,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Enqueue front-side scripts for article footer.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_enqueue_footer_scripts()
 			{

@@ -2,7 +2,7 @@
 /**
  * Install Routines
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Install Routines
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class installer extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -40,7 +40,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Activate post type role caps.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function activate_post_type_role_caps()
 			{
@@ -50,7 +50,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * First time install displays notice.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_enqueue_notice()
 			{
@@ -67,7 +67,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Flush rewrite rules.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function flush_rewrite_rules()
 			{
@@ -77,7 +77,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Update installation time.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function set_install_time()
 			{

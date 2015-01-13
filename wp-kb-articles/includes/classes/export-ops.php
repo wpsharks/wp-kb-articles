@@ -2,7 +2,7 @@
 /**
  * Options Exporter
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Options Exporter
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class export_ops extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $request_args Arguments to the constructor.
 			 *    These should NOT be trusted; they come from a `$_REQUEST` action.
@@ -42,7 +42,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Export handler.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_export()
 			{

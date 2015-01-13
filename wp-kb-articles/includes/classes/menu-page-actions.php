@@ -2,7 +2,7 @@
 /**
  * Menu Page Actions
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,21 +16,21 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Menu Page Actions
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class menu_page_actions extends abs_base
 		{
 			/**
 			 * @var array Valid actions.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $valid_actions;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -54,7 +54,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Action handler.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_handle()
 			{
@@ -76,7 +76,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Saves options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -99,7 +99,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Sets template type/mode.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -129,7 +129,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Restores defaults options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -153,7 +153,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Manual GitHub processor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -172,7 +172,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Dismisses a persistent notice.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -198,7 +198,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Runs a specific import type.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */
@@ -227,7 +227,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Runs a specific export type.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $request_args Input argument(s).
 			 */

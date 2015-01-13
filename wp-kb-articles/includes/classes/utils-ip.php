@@ -2,7 +2,7 @@
 /**
  * IP Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * IP Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_ip extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -97,7 +97,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Geographic region code for given IP address.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $ip An IP address to pull geographic data for.
 			 *
@@ -114,7 +114,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current user's geographic region code.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current user's geographic region code; if possible.
 			 */
@@ -129,7 +129,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Geographic country code for given IP address.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $ip An IP address to pull geographic data for.
 			 *
@@ -146,7 +146,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current user's geographic country code.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current user's geographic country code; if possible.
 			 */
@@ -161,7 +161,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Geographic location data from IP address.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $ip An IP address to pull geographic data for.
 			 *

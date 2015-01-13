@@ -2,7 +2,7 @@
 /**
  * Array Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Array Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_array extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Unique values deeply (preserving keys).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array.
 			 *
@@ -68,7 +68,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Prepend a key/value pair onto an array.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array          $array An input array; by reference.
 			 * @param string|integer New array key; string or integer.
@@ -97,7 +97,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shuffles an array (preserving keys).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array; by reference.
 			 *
@@ -126,7 +126,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shuffles an array deeply (preserving keys).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array; by reference.
 			 *
@@ -153,7 +153,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Removes `NULL` values.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *
@@ -174,7 +174,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Removes `NULL` values deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *
@@ -198,7 +198,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Removes empty values.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *
@@ -219,7 +219,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Removes empty values deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $array An input array to work from.
 			 *

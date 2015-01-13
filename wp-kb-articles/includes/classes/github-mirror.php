@@ -2,7 +2,7 @@
 /**
  * GitHub Mirror
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * GitHub Mirror
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class github_mirror extends abs_base
 		{
 			/**
 			 * Arguments.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Args.
 			 */
@@ -32,7 +32,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current user.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var \WP_User Current user.
 			 */
@@ -41,7 +41,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * SHA1 hash.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string SHA1 hash.
 			 */
@@ -50,7 +50,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * File path.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string File path.
 			 */
@@ -59,7 +59,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Post.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var \WP_Post|null Post.
 			 */
@@ -68,7 +68,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * It's new?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var boolean It's new?
 			 */
@@ -77,7 +77,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Slug.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Slug.
 			 */
@@ -86,7 +86,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Title.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Title.
 			 */
@@ -95,7 +95,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Categories.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Categories.
 			 */
@@ -104,7 +104,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Tags.
 			 */
@@ -113,7 +113,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Author.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var integer Author.
 			 */
@@ -122,7 +122,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Status.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Status.
 			 */
@@ -131,7 +131,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Pub date.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Pub date.
 			 */
@@ -140,7 +140,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Body.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Body.
 			 */
@@ -149,7 +149,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Excerpt.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Excerpt.
 			 */
@@ -158,7 +158,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Comment status.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Comment status.
 			 */
@@ -167,7 +167,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Ping status.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Ping status.
 			 */
@@ -176,7 +176,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Arguments to constructor.
 			 */
@@ -222,7 +222,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes all class properties.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @throws \exception If the `path` or `sha` args are empty.
 			 */
@@ -338,7 +338,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Mirrors article/post.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function mirror()
 			{
@@ -353,7 +353,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Inserts a new article/post.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @throws \exception If unable to insert article.
 			 */
@@ -389,7 +389,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Updating existing article/post.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @throws \exception If unable to update article.
 			 */
@@ -427,7 +427,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Updates terms; i.e. categories/tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @throws \exception If unable to update terms.
 			 */
@@ -445,7 +445,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Sets the current user (author).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function set_current_author()
 			{
@@ -464,7 +464,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Restores the current user.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function restore_current_user()
 			{

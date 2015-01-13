@@ -2,12 +2,12 @@
 /**
  * Plugin
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
 /*
-Version: 141206
+Version: 150113
 Text Domain: wp-kb-articles
 Plugin Name: WP KB Articles
 

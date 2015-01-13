@@ -2,7 +2,7 @@
 /**
  * Plugin Class
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -48,7 +48,7 @@ namespace wp_kb_articles
 		 * @property-read utils_url             $utils_url
 		 * @property-read utils_user            $utils_user
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class plugin extends abs_base
 		{
@@ -59,16 +59,16 @@ namespace wp_kb_articles
 			/**
 			 * Identifies pro version.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var boolean `TRUE` for pro version.
 			 */
-			public $is_pro = TRUE;
+			public $is_pro = FALSE;
 
 			/**
 			 * Plugin name.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Plugin name.
 			 */
@@ -77,7 +77,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin name (abbreviated).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Plugin name (abbreviated).
 			 */
@@ -86,7 +86,7 @@ namespace wp_kb_articles
 			/**
 			 * Transient prefix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string 8-character transient prefix.
 			 */
@@ -95,7 +95,7 @@ namespace wp_kb_articles
 			/**
 			 * Rewrite prefix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Rewrite prefix.
 			 */
@@ -104,7 +104,7 @@ namespace wp_kb_articles
 			/**
 			 * Query var prefix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Query var prefix.
 			 */
@@ -113,7 +113,7 @@ namespace wp_kb_articles
 			/**
 			 * Query var keys.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Query var keys.
 			 */
@@ -127,7 +127,7 @@ namespace wp_kb_articles
 			/**
 			 * Post type w/ underscores.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Post type w/ underscores.
 			 */
@@ -136,7 +136,7 @@ namespace wp_kb_articles
 			/**
 			 * Post type w/ dashes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Post type w/ dashes.
 			 */
@@ -145,7 +145,7 @@ namespace wp_kb_articles
 			/**
 			 * Site name.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Site name.
 			 */
@@ -154,7 +154,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin product page URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Plugin product page URL.
 			 */
@@ -163,7 +163,7 @@ namespace wp_kb_articles
 			/**
 			 * Used by the plugin's uninstall handler.
 			 *
-			 * @since 141111 Adding uninstall handler.
+			 * @since 150113 Adding uninstall handler.
 			 *
 			 * @var boolean Defined by constructor.
 			 */
@@ -172,7 +172,7 @@ namespace wp_kb_articles
 			/**
 			 * Text domain for translations; based on `__NAMESPACE__`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Defined by class constructor; for translations.
 			 */
@@ -181,7 +181,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin slug; based on `__NAMESPACE__`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Defined by constructor.
 			 */
@@ -190,7 +190,7 @@ namespace wp_kb_articles
 			/**
 			 * Stub `__FILE__` location.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Defined by class constructor.
 			 */
@@ -199,11 +199,11 @@ namespace wp_kb_articles
 			/**
 			 * Version string in YYMMDD[+build] format.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Current version of the software.
 			 */
-			public $version = '141206';
+			public $version = '150113';
 
 			/*
 			 * Public Properties (Defined @ Setup)
@@ -212,7 +212,7 @@ namespace wp_kb_articles
 			/**
 			 * An array of all default option values.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Default options array.
 			 */
@@ -221,7 +221,7 @@ namespace wp_kb_articles
 			/**
 			 * Configured option values.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Options configured by site owner.
 			 */
@@ -230,7 +230,7 @@ namespace wp_kb_articles
 			/**
 			 * General capability requirement.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Capability required to administer.
 			 *    i.e. to use any aspect of the plugin, including the configuration
@@ -241,7 +241,7 @@ namespace wp_kb_articles
 			/**
 			 * Auto-recompile capability requirement.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Capability required to auto-recompile.
 			 *    i.e. to see notices regarding automatic recompilations
@@ -252,7 +252,7 @@ namespace wp_kb_articles
 			/**
 			 * Upgrade capability requirement.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Capability required to upgrade.
 			 *    i.e. the ability to run any sort of plugin upgrader.
@@ -262,7 +262,7 @@ namespace wp_kb_articles
 			/**
 			 * Uninstall capability requirement.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Capability required to uninstall.
 			 *    i.e. the ability to deactivate and even delete the plugin.
@@ -272,7 +272,7 @@ namespace wp_kb_articles
 			/**
 			 * Roles to receive all KB article caps.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Roles to receive all KB article caps.
 			 */
@@ -281,7 +281,7 @@ namespace wp_kb_articles
 			/**
 			 * Roles to receive KB article edit caps.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Roles to receive KB article edit caps.
 			 */
@@ -303,7 +303,7 @@ namespace wp_kb_articles
 			 * @param boolean $enable_hooks Defaults to a TRUE value.
 			 *    If FALSE, setup runs but without adding any hooks.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct($enable_hooks = TRUE)
 			{
@@ -347,7 +347,7 @@ namespace wp_kb_articles
 			/**
 			 * Setup the plugin.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function setup()
 			{
@@ -539,7 +539,7 @@ namespace wp_kb_articles
 			/**
 			 * First installation time.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return integer UNIX timestamp.
 			 */
@@ -551,7 +551,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin activation hook.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to {@link \register_activation_hook()}
 			 */
@@ -563,7 +563,7 @@ namespace wp_kb_articles
 			/**
 			 * Check current plugin version.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `admin_init` action.
 			 */
@@ -582,7 +582,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin deactivation hook.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to {@link \register_deactivation_hook()}
 			 */
@@ -594,7 +594,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin uninstall handler.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @called-by {@link uninstall}
 			 */
@@ -610,7 +610,7 @@ namespace wp_kb_articles
 			/**
 			 * Plugin action handler.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `init` action.
 			 */
@@ -629,7 +629,7 @@ namespace wp_kb_articles
 			/**
 			 * Saves new plugin options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $options An array of new plugin options.
 			 */
@@ -664,7 +664,7 @@ namespace wp_kb_articles
 			/**
 			 * Adds CSS for administrative menu pages.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `admin_enqueue_scripts` action.
 			 */
@@ -688,7 +688,7 @@ namespace wp_kb_articles
 			/**
 			 * Adds JS for administrative menu pages.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `admin_enqueue_scripts` action.
 			 */
@@ -721,7 +721,7 @@ namespace wp_kb_articles
 			/**
 			 * Creates admin menu pages.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `admin_menu` action.
 			 */
@@ -768,7 +768,7 @@ namespace wp_kb_articles
 			/**
 			 * Set plugin-related screen options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `set-screen-option` filter.
 			 *
@@ -793,7 +793,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page screen; for options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__]` action.
 			 *
@@ -815,7 +815,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page for options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @see add_menu_pages()
 			 */
@@ -827,7 +827,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page screen; for import/export.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_import_export']` action.
 			 *
@@ -849,7 +849,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page for import/export.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @see add_menu_pages()
 			 */
@@ -861,7 +861,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page screen; for site templates.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `'load-'.$this->menu_page_hooks[__NAMESPACE__.'_site_templates']` action.
 			 *
@@ -883,7 +883,7 @@ namespace wp_kb_articles
 			/**
 			 * Menu page for site templates.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @see add_menu_pages()
 			 */
@@ -895,7 +895,7 @@ namespace wp_kb_articles
 			/**
 			 * Adds link(s) to plugin row on the WP plugins page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `plugin_action_links_'.plugin_basename($this->file)` filter.
 			 *
@@ -919,7 +919,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueue an administrative notice.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $markup HTML markup containing the notice itself.
 			 * @param array  $args An array of additional args; i.e. presentation/style.
@@ -973,7 +973,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueue an administrative notice; for a particular user.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $markup HTML markup. See {@link enqueue_notice()}.
 			 * @param array  $args Additional args. See {@link enqueue_notice()}.
@@ -989,7 +989,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueue an administrative error.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $markup HTML markup. See {@link enqueue_notice()}.
 			 * @param array  $args Additional args. See {@link enqueue_notice()}.
@@ -1002,7 +1002,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueue an administrative error; for a particular user.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $markup HTML markup. See {@link enqueue_error()}.
 			 * @param array  $args Additional args. See {@link enqueue_notice()}.
@@ -1018,7 +1018,7 @@ namespace wp_kb_articles
 			/**
 			 * Render admin notices; across all admin dashboard views.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `all_admin_notices` action.
 			 */
@@ -1119,7 +1119,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueues front-side scripts.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `wp_print_scripts` hook.
 			 */
@@ -1131,7 +1131,7 @@ namespace wp_kb_articles
 			/**
 			 * Enqueues front-side styles.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `wp_print_styles` hook.
 			 */
@@ -1147,7 +1147,7 @@ namespace wp_kb_articles
 			/**
 			 * Handle article-save actions.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `save_post_kb_article` hook.
 			 *
@@ -1161,7 +1161,7 @@ namespace wp_kb_articles
 			/**
 			 * Handle article footer.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `the_content` filter.
 			 *
@@ -1186,7 +1186,7 @@ namespace wp_kb_articles
 			/**
 			 * Parses shortcode for articles list.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array|string $attr Shortcode attributes.
 			 * @param string       $content Shortcode content.
@@ -1203,7 +1203,7 @@ namespace wp_kb_articles
 			/**
 			 * Filters author links.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $link The URL/link that WordPress has.
 			 * @param integer $author_id The author ID.
@@ -1219,7 +1219,7 @@ namespace wp_kb_articles
 			/**
 			 * Filters term links.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string    $link The URL/link that WordPress has.
 			 * @param \stdClass $term The term object associated w/ this link.
@@ -1239,7 +1239,7 @@ namespace wp_kb_articles
 			/**
 			 * Regisers post type.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `init` action.
 			 */
@@ -1300,7 +1300,7 @@ namespace wp_kb_articles
 			/**
 			 * Activate or deactivate role-base caps.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $action One of `activate` or `deactivate`.
 			 */
@@ -1376,7 +1376,7 @@ namespace wp_kb_articles
 			/**
 			 * Registers rewrite rules/tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function register_rewrite_rules()
 			{
@@ -1433,7 +1433,7 @@ namespace wp_kb_articles
 			/**
 			 * Extends WP-Cron schedules.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `cron_schedules` filter.
 			 *
@@ -1452,7 +1452,7 @@ namespace wp_kb_articles
 			/**
 			 * GitHub processor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @attaches-to `_cron_'.__NAMESPACE__.'_github_processor` action.
 			 */
@@ -1470,7 +1470,7 @@ namespace wp_kb_articles
 		 * Used internally by other classes as an easy way to reference
 		 *    the core {@link plugin} class instance.
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 *
 		 * @return plugin Class instance.
 		 */
@@ -1486,26 +1486,24 @@ namespace wp_kb_articles
 		/**
 		 * A global reference to the plugin.
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 *
 		 * @var plugin Main plugin class.
 		 */
 		if(!isset($GLOBALS[__NAMESPACE__.'_autoload_plugin']) || $GLOBALS[__NAMESPACE__.'_autoload_plugin'])
 			$GLOBALS[__NAMESPACE__] = new plugin(); // Load plugin automatically.
 	}
-
 	/*
 	 * Catch a scenario where the plugin class already exists.
 	 *    Assume both lite/pro are running in this case.
 	 */
-
 	else if(empty($GLOBALS[__NAMESPACE__.'_uninstalling'])) add_action('all_admin_notices', function ()
 	{
-		echo ' < div class="error" > '. // Notify the site owner.
-		     '   <p > '.
-		     '      '.sprintf(__('Please disable the lite version of < code>%1$s </code > before activating the pro version.',
-		                         str_replace('_', ' - ', __NAMESPACE__)), esc_html(str_replace('_', ' - ', __NAMESPACE__))).
-		     ' </p > '.
-		     '</div > ';
+		echo '<div class="error"> '. // Notify the site owner.
+		     '   <p>'.
+		     '      '.sprintf(__('Please disable the lite version of <code>%1$s</code> before activating the pro version.',
+		                         str_replace('_', '-', __NAMESPACE__)), esc_html(str_replace('_', '-', __NAMESPACE__))).
+		     '   </p>'.
+		     '</div> ';
 	});
 }

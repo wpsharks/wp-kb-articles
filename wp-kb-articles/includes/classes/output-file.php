@@ -2,7 +2,7 @@
 /**
  * File Output Handler
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,56 +16,56 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * File Output Handler
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class output_file extends abs_base
 		{
 			/**
 			 * @var string Data to output.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $data;
 
 			/**
 			 * @var string Data file to output.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $data_file;
 
 			/**
 			 * @var string File name to output.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $file_name;
 
 			/**
 			 * @var string Content type.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $content_type;
 
 			/**
 			 * @var string Content disposition.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $content_disposition;
 
 			/**
 			 * @var integer Chunk size.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $chunk_size;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Configuration arguments.
 			 *
@@ -108,7 +108,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Sends output file.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_output()
 			{
@@ -122,7 +122,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Prepare environment.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function prepare()
 			{
@@ -132,7 +132,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Send headers; always.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function send_headers()
 			{
@@ -157,7 +157,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Determine content length.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function content_length()
 			{
@@ -173,7 +173,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Send data; if applicable.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_send_data()
 			{
@@ -201,7 +201,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Send data file; if applicable.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_send_data_file()
 			{

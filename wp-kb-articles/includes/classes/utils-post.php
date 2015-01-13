@@ -2,7 +2,7 @@
 /**
  * Post Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Post Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_post extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Gets article popularity.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 *
@@ -50,7 +50,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Updates article popularity.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 * @param integer $by e.g. `+1` or `-1`, etc.
@@ -68,7 +68,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Cast article popularity vote.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 *
@@ -97,7 +97,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Filters author links that lead to article listings.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $link The URL/link that WordPress has.
 			 * @param integer $author_id The author ID.
@@ -133,7 +133,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Filters term links that lead to article listings.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string    $link The URL/link that WordPress has.
 			 * @param \stdClass $term The term object associated w/ this link.

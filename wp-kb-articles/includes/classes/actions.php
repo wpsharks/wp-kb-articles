@@ -2,7 +2,7 @@
 /**
  * Actions
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,7 +16,7 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Actions
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 *
 		 * @note (front|back)-end actions share the SAME namespace.
 		 *    i.e. `$_REQUEST[__NAMESPACE__][action]`, where `action` should be unique
@@ -31,7 +31,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -44,7 +44,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Front-side actions.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_do_front_side_actions()
 			{
@@ -60,7 +60,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Menu page actions.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_do_menu_page_actions()
 			{

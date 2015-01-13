@@ -1,8 +1,8 @@
 === WP KB Articles ===
 
-Stable tag: 131121
-Requires at least: 3.3
-Tested up to: 3.7.1
+Stable tag: 150113
+Requires at least: 4.1
+Tested up to: 4.2-alpha
 Text Domain: wp-kb-articles
 
 License: GPLv2 or later
@@ -76,6 +76,14 @@ Released under the terms of the [GNU General Public License](http://www.gnu.org/
 	- Font Awesome <http://fortawesome.github.io/Font-Awesome/>
 
 == Changelog ==
+
+= v150113 =
+
+* Rewriting with OOP design.
+* Bringing plugin up-to-date w/ WordPress 4.1 compat.
+* Adding GitHub integration for KB articles sourced from a GitHub repo.
+* Adding a new shortcode: `[kb_articles_list /]`.
+* Adding new menu page w/ config options in Dashboard.
 
 = v131121 =
 

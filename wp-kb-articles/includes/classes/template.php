@@ -2,7 +2,7 @@
 /**
  * Template
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,56 +16,56 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Template
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class template extends abs_base
 		{
 			/**
 			 * @var string Type of template.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $type;
 
 			/**
 			 * @var string Template file.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $file;
 
 			/**
 			 * @var string Snippet sub-directory.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $snippet_sub_dir;
 
 			/**
 			 * @var boolean Force default template?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $force_default;
 
 			/**
 			 * @var string Template file contents.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $file_contents;
 
 			/**
 			 * @var array Current vars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $current_vars;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $file Template file.
 			 *
@@ -103,7 +103,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Public access to file; relative path.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Template file; relative path.
 			 */
@@ -115,7 +115,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Public access to file contents.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Unparsed template file contents.
 			 */
@@ -127,7 +127,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Parse template file.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $vars Optional array of variables to parse.
 			 *
@@ -156,7 +156,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Parse snippet file.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $file File path, relative to snippet sub-directory.
 			 * @param array  $shortcodes_vars Optional array shortcodes/variables.
@@ -193,7 +193,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Site template vars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $vars Optional array of variables to parse.
 			 *
@@ -215,7 +215,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Email template vars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $vars Optional array of variables to parse.
 			 *
@@ -237,7 +237,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Template file contents.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @throws \exception If unable to locate the template.
 			 */
@@ -286,7 +286,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Snippet file contents.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $file File path, relative to snippet sub-directory.
 			 *
@@ -339,7 +339,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Transforms an option key into a type & file path.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $option_key Template option key.
 			 *
@@ -372,7 +372,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Transforms option data (type/file) into a plugin option key.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param \stdClass|array Two properties: `type`, `file`.
 			 *

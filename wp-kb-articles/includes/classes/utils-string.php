@@ -2,7 +2,7 @@
 /**
  * String Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * String Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_string extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Strips slashes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string See {@link strip_deep()}.
 			 *
@@ -47,7 +47,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Strips slashes in strings deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $values Anything can be converted into a stripped string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -72,7 +72,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Trims string.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string See {@link trim_deep()}.
 			 * @param string $chars See {@link trim_deep()}.
@@ -88,7 +88,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Trims strings deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed  $values Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -123,7 +123,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Trims/strips string.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string See {@link trim_strip_deep()}.
 			 * @param string $chars See {@link trim_strip_deep()}.
@@ -139,7 +139,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Trims and strips slashes in strings deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed  $values Any value can be converted into a trimmed/stripped string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -209,7 +209,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Escape single quotes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string See {@link esc_sq_deep()}.
 			 * @param integer $times See {@link esc_sq_deep()}.
@@ -293,7 +293,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Escape double quotes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string See {@link esc_dq_deep()}.
 			 * @param integer $times See {@link esc_dq_deep()}.
@@ -334,7 +334,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Escape double quotes for CSV.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string See {@link esc_csv_dq_deep()}.
 			 * @param integer $times See {@link esc_csv_dq_deep()}.
@@ -375,7 +375,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * String replace ONE time (caSe-insensitive).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $needle See {@link str_replace_once_deep()}.
 			 * @param string $replace See {@link str_replace_once_deep()}.
@@ -391,7 +391,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * String replace ONE time deeply (caSe-insensitive).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $needle See {@link replace_once_deep()}.
 			 * @param string $replace See {@link replace_once_deep()}.
@@ -407,7 +407,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * String replace ONE time.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $needle See {@link str_replace_once_deep()}.
 			 * @param string  $replace See {@link str_replace_once_deep()}.
@@ -424,7 +424,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * String replace ONE time deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $needle A string to search/replace.
 			 * @param string  $replace What to replace `$needle` with.
@@ -459,7 +459,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Quote regex meta chars deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed       $values Input string(s) to mid-clip.
 			 * @param null|string $delimiter Delimiter to use; if applicable.
@@ -484,7 +484,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes end of line chars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Any input string to normalize.
 			 *
@@ -498,7 +498,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes end of line chars deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $values Any value can be converted into a normalized string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -526,7 +526,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes HTML whitespace.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Any input string to normalize.
 			 *
@@ -540,7 +540,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Normalizes HTML whitespace deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $values Any value can be converted into a normalized string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -570,7 +570,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Clips a string to X chars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string See {@link clip_deep()}.
 			 * @param integer $max_length See {@link clip_deep()}.
@@ -586,7 +586,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Clips string(s) to X chars deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed   $values Input string(s) to clip.
 			 * @param integer $max_length Defaults to a value of `45`.
@@ -626,7 +626,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Mid-clips a string to X chars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string See {@link mid_clip_deep()}.
 			 * @param integer $max_length See {@link mid_clip_deep()}
@@ -641,7 +641,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Mid-clips string(s) to X chars deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed   $values Input string(s) to mid-clip.
 			 * @param integer $max_length Defaults to a value of `45`.
@@ -687,7 +687,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Is a string in HTML format?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Any input string to test here.
 			 *
@@ -704,7 +704,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Encodes all HTML entities.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string  $string Any input string to encode.
 			 * @param boolean $double Double encode existing HTML entities?
@@ -730,7 +730,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Decodes all HTML entities.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Any input string to decode.
 			 *
@@ -755,7 +755,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Convert plain text to HTML markup.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Input string to convert.
 			 *
@@ -779,7 +779,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Convert HTML markup converted to plain text.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Input string to convert.
 			 * @param array  $args Any additional behavioral args.
@@ -832,7 +832,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Strips PHP tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Input string to strip.
 			 *
@@ -865,7 +865,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * A very simple markdown parser.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Input string to convert.
 			 * @param array  $args Any additional behavioral args.
@@ -905,7 +905,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * A very simple markdown parser.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string See {@link markdown()}.
 			 * @param array  $args See {@link markdown()}.
@@ -920,7 +920,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Wraps inline markup (and optional leader) inside `<p></p>` tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $string Input markup to wrap.
 			 *
@@ -1042,7 +1042,7 @@ namespace wp_kb_articles // Root namespace.
 			 * @var array Block container tags.
 			 *    i.e. block tags that serve as inline containers.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public $block_container_tags = array(
 				'p',

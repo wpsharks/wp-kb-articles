@@ -7,3 +7,6 @@
 [submodule "wp-kb-articles/submodules/sharkicons"]
 	path = wp-kb-articles/submodules/sharkicons
 	url = https://github.com/websharks/sharkicons
+[submodule "wp-kb-articles-pro"]
+	path = wp-kb-articles-pro
+	url = https://github.com/websharks/wp-kb-articles-pro

@@ -2,7 +2,7 @@
 /**
  * Menu Pages
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Menu Pages
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class menu_page extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $which Which menu page to display?
 			 */
@@ -39,7 +39,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Displays menu page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function options_()
 			{
@@ -320,7 +320,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Displays menu page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function import_export_()
 			{
@@ -419,7 +419,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Displays menu page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function site_templates_()
 			{
@@ -718,7 +718,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs menu page heading.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $title Title of this menu page.
 			 * @param string $logo_icon Logo/icon for this menu page.
@@ -773,7 +773,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * All-panel togglers.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Markup for all-panel togglers.
 			 */
@@ -790,7 +790,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs menu page notes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string The notes for this menu page.
 			 */
@@ -818,7 +818,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs a menu page panel.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $title Panel title.
 			 * @param string $body Panel body; i.e. HTML markup.
@@ -868,7 +868,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs a select-all input field value.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $label_markup HTML markup for label.
 			 * @param string $value Current value to be selected in the input field.

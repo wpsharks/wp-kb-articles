@@ -2,7 +2,7 @@
 /**
  * Environment Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Environment Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_env extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current request is for a pro version preview?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return boolean `TRUE` if the current request is for a pro preview.
 			 */
@@ -51,7 +51,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current `$GLOBALS['pagenow']`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current `$GLOBALS['pagenow']`.
 			 */
@@ -66,7 +66,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current admin menu page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current admin menu page.
 			 */
@@ -87,7 +87,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Checks if current page is a menu page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $page_to_check A specific page to check (optional).
 			 *    If empty, this returns `TRUE` for any admin menu page.
@@ -122,7 +122,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Maxmizes available memory.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function maximize_memory()
 			{
@@ -135,7 +135,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Prepares for output delivery.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function prep_for_output()
 			{
@@ -151,7 +151,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Prepares for large output delivery.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function prep_for_large_output()
 			{
@@ -162,7 +162,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Max allowed file upload size.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return float A floating point number.
 			 */

@@ -2,7 +2,7 @@
 /**
  * URL Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * URL Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_url extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current scheme; lowercase.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current scheme; lowercase.
 			 */
@@ -48,7 +48,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current front scheme; lowercase.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current front scheme; lowercase.
 			 *
@@ -66,7 +66,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Sets URL scheme.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $url The input URL to work from (optional).
 			 *    If empty, defaults to the current URL.
@@ -102,7 +102,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current host name; lowercase.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param boolean $no_port No port number? Defaults to `FALSE`.
 			 *
@@ -129,7 +129,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current `host[/path]`; w/ multisite compat.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current `host/path`; w/ multisite compat.
 			 *
@@ -152,7 +152,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current base/root host name; w/ multisite compat.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current base/root host name; w/ multisite compat.
 			 *
@@ -182,7 +182,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current URI; with a leading `/`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current URI; with a leading `/`.
 			 */
@@ -197,7 +197,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current URI/path; with a leading `/`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current URI/path; with a leading `/`.
 			 */
@@ -212,7 +212,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current path info; e.g. `index.php/path/info/`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current path info; e.g. `index.php/path/info/`.
 			 */
@@ -231,7 +231,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current URL; i.e. scheme.host.URI put together.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional. Defaults to a `NULL` value.
 			 *    See {@link set_scheme()} method for further details.
@@ -251,7 +251,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * URL without a query string.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $url The input URL to work from (optional).
 			 *    If empty, defaults to the current URL.
@@ -274,7 +274,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * URL with `_wpnonce`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $nonce_action A specific nonce action.
 			 *    Defaults to `__NAMESPACE__`.
@@ -301,7 +301,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * URL with only a `page` var (if applicable).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $page A specific page value (optional).
 			 *    If empty, we use `page` from the URL; else current `page`.
@@ -354,7 +354,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * URL with only a `page` var (if applicable) and `_wpnonce`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $page A specific page value (optional).
 			 *    If empty, we use `page` from the URL; else current `page`.
@@ -380,7 +380,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Main menu page URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -397,7 +397,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Main menu page URL; w/ `_wpnonce`.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $nonce_action A specific nonce action.
 			 *    Defaults to `__NAMESPACE__`.
@@ -417,7 +417,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Import/export menu page URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -434,7 +434,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Site templates menu page URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -451,7 +451,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Options updated URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -466,7 +466,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Restore default options URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -484,7 +484,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Options restored URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -499,7 +499,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Restore default options URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $type New type/mode to use.
 			 *
@@ -520,7 +520,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Template type updated URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -535,7 +535,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Pro preview URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $url The input URL to work from (optional).
 			 *    If empty, defaults to the main menu page.
@@ -559,7 +559,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Notice dimissal URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $notice_key The notice key to dismiss.
 			 *
@@ -581,7 +581,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Notice dimissed URL.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional . Defaults to `admin`.
 			 *    See {@link set_scheme()} method for further details.
@@ -598,7 +598,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Product page URL; normally at WebSharks™.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional. Defaults to a `NULL` value.
 			 *    See {@link set_scheme()} method for further details.
@@ -617,7 +617,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Subscribe page URL; normally at WebSharks™.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string|null $scheme Optional. Defaults to a `NULL` value.
 			 *    See {@link set_scheme()} method for further details.
@@ -636,7 +636,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * URL to a plugin file.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $file Optional file path; relative to plugin directory.
 			 *
@@ -656,7 +656,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Checks for a valid `_wpnonce` value.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $nonce_action A specific nonce action.
 			 *    Defaults to `__NAMESPACE__`.
@@ -681,7 +681,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shortcode list w/ possible query vars.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string      $url A specific URL to work from?
 			 *    Defaults to the current URL. Pass `index` to force Page w/ shortcode.

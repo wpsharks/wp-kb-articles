@@ -2,7 +2,7 @@
 /**
  * GitHub Processor
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,77 +16,77 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * GitHub Processor
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class github_processor extends abs_base
 		{
 			/**
 			 * @var boolean A CRON job?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $is_cron;
 
 			/**
 			 * @var integer Start time.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $start_time;
 
 			/**
 			 * @var integer Max time (in seconds).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $max_time;
 
 			/**
 			 * @var integer Delay (in milliseconds).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $delay;
 
 			/**
 			 * @var integer Max entries to process.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $max_limit;
 
 			/**
 			 * @var array Files being processed in the tree.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $files;
 
 			/**
 			 * @var integer Total files.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $total_files;
 
 			/**
 			 * @var integer Processed file counter.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $processed_file_counter;
 
 			/**
 			 * @var github_api GitHub API instance.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $github_api;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param boolean      $is_cron Is this a CRON job?
 			 *    Defaults to a `TRUE` value. If calling directly pass `FALSE`.
@@ -155,7 +155,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Prep CRON job.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_prep_cron_job()
 			{
@@ -177,7 +177,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * GitHub processor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_process()
 			{
@@ -235,7 +235,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * File processor; if applicable.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $path GitHub file path; relative to repo root.
 			 * @param array  $file File data from GitHub API tree call.
@@ -284,7 +284,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Out of time yet?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return boolean TRUE if out of time.
 			 */
@@ -299,7 +299,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Out of time after a possible delay?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return boolean TRUE if out of time.
 			 */

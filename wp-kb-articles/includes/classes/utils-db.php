@@ -2,7 +2,7 @@
 /**
  * DB Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,21 +16,21 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * DB Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_db extends abs_base
 		{
 			/**
 			 * @var \wpdb WP DB class reference.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public $wp;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -42,7 +42,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Current DB prefix for this plugin.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Current DB table prefix.
 			 */
@@ -54,7 +54,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Typify result properties deeply.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $value Any value can be typified deeply.
 			 *
@@ -85,7 +85,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Should an array/object key contain an integer value?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $key The input key to check.
 			 *
@@ -119,7 +119,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Should an array/object key contain a float value?
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param mixed $key The input key to check.
 			 *
@@ -133,7 +133,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Post comment status translator.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer|string $status
 			 *
@@ -168,7 +168,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Pagination links start page.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $current_page The current page number.
 			 * @param integer $total_pages The total pages available.

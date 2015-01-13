@@ -2,7 +2,7 @@
 /**
  * Upgrade Routines
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,21 +16,21 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Upgrade Routines
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class upgrader extends abs_base
 		{
 			/**
 			 * @var string Previous version.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $prev_version;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -44,7 +44,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Upgrade routine(s).
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected function maybe_upgrade()
 			{

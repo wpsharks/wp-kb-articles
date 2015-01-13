@@ -2,7 +2,7 @@
 /**
  * GitHub Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * GitHub Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_github extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Converts a repo path into a WP slug.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $path GitHub repo path to a file.
 			 *
@@ -53,7 +53,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Builds a title based on the content of an article body.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $body Article body.
 			 *
@@ -74,7 +74,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Converts a repo path to a post ID.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $path GitHub repo path to a file.
 			 *
@@ -95,7 +95,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Gets repo path for an article.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 *
@@ -112,7 +112,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Updates repo path for an article.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 * @param string  $path The repo file path.
@@ -131,7 +131,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Gets SHA1 hash for an article.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 *
@@ -148,7 +148,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Updates SHA1 hash for an article.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 * @param string  $sha Most recent SHA1 hash.

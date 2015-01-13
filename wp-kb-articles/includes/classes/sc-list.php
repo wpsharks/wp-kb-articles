@@ -23,7 +23,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Raw shortcode attributes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var array Raw shortcode attributes.
 			 */
@@ -32,7 +32,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shortcode attributes.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var \stdClass Shortcode attributes.
 			 */
@@ -41,7 +41,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shortcode content string.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @var string Shortcode content string.
 			 */
@@ -50,7 +50,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array  $attr Shortcode attributes.
 			 * @param string $content Shortcode content string.
@@ -216,7 +216,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Shortcode parser.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Parsed shortcode; i.e. HTML markup.
 			 */
@@ -241,7 +241,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Categories for tabs.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return array An array of category terms.
 			 *
@@ -265,7 +265,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * All of the KB article tags.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return array An array of tag terms.
 			 *
@@ -287,7 +287,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Performs the query.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return \WP_Query The query class instance.
 			 */

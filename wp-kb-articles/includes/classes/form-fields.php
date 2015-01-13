@@ -2,7 +2,7 @@
 /**
  * Form Fields
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,35 +16,35 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Form Fields
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class form_fields extends abs_base
 		{
 			/**
 			 * @var string Namespaced ID suffix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $ns_id_suffix;
 
 			/**
 			 * @var string Namespaced name suffix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $ns_name_suffix;
 
 			/**
 			 * @var string Class prefix.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			protected $class_prefix;
 
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Configuration args.
 			 */
@@ -68,7 +68,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs an input field row.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Specs and behavorial args.
 			 *
@@ -194,7 +194,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs a textarea field row.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Specs and behavorial args.
 			 *
@@ -325,7 +325,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs a select field row.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Specs and behavorial args.
 			 *
@@ -459,7 +459,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs an HR field row.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string HTML markup for this field row.
 			 */
@@ -479,7 +479,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Nested checkbox.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Specs and behavorial args.
 			 *
@@ -542,7 +542,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs a hidden input.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array $args Specs and behavorial args.
 			 *

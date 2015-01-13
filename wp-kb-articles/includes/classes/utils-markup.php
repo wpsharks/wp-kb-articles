@@ -2,7 +2,7 @@
 /**
  * Markup Utilities
  *
- * @since 141111 First documented version.
+ * @since 150113 First documented version.
  * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
  * @license GNU General Public License, version 3
  */
@@ -16,14 +16,14 @@ namespace wp_kb_articles // Root namespace.
 		/**
 		 * Markup Utilities
 		 *
-		 * @since 141111 First documented version.
+		 * @since 150113 First documented version.
 		 */
 		class utils_markup extends abs_base
 		{
 			/**
 			 * Class constructor.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 */
 			public function __construct()
 			{
@@ -33,7 +33,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs markup for an anchor tag.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $url URL to link to.
 			 * @param string $clickable Clickable text/markup.
@@ -59,7 +59,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs markup for an external anchor tag.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $url URL to link to.
 			 * @param string $clickable Clickable text/markup.
@@ -77,7 +77,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Constructs markup for a plugin menu page path.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @return string Markup for a plugin menu page path.
 			 */
@@ -99,7 +99,7 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Markup for select menu options.
 			 *
-			 * @since 141111 First documented version.
+			 * @since 150113 First documented version.
 			 *
 			 * @param array       $given_ops Options array.
 			 *    Keys are option values; values are labels.
