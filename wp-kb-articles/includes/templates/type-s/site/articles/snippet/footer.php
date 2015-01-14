@@ -28,7 +28,7 @@
 			<a href="#" class="-popularity" data-post-id="[post_id]">
 			<span class="-vote">
 				<strong>Did you find this article helpful?</strong>
-				<i class="fa fa-hand-o-right"></i> Show the author by clicking here!
+				<i class="fa fa-hand-o-right"></i> Let the author know by clicking here!
 			</span>
 			<span class="-thank-you">
 				<strong>Thank you!</strong> <i class="fa fa-smile-o"></i>
