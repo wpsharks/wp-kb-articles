@@ -54,7 +54,7 @@ namespace wp_kb_articles;
 			<a href="#" class="-popularity" data-post-id="<?php echo esc_attr(get_the_ID()); ?>">
 				<span class="-vote">
 					<strong><?php echo __('Did you find this article helpful?', $plugin->text_domain); ?></strong>
-					<i class="fa fa-hand-o-right"></i> <?php echo __('Show the author by clicking here!', $plugin->text_domain); ?>
+					<i class="fa fa-hand-o-right"></i> <?php echo __('Let the author know by clicking here!', $plugin->text_domain); ?>
 				</span>
 				<span class="-thank-you">
 					<strong><?php echo __('Thank you!', $plugin->text_domain); ?></strong> <i class="fa fa-smile-o"></i>
