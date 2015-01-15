@@ -81,7 +81,6 @@ Released under the terms of the [GNU General Public License](http://www.gnu.org/
 
 * Rewriting with OOP design.
 * Bringing plugin up-to-date w/ WordPress 4.1 compat.
-* Adding GitHub integration for KB articles sourced from a GitHub repo.
 * Adding a new shortcode: `[kb_articles_list /]`.
 * Adding new menu page w/ config options in Dashboard.
 

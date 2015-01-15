@@ -118,7 +118,6 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function clear_cron_hooks()
 			{
-				wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_github_processor');
 			}
 
 			/**

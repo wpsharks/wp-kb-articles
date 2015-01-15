@@ -36,7 +36,6 @@ namespace wp_kb_articles
 		 * @property-read utils_enc             $utils_enc
 		 * @property-read utils_env             $utils_env
 		 * @property-read utils_fs              $utils_fs
-		 * @property-read utils_github          $utils_github
 		 * @property-read utils_i18n            $utils_i18n
 		 * @property-read utils_ip              $utils_ip
 		 * @property-read utils_log             $utils_log
@@ -386,25 +385,6 @@ namespace wp_kb_articles
 
 					'uninstall_safeguards_enable'                                   => '1', // `0|1`; safeguards on?
 
-					/* Related to GitHub integration. */
-
-					'github_processing_enable'                                      => '0', // `0|1`; enable?
-
-					'github_mirror_owner'                                           => '', // Repo owner.
-					'github_mirror_repo'                                            => '', // Repo owner.
-					'github_mirror_branch'                                          => '', // Branch.
-					'github_mirror_username'                                        => '', // Username.
-					'github_mirror_password'                                        => '', // Password.
-					'github_mirror_api_key'                                         => '', // API key.
-					'github_mirror_author'                                          => '', // User login|ID.
-
-					'github_markdown_parse'                                         => '1', // Parse Markdown?
-
-					'github_processor_max_time'                                     => '30', // In seconds.
-					'github_processor_delay'                                        => '250', // In milliseconds.
-					'github_processor_max_limit'                                    => '100', // Total files.
-					'github_processor_realtime_max_limit'                           => '5', // Total files.
-
 					/* Related to IP tracking. */
 
 					'prioritize_remote_addr'                                        => '0', // `0|1`; enable?
@@ -491,13 +471,9 @@ namespace wp_kb_articles
 
 				if((integer)$this->options['crons_setup'] < 1382523750)
 				{
-					wp_clear_scheduled_hook('_cron_'.__NAMESPACE__.'_github_processor');
-					wp_schedule_event(time() + 60, 'every15m', '_cron_'.__NAMESPACE__.'_github_processor');
-
 					$this->options['crons_setup'] = (string)time();
 					update_option(__NAMESPACE__.'_options', $this->options);
 				}
-				add_action('_cron_'.__NAMESPACE__.'_github_processor', array($this, 'github_processor'), 10);
 				/*
 				 * Fire setup completion hooks.
 				 */
@@ -1447,18 +1423,6 @@ namespace wp_kb_articles
 				$schedules['every15m'] = array('interval' => 900, 'display' => __('Every 15 Minutes', $this->text_domain));
 
 				return apply_filters(__METHOD__, $schedules, get_defined_vars());
-			}
-
-			/**
-			 * GitHub processor.
-			 *
-			 * @since 150113 First documented version.
-			 *
-			 * @attaches-to `_cron_'.__NAMESPACE__.'_github_processor` action.
-			 */
-			public function github_processor()
-			{
-				new github_processor();
 			}
 		}
 

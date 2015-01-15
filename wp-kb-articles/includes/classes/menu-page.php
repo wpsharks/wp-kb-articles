@@ -253,7 +253,7 @@ namespace wp_kb_articles // Root namespace.
 
 				                '</div>';
 
-				echo $this->panel(__('GitHub Repo Integration', $this->plugin->text_domain), $_panel_body, array());
+				echo $this->panel(__('GitHub Repo Integration', $this->plugin->text_domain), $_panel_body, array('pro_only' => TRUE));
 
 				unset($_panel_body); // Housekeeping.
 

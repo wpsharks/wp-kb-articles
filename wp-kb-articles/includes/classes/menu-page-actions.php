@@ -41,8 +41,6 @@ namespace wp_kb_articles // Root namespace.
 					'set_template_type',
 					'restore_default_options',
 
-					'github_processor',
-
 					'dismiss_notice',
 
 					'import',
@@ -148,25 +146,6 @@ namespace wp_kb_articles // Root namespace.
 				$this->plugin->enqueue_user_notice($notice_markup, array('transient' => TRUE));
 
 				wp_redirect($this->plugin->utils_url->default_options_restored()).exit();
-			}
-
-			/**
-			 * Manual GitHub processor.
-			 *
-			 * @since 150113 First documented version.
-			 *
-			 * @param mixed $request_args Input argument(s).
-			 */
-			protected function github_processor($request_args)
-			{
-				$request_args = NULL; // Not used here.
-
-				if(!current_user_can($this->plugin->cap))
-					return; // Unauthenticated; ignore.
-
-				new github_processor(FALSE);
-
-				exit; // Stop script execution.
 			}
 
 			/**
