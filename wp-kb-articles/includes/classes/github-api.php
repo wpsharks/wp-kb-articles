@@ -348,7 +348,10 @@ namespace wp_kb_articles // Root namespace.
 				foreach(explode("\n", trim($article_headers_part)) as $_line)
 				{
 					if(!($_line = trim($_line)))
-						continue; // Skip over empty lines; i.e. with whitespace only.
+						continue; // Skip over empty lines.
+
+					if(strpos($_line, '#') === 0)
+						continue; // YAML comment line.
 
 					if(strpos($_line, ':', 1) !== FALSE)
 					{
