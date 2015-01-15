@@ -356,7 +356,8 @@ namespace wp_kb_articles // Root namespace.
 					if(strpos($_line, ':', 1) !== FALSE)
 					{
 						list($_name, $_value) = explode(':', $_line, 2);
-						$parts['headers'][strtolower(trim($_name))] = trim($_value);
+						$_name                    = str_replace('-', '_', strtolower(trim($_name)));
+						$parts['headers'][$_name] = trim($_value);
 					}
 				}
 				unset($_line, $_name, $_value); // Housekeeping.
