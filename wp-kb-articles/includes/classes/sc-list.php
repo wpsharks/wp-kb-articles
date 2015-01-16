@@ -324,7 +324,7 @@ namespace wp_kb_articles // Root namespace.
 						'terms'            => $this->attr->category,
 						'field'            => 'id',
 						'include_children' => TRUE,
-						'operator'         => 'AND',
+						'operator'         => 'IN',
 					);
 				}
 				if($this->attr->tag)
