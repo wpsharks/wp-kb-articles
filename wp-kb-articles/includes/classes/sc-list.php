@@ -339,10 +339,117 @@ namespace wp_kb_articles // Root namespace.
 						'operator' => 'AND',
 					);
 				}
-				if($this->attr->q)
-					$args['s'] = $this->attr->q;
-
+				if($this->attr->q) // Searching?
+				{
+					$args['post__in'] = $this->search_post_ids();
+				}
 				return new \WP_Query($args);
+			}
+
+			/**
+			 * Performs extended searches.
+			 *
+			 * @since 150113 First documented version.
+			 *
+			 * @return array An array of all matching post IDs.
+			 */
+			protected function search_post_ids()
+			{
+				if(!($search_terms = $this->sql_search_terms()))
+					return array(); // Not possible.
+
+				# Construct SQL syntax to assist with searches below.
+
+				$sql_name_search_terms = $sql_post_title_search_terms = $sql_post_content_search_terms = array();
+
+				foreach($search_terms as $_key => $_term) // Build an array of searches.
+					$sql_name_search_terms[] = "`name` LIKE '%".esc_sql($this->plugin->utils_db->wp->esc_like($_term))."%'";
+				unset($_key, $_term); // Housekeeping.
+
+				foreach($search_terms as $_key => $_term) // Build an array of searches.
+					$sql_post_title_search_terms[] = "`post_title` LIKE '%".esc_sql($this->plugin->utils_db->wp->esc_like($_term))."%'";
+				unset($_key, $_term); // Housekeeping.
+
+				foreach($search_terms as $_key => $_term) // Build an array of searches.
+					$sql_post_content_search_terms[] = "`post_content` LIKE '%".esc_sql($this->plugin->utils_db->wp->esc_like($_term))."%'";
+				unset($_key, $_term); // Housekeeping.
+
+				# Search for all KB article post IDs that have a matching tag name.
+
+				$tag_term_ids_sql = // All term IDs in the tag taxonomy.
+					"SELECT `term_id` FROM `".esc_sql($this->plugin->utils_db->wp->term_taxonomy)."`".
+					" WHERE `taxonomy` = '".esc_sql($this->plugin->post_type.'_tag')."'";
+
+				$tag_search_term_ids_sql = // All tag term IDs that match a search term.
+					"SELECT `term_id` FROM `".esc_sql($this->plugin->utils_db->wp->terms)."`".
+					" WHERE `term_id` IN(".$tag_term_ids_sql.")". // Tags only.
+					" AND (".implode(' OR ', $sql_name_search_terms).")";
+
+				$matching_tag_term_taxonomy_ids_sql = // All matching tag term/taxonomy IDs.
+					"SELECT `term_taxonomy_id` FROM `".esc_sql($this->plugin->utils_db->wp->term_taxonomy)."`".
+					" WHERE `term_id` IN(".$tag_search_term_ids_sql.")";
+
+				$matching_tagged_post_ids_sql = // All post IDs with a matching tag; i.e. w/ a matching term/taxonomy ID.
+					"SELECT `object_id` AS `post_id` FROM `".esc_sql($this->plugin->utils_db->wp->term_relationships)."`".
+					" WHERE `term_taxonomy_id` IN(".$matching_tag_term_taxonomy_ids_sql.")";
+
+				$matching_post_ids_via_tags = $this->plugin->utils_db->wp->get_col($matching_tagged_post_ids_sql);
+
+				# Search for all KB article post IDs with a matching title or content body.
+
+				$matching_post_ids_sql = // All matching post IDs.
+					"SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
+					" WHERE (".implode(' OR ', $sql_post_title_search_terms).") OR (".implode(' OR ', $sql_post_content_search_terms).")";
+
+				$matching_post_ids_via_posts = $this->plugin->utils_db->wp->get_col($matching_post_ids_sql);
+
+				# Return all of the matching post IDs for use in other SQL querys.
+
+				return array_unique(array_map('intval', array_merge($matching_post_ids_via_tags, $matching_post_ids_via_posts)));
+			}
+
+			/**
+			 * Parses search terms.
+			 *
+			 * @since 15xxxx Improving search engine.
+			 *
+			 * @return array An array of all SQL-syntax search terms.
+			 */
+			protected function sql_search_terms()
+			{
+				if(!($q = trim(strtolower($this->attr->q))))
+					return array(); // Not possible.
+
+				$q = substr($q, 0, 255); // Lets be reasonable please.
+
+				if(!preg_match_all('/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $q, $_m))
+					return array(); // Nothing to search for.
+
+				$qs        = $this->plugin->utils_string->trim_deep($_m[0], '', '"');
+				$qs        = $this->plugin->utils_array->remove_emptys($qs); // Remove empty terms.
+				$stopwords = explode(',', _x('about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www', $this->plugin->text_domain));
+
+				$terms = array(); // Initialize.
+
+				foreach($qs as $_key => $_q)
+				{
+					if(!isset($_q[0]))
+						continue; // Empty.
+
+					if(strlen($_q[0]) === 1 && preg_match('/^[a-z]$/i', $_q))
+						continue; // Avoid single `[a-zA-Z]`.
+
+					if(in_array($_q, $stopwords, TRUE))
+						continue; // Exclude stopwords.
+
+					$terms[] = $_q; // Add to the array.
+				}
+				unset($_key, $_q); // Housekeeping.
+
+				$terms = array_unique($terms); // Unique terms only.
+				if(count($terms) > 9) $terms = array(implode(' ', $qs));
+
+				return $terms; // All search terms.
 			}
 		}
 	}
