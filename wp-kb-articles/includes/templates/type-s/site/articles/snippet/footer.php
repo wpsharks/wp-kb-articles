@@ -6,18 +6,18 @@
 				[popularity]
 			</div>
 			[if tags]
-			<div class="-tags">
-				<em>Tagged:</em> [tags]
-			</div>
+				<div class="-tags">
+					<em>Tagged:</em> [tags]
+				</div>
 			[endif]
 		</div>
 
 		<div class="-author-popularity">
 			<div class="-author">
 				[if show_avatars]
-				<div class="-avatar">
-					<a href="[author_posts_url]">[author_avatar]</a>
-				</div>
+					<div class="-avatar">
+						<a href="[author_posts_url]">[author_avatar]</a>
+					</div>
 				[endif]
 				<div class="-byline">
 					<span class="-by">Article written by:</span>
