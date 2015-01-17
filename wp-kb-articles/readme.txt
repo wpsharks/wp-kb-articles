@@ -1,6 +1,6 @@
 === WP KB Articles ===
 
-Stable tag: 150113
+Stable tag: 150117
 Requires at least: 4.1
 Tested up to: 4.2-alpha
 Text Domain: wp-kb-articles
@@ -77,7 +77,7 @@ Released under the terms of the [GNU General Public License](http://www.gnu.org/
 
 == Changelog ==
 
-= v150113 =
+= v150117 =
 
 * Rewriting with OOP design.
 * Bringing plugin up-to-date w/ WordPress 4.1 compat.

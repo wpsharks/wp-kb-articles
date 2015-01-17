@@ -202,7 +202,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Current version of the software.
 			 */
-			public $version = '150113';
+			public $version = '150117';
 
 			/*
 			 * Public Properties (Defined @ Setup)
