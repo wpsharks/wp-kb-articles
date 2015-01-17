@@ -233,8 +233,8 @@ namespace wp_kb_articles // Root namespace.
 					                array(
 						                'label'           => sprintf(__('Parse Markdown (<code>.md</code> files) Into HTML?', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
-						                'name'            => 'github_markdown_parse',
-						                'current_value'   => $current_value_for('github_markdown_parse'),
+						                'name'            => 'github_markdown_parse_enable',
+						                'current_value'   => $current_value_for('github_markdown_parse_enable'),
 						                'allow_arbitrary' => FALSE,
 						                'options'         => array(
 							                '1' => __('Yes, parse Markdown files into HTML and save the post content as HTML markup', $this->plugin->text_domain),
