@@ -15,7 +15,7 @@ namespace wp_kb_articles;
  */
 ?>
 <?php $_tags = ''; // Initialize.
-if(($_tag_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))):
+if(($_tag_terms = get_the_terms($post->ID, $plugin->post_type.'_tag'))):
 	foreach($_tag_terms as $_term) // Iterate the tags that it has.
 		$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
 		          '<a href="'.esc_attr(get_term_link($_term)).'">'.esc_attr($_term->name).'</a>';
@@ -32,11 +32,11 @@ echo $template->snippet(
 
 	'[namespace]'            => esc_attr(__NAMESPACE__),
 
-	'[post_id]'              => esc_html(get_the_ID()),
+	'[post_id]'              => esc_html($post->ID),
 	'[permalink]'            => esc_attr(get_permalink()),
 	'[title]'                => esc_html(get_the_title()),
 
-	'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
+	'[popularity]'           => esc_html($plugin->utils_post->get_popularity($post->ID)),
 
 	'[author_id]'            => esc_attr(get_the_author_meta('ID')),
 	'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
