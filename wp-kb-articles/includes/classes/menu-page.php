@@ -227,6 +227,8 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
+				                '<hr />'.
+
 				                ' <table style="margin-bottom:0;">'.
 				                '    <tbody>'.
 				                $form_fields->select_row(
@@ -263,6 +265,25 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->select_row(
+					                array(
+						                'label'           => sprintf(__('Content Read-Only in WordPress?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						                'name'            => 'github_readonly_content_enable',
+						                'current_value'   => $current_value_for('github_readonly_content_enable'),
+						                'allow_arbitrary' => FALSE,
+						                'options'         => array(
+							                '1' => __('Yes, keep the content in WordPress read-only to avoid edits that would be overwritten by the underlying GitHub repo anyway', $this->plugin->text_domain),
+							                '0' => __('No, I intend to juggle edits in both WordPress and in the GitHub repo too (not recommended)', $this->plugin->text_domain),
+						                ),
+						                'notes_after'     => '<p>'.sprintf(__('Articles pulled into WordPress from the underlying GitHub repo are automatically sychronized periodically. For this reason, all article content should almost always be read-only in WordPress. This is to avoid a scenario where someone changes an article in WordPress without also changing it in the GitHub repo. When you integrate with GitHub, all article changes should normally occur (and be tracked) by the underlying GitHub repo; not from within WordPress. That being said, it is quite common for site owners to exclude some of the %1$s fields on the GitHub side, thereby gaining exclusive control over Post Metadata from within WordPress. See: %1$s for further details on this.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+						                                     '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> This setting has no impact on KB articles that are created within WordPress; i.e. articles that did not originate at GitHub will always be editable.</p>', $this->plugin->text_domain),
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
 				                ' <hr />'.
 
 				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these settings configured, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
@@ -272,6 +293,31 @@ namespace wp_kb_articles // Root namespace.
 				                '</div>';
 
 				echo $this->panel(__('GitHub Repo Integration', $this->plugin->text_domain), $_panel_body, array('pro_only' => TRUE));
+
+				unset($_panel_body); // Housekeeping.
+
+				/* ----------------------------------------------------------------------------------------- */
+
+				$_panel_body = '<table>'.
+				               '  <tbody>'.
+				               $form_fields->select_row(
+					               array(
+						               'label'           => sprintf(__('Auto-Generate TOC (Table of Contents)?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						               'name'            => 'toc_generation_enable',
+						               'current_value'   => $current_value_for('toc_generation_enable'),
+						               'allow_arbitrary' => FALSE,
+						               'options'         => array(
+							               '1' => __('Yes, automatically generate a TOC for each article w/ headings', $this->plugin->text_domain),
+							               '0' => __('No, I prefer that my articles not be displayed with a TOC', $this->plugin->text_domain),
+						               ),
+						               'notes_after'     => '<p>'.__('A TOC (Table of Contents) is a structured list of clickable topics discussed in each article; where each of these links in the TOC leads to a specific scroll position in the document. A TOC can be auto-generated whenever you use headings (i.e. <code>&lt;h[1-6]&gt;</code> tags) in your article. Adding these headings can be accomplished with raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable TOC generation, but you have a few articles where you\'d prefer to exclude the TOC; you can simply add a Custom Field to the article in WordPress: <code>%1$s_toc_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>toc-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+					               )).
+				               '  </tbody>'.
+				               '</table>';
+
+				echo $this->panel(__('TOC (Table of Contents)', $this->plugin->text_domain), $_panel_body, array('pro_only' => TRUE));
 
 				unset($_panel_body); // Housekeeping.
 
@@ -546,6 +592,44 @@ namespace wp_kb_articles // Root namespace.
 
 					/* ----------------------------------------------------------------------------------------- */
 
+					if($this->plugin->utils_env->is_pro_preview())
+					{
+						echo '         <h2 class="pmp-section-heading">'.
+						     '            '.__('Templates for Article TOC', $this->plugin->text_domain).
+						     '            <small>'.__('These are used in the Table of Contents for each KB article.', $this->plugin->text_domain).'</small>'.
+						     '         </h2>';
+					}
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article TOC', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/html',
+							               'name'          => 'template__type_s__site__articles__snippet__toc___php',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__toc___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the top of KB articles when a TOC is auto-generated.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+							               'cm_details'    => $shortcode_details(array(
+								                                                     '[namespace]' => __('The plugin\'s namespace; used in class/id/name generation.', $this->plugin->text_domain),
+								                                                     '[post_id]'   => __('The numeric WP post ID for the current article.', $this->plugin->text_domain),
+								                                                     '[permalink]' => __('The permalink/URL leading to the current article.', $this->plugin->text_domain),
+								                                                     '[title]'     => __('Title of the current article.', $this->plugin->text_domain),
+								                                                     '[toc]'       => __('Table of contents; i.e. a list of items.', $this->plugin->text_domain),
+							                                                     )),
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article TOC', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>', 'pro_only' => TRUE));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
 					echo '         <h2 class="pmp-section-heading">'.
 					     '            '.__('Templates for Article Footer', $this->plugin->text_domain).
 					     '            <small>'.__('These are used at the bottom of each KB article.', $this->plugin->text_domain).'</small>'.
@@ -654,6 +738,73 @@ namespace wp_kb_articles // Root namespace.
 					               '</table>';
 
 					echo $this->panel(__('Articles List Scripts', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
+					if($this->plugin->utils_env->is_pro_preview())
+					{
+						echo '         <h2 class="pmp-section-heading">'.
+						     '            '.__('Templates for Article TOC', $this->plugin->text_domain).
+						     '            <small>'.__('These are used in the Table of Contents for each KB article.', $this->plugin->text_domain).'</small>'.
+						     '         </h2>';
+					}
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article TOC', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__toc___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__toc___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output at the top of KB articles when a TOC is auto-generated. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article TOC', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>', 'pro_only' => TRUE));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article TOC Styles', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/css',
+							               'name'          => 'template__type_a__site__articles__toc___css',
+							               'current_value' => $current_value_for('template__type_a__site__articles__toc___css'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the CSS used by the the Article TOC template.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article TOC Styles', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>', 'pro_only' => TRUE));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Article TOC Scripts', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__toc___js___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__toc___js___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the JavaScript used by the the Article TOC template.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Article TOC Scripts', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>', 'pro_only' => TRUE));
 
 					unset($_panel_body); // Housekeeping.
 

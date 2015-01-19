@@ -7,10 +7,29 @@
 		clear   : both;
 	}
 }
+@mixin laptops-or-smaller
+{
+	@media (max-width : 1199px) {
+		@content;
+	}
+}
+@mixin tablets-or-smaller
+{
+	@media (max-width : 767px) {
+		@content;
+	}
+}
+@mixin phones-or-smaller
+{
+	@media (max-width : 479px) {
+		@content;
+	}
+}
 .wp_kb_articles-footer
 {
 	@include clearfix;
 	position : relative;
+	clear    : both;
 
 	& *,
 	& *:focus,
@@ -84,6 +103,16 @@
 				box-shadow    : 0 4px 4px -4px rgba(0, 0, 0, 0.5);
 				transition    : all 0.2s ease-in-out;
 
+				@include laptops-or-smaller
+				{
+					float  : none;
+					width  : 100%;
+					margin : 0 0 1em 0;
+				}
+				@include phones-or-smaller
+				{
+					font-size : 80%;
+				}
 				& > .-avatar
 				{
 					float  : left;
@@ -97,6 +126,12 @@
 
 						width         : 64px !important;
 						height        : 64px !important;
+
+						@include laptops-or-smaller
+						{
+							width  : 32px !important;
+							height : 32px !important;
+						}
 					}
 				}
 				& > .-byline
@@ -105,6 +140,11 @@
 					{
 						display : block;
 						margin  : .8em 0 0 0;
+
+						@include laptops-or-smaller
+						{
+							margin : 0;
+						}
 					}
 					& > a.-author,
 					& > a.-author:hover,
@@ -154,6 +194,15 @@
 				box-shadow      : 0 4px 4px -4px rgba(0, 0, 0, 0.5);
 				transition      : all 0.2s ease-in-out;
 
+				@include laptops-or-smaller
+				{
+					float : none;
+					width : 100%;
+				}
+				@include phones-or-smaller
+				{
+					font-size : 80%;
+				}
 				&:hover,
 				&:focus
 				{
@@ -176,6 +225,15 @@
 					line-height            : 64px;
 
 					color                  : #E0373B;
+
+					@include laptops-or-smaller
+					{
+						width       : 32px;
+						height      : 32px;
+
+						font-size   : 32px;
+						line-height : 32px;
+					}
 				}
 				& > .-vote,
 				& > .-thank-you
@@ -183,6 +241,10 @@
 					display : block;
 					margin  : .8em 0 0 0;
 
+					@include laptops-or-smaller
+					{
+						margin : 0;
+					}
 					& > strong
 					{
 						display   : block;

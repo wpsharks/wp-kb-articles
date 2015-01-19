@@ -31,24 +31,26 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
-			 * Output footer content.
+			 * Filters the content.
 			 *
 			 * @since 150113 First documented version.
+			 *
+			 * @param string $content The content markup.
+			 *
+			 * @return string The `$content` w/ possible footer.
 			 */
-			public function content()
+			public function filter($content)
 			{
-				$post = $GLOBALS['post'];
+				$post    = $GLOBALS['post'];
+				$content = (string)$content;
 
-				if(!$post || $post->post_type !== $this->plugin->post_type)
-					return ''; // Not applicable.
-
-				if(!is_singular()) // Singulars articles only.
-					return ''; // Not applicable.
+				if(!$post || !is_singular($this->plugin->post_type))
+					return $content; // Not applicable.
 
 				$template_vars = get_defined_vars();
 				$template      = new template('site/articles/footer.php');
 
-				return $template->parse($template_vars);
+				return $content.$template->parse($template_vars);
 			}
 		}
 	}

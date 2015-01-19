@@ -64,11 +64,8 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function maybe_enqueue_footer_styles()
 			{
-				if(empty($GLOBALS['post']) || !is_singular())
+				if(!is_singular($this->plugin->post_type))
 					return; // Not a post/page.
-
-				if($GLOBALS['post']->post_type !== $this->plugin->post_type)
-					return; // It's not a KB article post type.
 
 				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'), array(), NULL, 'all');
 

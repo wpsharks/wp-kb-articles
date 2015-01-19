@@ -240,7 +240,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$e = '~xe'.($w_md5_cs ? ':'.md5($e) : '').'|'.$e; // Pack components.
 
-				return ($base64 = $this->©string->base64_url_safe_encode($e));
+				return ($base64 = $this->base64_url_safe_encode($e));
 			}
 
 			/**
@@ -271,7 +271,7 @@ namespace wp_kb_articles // Root namespace.
 				if(!isset($base64[0])) // Nothing to decrypt?
 					return ($string = ''); // Nothing to do.
 
-				if(!strlen($e = $this->©string->base64_url_safe_decode($base64))
+				if(!strlen($e = $this->base64_url_safe_decode($base64))
 				   || !preg_match('/^~xe(?:\:(?P<md5>[a-zA-Z0-9]+))?\|(?P<e>.*?)$/s', $e, $md5_e)
 				) return ($string = ''); // Components missing.
 

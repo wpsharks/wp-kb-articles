@@ -1152,7 +1152,7 @@ namespace wp_kb_articles
 
 				$footer = new footer(); // Footer class instance.
 
-				return $content.$footer->content();
+				return $footer->filter($content); // With footer.
 			}
 
 			/*

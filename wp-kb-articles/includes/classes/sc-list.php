@@ -104,7 +104,7 @@ namespace wp_kb_articles // Root namespace.
 
 				foreach($this->attr as $_prop => &$_value)
 					if(in_array($_prop, array('page', 'per_page'), TRUE))
-						$_value = (integer)trim($_value);
+						$_value = (integer)trim((string)$_value);
 					else $_value = trim((string)$_value);
 				unset($_prop, $_value); // Housekeeping.
 
@@ -224,6 +224,7 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$attr            = $this->attr;
 				$attr_           = $this->attr_;
+				$filters         = $this->filters();
 				$tab_categories  = $this->tab_categories();
 				$tags            = $this->tags();
 				$query           = $this->query();
@@ -236,6 +237,62 @@ namespace wp_kb_articles // Root namespace.
 				$template        = new template('site/articles/list.php');
 
 				return $template->parse($template_vars);
+			}
+
+			/**
+			 * Filters that apply.
+			 *
+			 * @since 150113 First documented version.
+			 *
+			 * @return array All filters that apply.
+			 */
+			protected function filters()
+			{
+				$filters = array(); // Initialize.
+
+				if($this->attr->author) // By author(s)?
+				{
+					$_authors      = array(); // Initialize.
+					$_show_avatars = get_option('show_avatars');
+
+					foreach($this->attr->author as $_author_id)
+						if(($_author = get_userdata($_author_id)))
+							$_authors[] = ($_show_avatars ? get_avatar($_author->ID, 32).' ' : '').
+							              esc_html($_author->display_name ? $_author->display_name : $_author->user_login);
+
+					$filters['author'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_authors));
+
+					unset($_authors, $_show_avatars, $_author_id, $_author); // Housekeeping.
+				}
+				if($this->attr->category) // By category(s)?
+				{
+					$_categories = array(); // Initialize.
+
+					foreach($this->attr->category as $_term_id)
+						if(($_term = get_term_by('id', $_term_id, $this->plugin->post_type.'_category')))
+							$_categories[] = esc_html($_term->name ? $_term->name : $_term->slug);
+
+					$filters['category'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_categories));
+
+					unset($_categories, $_term_id, $_term); // Housekeeping.
+				}
+				if($this->attr->tag) // By tag(s)?
+				{
+					$_tags = array(); // Initialize.
+
+					foreach($this->attr->tag as $_term_id)
+						if(($_term = get_term_by('id', $_term_id, $this->plugin->post_type.'_tag')))
+							$_tags[] = esc_html($_term->name ? $_term->name : $_term->slug);
+
+					$filters['tag'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_tags));
+
+					unset($_tags, $_term_id, $_term); // Housekeeping.
+				}
+				if($this->attr->q) // By search term(s)?
+				{
+					$filters['q'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), esc_html($this->attr->q));
+				}
+				return $filters; // An array of all filters.
 			}
 
 			/**

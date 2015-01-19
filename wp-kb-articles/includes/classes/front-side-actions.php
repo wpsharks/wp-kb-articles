@@ -92,13 +92,13 @@ namespace wp_kb_articles // Root namespace.
 			{
 				$this->is_doing_ajax = TRUE;
 				$attr                = (string)$request_args;
-				$attr                = $this->plugin->utils_enc->decrypt($attr);
+				$attr                = $this->plugin->utils_enc->xdecrypt($attr);
 				$attr                = (array)maybe_unserialize($attr);
 				$sc_list             = new sc_list($attr, '');
 
 				status_header(200); // Return response.
 				header('Content-Type: text/html; charset=UTF-8');
-				exit($sc_list->parse());
+				exit($sc_list->parse().'<!-- </html> -->');
 			}
 
 			/**
