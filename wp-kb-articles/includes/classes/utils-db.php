@@ -189,7 +189,7 @@ namespace wp_kb_articles // Root namespace.
 				$max_start_page = max($total_pages - ($max_links - 1), $min_start_page);
 				$start_page     = max(min($current_page - floor($max_links / 2), $max_start_page), $min_start_page);
 
-				return $start_page;
+				return (integer)$start_page;
 			}
 		}
 	}

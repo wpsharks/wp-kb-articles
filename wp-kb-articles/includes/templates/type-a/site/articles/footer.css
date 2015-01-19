@@ -73,6 +73,18 @@
   display: table;
   clear: both;
 }
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-author {
+    float: none;
+    width: 100%;
+    margin: 0 0 1em 0;
+  }
+}
+@media (max-width: 479px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-author {
+    font-size: 80%;
+  }
+}
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-avatar {
   float: left;
   margin: 0 2em 0 0;
@@ -84,9 +96,20 @@
   width: 64px !important;
   height: 64px !important;
 }
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-avatar > a > img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-byline > .-by {
   display: block;
   margin: .8em 0 0 0;
+}
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-byline > .-by {
+    margin: 0;
+  }
 }
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-byline > a.-author, .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-byline > a.-author:hover, .wp_kb_articles-footer > .-meta > .-author-popularity > .-author > .-byline > a.-author:focus {
   display: inline-block;
@@ -125,6 +148,17 @@
   display: table;
   clear: both;
 }
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity {
+    float: none;
+    width: 100%;
+  }
+}
+@media (max-width: 479px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity {
+    font-size: 80%;
+  }
+}
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity:hover, .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity:focus {
   background: #FEE8E3;
   border-color: #F38176;
@@ -141,9 +175,22 @@
   line-height: 64px;
   color: #E0373B;
 }
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity::before {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    line-height: 32px;
+  }
+}
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-vote, .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-thank-you {
   display: block;
   margin: .8em 0 0 0;
+}
+@media (max-width: 1199px) {
+  .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-vote, .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-thank-you {
+    margin: 0;
+  }
 }
 .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-vote > strong, .wp_kb_articles-footer > .-meta > .-author-popularity > .-popularity > .-thank-you > strong {
   display: block;

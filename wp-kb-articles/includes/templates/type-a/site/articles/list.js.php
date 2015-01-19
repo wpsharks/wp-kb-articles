@@ -109,7 +109,8 @@ namespace wp_kb_articles;
 				}
 				url = vars.ajaxEndpoint;
 				url += url.indexOf('?') === -1 ? '?' : '&';
-				url += encodeURIComponent(namespace + '[sc_list_via_ajax]') + '=' + encodeURIComponent(attrRaw);
+				url += 'zcAC=1'; // ZenCache compatibility.
+				url += '&' + encodeURIComponent(namespace + '[sc_list_via_ajax]') + '=' + encodeURIComponent(attrRaw);
 
 				for(_prop in requestAttrs)
 					if(requestAttrs.hasOwnProperty(_prop))

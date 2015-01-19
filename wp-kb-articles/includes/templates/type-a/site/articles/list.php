@@ -7,6 +7,7 @@ namespace wp_kb_articles;
  *
  * Other variables made available in this template file:
  *
+ * @var array       $filters All filters that apply.
  * @var \stdClass[] $tab_categories An array of categories; for tabs.
  * @var \stdClass[] $tags An array of all KB article tags.
  * @var \stdClass   $attr Parsed/normalized/validated shortcode attributes.
@@ -87,6 +88,42 @@ namespace wp_kb_articles;
 		</div>
 	</div>
 
+	<?php if($filters): ?>
+		<div class="-filters">
+			<div class="-apply">
+				<?php echo __('Showing all KB articles matching:', $plugin->text_domain); ?>
+			</div>
+			<ul>
+				<?php $_clear = __('clear', $plugin->text_domain); ?>
+				<?php foreach($filters as $_filter => $_by): ?>
+					<?php if($_by): // This filter applies? ?>
+						<li>
+							<?php switch($_filter) // i.e. `author`, `category`, `tag`, `q`.
+							{
+								case 'author': // Filtered by author?
+									echo '<i class="fa fa-user fa-fw"></i> '.sprintf(__('Author: %1$s', $plugin->text_domain), $_by).' <a href="#" data-click-author="" class="-clear">'.$_clear.'</a>';
+									break; // Break switch handler.
+
+								case 'category': // Filtered by category?
+									echo '<i class="fa fa-folder-open fa-fw"></i> '.sprintf(__('Category: %1$s', $plugin->text_domain), $_by).' <a href="#" data-click-category="" class="-clear">'.$_clear.'</a>';
+									break; // Break switch handler.
+
+								case 'tag': // Filtered by tag?
+									echo '<i class="fa fa-tag fa-fw"></i> '.sprintf(__('Tag: %1$s', $plugin->text_domain), $_by).' <a href="#" data-click-tag="" class="-clear">'.$_clear.'</a>';
+									break; // Break switch handler.
+
+								case 'q': // Filtered by search terms?
+									echo '<i class="fa fa-search fa-fw"></i> '.sprintf(__('Search for: %1$s', $plugin->text_domain), $_by).' <a href="#" data-click-q="" class="-clear">'.$_clear.'</a>';
+									break; // Break switch handler.
+							} ?>
+						</li>
+					<?php endif; ?>
+				<?php endforeach; // End filter loop.
+				unset($_clear, $_filter, $_by); // Housekeeping. ?>
+			</ul>
+		</div>
+	<?php endif; ?>
+
 	<div class="-articles">
 		<?php if($query->have_posts()): ?>
 			<?php while($query->have_posts()): $query->the_post(); ?>
@@ -135,7 +172,7 @@ namespace wp_kb_articles;
 			<?php endwhile; ?>
 			<?php wp_reset_postdata(); ?>
 		<?php else: ?>
-			<p><?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>
+			<p><i class="fa fa-meh-o"></i> <?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>
 		<?php endif; ?>
 	</div>
 
@@ -155,11 +192,11 @@ namespace wp_kb_articles;
 					<?php endif; ?>
 
 					<?php // Individual page links now.
-					$_max_page_links           = 10; // Max individual page links to show on each page.
+					$_max_page_links           = 15; // Max individual page links to show on each page.
 					$_page_links_start_at_page = // This is a mildly complex calculation that we can do w/ help from the plugin class.
 						$plugin->utils_db->pagination_links_start_page($pagination_vars->current_page, $pagination_vars->total_pages, $_max_page_links);
 
-					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $pagination_vars->total_pages; $_i++ && $_page++): ?>
+					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $pagination_vars->total_pages; $_i++, $_page++): ?>
 						<li>
 							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $_page))); ?>"
 							   data-click-page="<?php echo esc_attr($_page); ?>"
@@ -185,7 +222,7 @@ namespace wp_kb_articles;
 	<?php endif; ?>
 
 	<div class="-hidden">
-		<div class="-attr-raw" data-attr="<?php echo esc_attr($plugin->utils_enc->encrypt(serialize($attr_))); ?>"></div>
+		<div class="-attr-raw" data-attr="<?php echo esc_attr($plugin->utils_enc->xencrypt(serialize($attr_))); ?>"></div>
 		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->page); ?>"></div>
 		<div class="-attr-orderby" data-attr="<?php echo esc_attr(implode(',', $attr->orderbys)); ?>"></div>
 		<div class="-attr-author" data-attr="<?php echo esc_attr(implode(',', $attr->author)); ?>"></div>

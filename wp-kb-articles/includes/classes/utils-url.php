@@ -736,7 +736,7 @@ namespace wp_kb_articles // Root namespace.
 				{
 					$args = array(); // Initialize.
 					foreach($qvs as $_key => $_value)
-						if($_key !== 'page' || $_value > 1)
+						if(($_key !== 'page' || $_value > 1) && strlen((string)$_value))
 							$args[$this->plugin->qv_prefix.$_key] = $_value;
 					unset($_key, $_value); // Housekeeping.
 
@@ -746,7 +746,7 @@ namespace wp_kb_articles // Root namespace.
 				{
 					$url = rtrim($url, '/');
 					foreach($qvs as $_key => $_value)
-						if($_key !== 'page' || $_value > 1)
+						if(($_key !== 'page' || $_value > 1) && strlen((string)$_value))
 							$url .= '/'.urlencode($this->plugin->rewrite_prefix.$_key).'/'.urlencode($_value);
 					unset($_key, $_value); // Housekeeping.
 

@@ -227,6 +227,8 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
+				                '<hr />'.
+
 				                ' <table style="margin-bottom:0;">'.
 				                '    <tbody>'.
 				                $form_fields->select_row(
@@ -259,6 +261,25 @@ namespace wp_kb_articles // Root namespace.
 							                '0' => __('No, I don\'t maintain GitHub Issues for KB articles, or I don\'t care to expose them', $this->plugin->text_domain),
 						                ),
 						                'notes_after'     => '<p>'.sprintf(__('If you associate each KB article with a GitHub Issue (where you discuss changes/improvements to the article); enabling this feature provides viewers with a link to the underlying Issue where they can leave you feedback. To take advantage of this feature you should connect each KB article to a GitHub Issue using %1$s. In the case of an article that is not connected to a specific GitHub Issue, the link that viewers click will lead them to a list of all of your GitHub Issues.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->select_row(
+					                array(
+						                'label'           => sprintf(__('Content Read-Only in WordPress?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						                'name'            => 'github_readonly_content_enable',
+						                'current_value'   => $current_value_for('github_readonly_content_enable'),
+						                'allow_arbitrary' => FALSE,
+						                'options'         => array(
+							                '1' => __('Yes, keep the content in WordPress read-only to avoid edits that would be overwritten by the underlying GitHub repo anyway', $this->plugin->text_domain),
+							                '0' => __('No, I intend to juggle edits in both WordPress and in the GitHub repo too (not recommended)', $this->plugin->text_domain),
+						                ),
+						                'notes_after'     => '<p>'.sprintf(__('Articles pulled into WordPress from the underlying GitHub repo are automatically sychronized periodically. For this reason, all article content should almost always be read-only in WordPress. This is to avoid a scenario where someone changes an article in WordPress without also changing it in the GitHub repo. When you integrate with GitHub, all article changes should normally occur (and be tracked) by the underlying GitHub repo; not from within WordPress. That being said, it is quite common for site owners to exclude some of the %1$s fields on the GitHub side, thereby gaining exclusive control over Post Metadata from within WordPress. See: %1$s for further details on this.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+						                                     '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> This setting has no impact on KB articles that are created within WordPress; i.e. articles that did not originate at GitHub will always be editable.</p>', $this->plugin->text_domain),
 					                )).
 				                '    </tbody>'.
 				                ' </table>'.
