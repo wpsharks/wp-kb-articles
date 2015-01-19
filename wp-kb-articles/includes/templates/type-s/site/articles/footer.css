@@ -1,5 +1,6 @@
 .wp_kb_articles-footer {
   position: relative;
+  clear: both;
 }
 .wp_kb_articles-footer::after {
   content: '';

@@ -29,6 +29,7 @@
 {
 	@include clearfix;
 	position : relative;
+	clear    : both;
 
 	& *,
 	& *:focus,
