@@ -82,6 +82,9 @@ namespace wp_kb_articles // Root namespace.
 				if(isset($attr['categories']) && !isset($attr['category']))
 					$attr['category'] = $attr['categories'];
 
+				if(isset($attr['tab_category']) && !isset($attr['tab_categories']))
+					$attr['tab_categories'] = $attr['tab_category'];
+
 				if(isset($attr['tags']) && !isset($attr['tag']))
 					$attr['tag'] = $attr['tags'];
 
@@ -397,12 +400,12 @@ namespace wp_kb_articles // Root namespace.
 					);
 				}
 				if($this->attr->q) // Searching? If so, add filter.
-					add_filter('posts_where', array($this, 'search_post_ids'), 45645334, 2);
+					add_filter('posts_where', array($this, 'search_post_ids_filter'), 45645334, 2);
 
 				$query = new \WP_Query($args); // Perform the query now.
 
 				if($this->attr->q) // Searching? If so, remove filter.
-					remove_filter('posts_where', array($this, 'search_post_ids'), 45645334, 2);
+					remove_filter('posts_where', array($this, 'search_post_ids_filter'), 45645334, 2);
 
 				return $query;
 			}
@@ -419,7 +422,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @return string Possible altered `$where` value.
 			 */
-			public function search_post_ids($where, \WP_Query $query)
+			public function search_post_ids_filter($where, \WP_Query $query)
 			{
 				if(!($search_terms = $this->sql_search_terms()))
 					return $where; // Not possible.
@@ -466,7 +469,7 @@ namespace wp_kb_articles // Root namespace.
 					"SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
 					" WHERE (".implode(' OR ', $sql_post_title_search_terms).") OR (".implode(' OR ', $sql_post_content_search_terms).")";
 
-				# Return all of the matching post IDs for use in other SQL querys.
+				# Search all of the matching post IDs; i.e. alter the `$where` clause.
 
 				return "AND (`".esc_sql($this->plugin->utils_db->wp->posts)."`.`ID` IN(".$matching_tagged_post_ids_sql.")".
 				       " OR `".esc_sql($this->plugin->utils_db->wp->posts)."`.`ID` IN(".$matching_post_ids_sql.")) ".$where;
