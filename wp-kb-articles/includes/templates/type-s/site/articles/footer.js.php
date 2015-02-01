@@ -25,7 +25,8 @@ namespace wp_kb_articles;
 				qvPrefix = '<?php echo esc_js($plugin->qv_prefix); ?>',
 				vars = {
 					pluginUrl   : '<?php echo esc_js(rtrim($plugin->utils_url->to('/'), '/')); ?>',
-					ajaxEndpoint: '<?php echo esc_js(home_url('/')); ?>'
+					ajaxEndpoint: '<?php echo esc_js(home_url('/')); ?>',
+					postId      : '<?php echo esc_js(get_the_ID()); ?>'
 				},
 				i18n = {}, // No translation needed at this time.
 
@@ -33,9 +34,10 @@ namespace wp_kb_articles;
 
 				$meta = $footer.find('> .-meta'),
 
-				$metaPopularityTags = $meta.find('> .-popularity-tags'),
-				$metaPopularityTagsPopularity = $metaPopularityTags.find('> .-popularity'),
-				$metaPopularityTagsTags = $metaPopularityTags.find('> .-tags'),
+				$metaPopularityTagsFeedback = $meta.find('> .-popularity-tags-feedback'),
+				$metaPopularityTagsFeedbackPopularity = $metaPopularityTagsFeedback.find('> .-popularity'),
+				$metaPopularityTagsFeedbackTags = $metaPopularityTagsFeedback.find('> .-tags'),
+				$metaPopularityTagsFeedbackFeedback = $metaPopularityTagsFeedback.find('> .-feedback'),
 
 				$metaAuthorPopularity = $meta.find('> .-author-popularity'),
 				$metaAuthorPopularityAuthor = $metaAuthorPopularity.find('> .-author'),
@@ -43,23 +45,33 @@ namespace wp_kb_articles;
 
 			$metaAuthorPopularityPopularity.on('click', function(e)
 			{
-				var url, $this = $(this),
-					postId = $this.data('postId');
+				var url, $this = $(this);
 
 				if(!$this.hasClass('-active') && !$this.data('castPopularityVote'))
 				{
 					url = vars.ajaxEndpoint;
 					url += url.indexOf('?') === -1 ? '?' : '&';
-					url += encodeURIComponent(namespace + '[cast_popularity_vote_via_ajax]') + '=' + encodeURIComponent(postId);
+					url += encodeURIComponent(namespace + '[cast_popularity_vote_via_ajax]') + '=' + encodeURIComponent(vars.postId);
 
 					$.get(url, function(data) // Attempt to cast vote and update popularity counter.
 					{
-						$metaPopularityTagsPopularity.html(Number($metaPopularityTagsPopularity.text()) + Number(data)),
+						$metaPopularityTagsFeedbackPopularity.html(Number($metaPopularityTagsFeedbackPopularity.text()) + Number(data)),
 							$this.data('castPopularityVote', 1);
 					});
 				}
 				$this.toggleClass('-active');
 			});
+
+			(function() // Record stats.
+			{
+				var url, $this = $(this);
+
+				url = vars.ajaxEndpoint;
+				url += url.indexOf('?') === -1 ? '?' : '&';
+				url += encodeURIComponent(namespace + '[record_stats_via_ajax]') + '=' + encodeURIComponent(vars.postId);
+
+				$.get(url, function(data){}); // Attempt to record statistics.
+			})();
 		};
 		$document.ready(plugin.onReady);
 	})(jQuery);

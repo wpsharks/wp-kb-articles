@@ -82,6 +82,9 @@ namespace wp_kb_articles // Root namespace.
 				if(isset($attr['categories']) && !isset($attr['category']))
 					$attr['category'] = $attr['categories'];
 
+				if(isset($attr['tab_category']) && !isset($attr['tab_categories']))
+					$attr['tab_categories'] = $attr['tab_category'];
+
 				if(isset($attr['tags']) && !isset($attr['tag']))
 					$attr['tag'] = $attr['tags'];
 
@@ -396,11 +399,14 @@ namespace wp_kb_articles // Root namespace.
 						'operator' => 'AND',
 					);
 				}
-				if($this->attr->q) // Searching?
-				{
-					$args['post__in'] = $this->search_post_ids();
-				}
-				return new \WP_Query($args);
+				if($this->attr->q) // Searching? If so, add filter.
+					add_filter('posts_where', array($this, '_search_where_filter'), 45645333, 2);
+
+				$query = new \WP_Query($args); // Perform the query now.
+
+				remove_filter('posts_where', array($this, '_search_where_filter'), 45645333);
+
+				return $query; // Query class instance.
 			}
 
 			/**
@@ -408,16 +414,22 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 150113 First documented version.
 			 *
-			 * @return array An array of all matching post IDs.
+			 * @attaches-to `posts_where` filter.
+			 *
+			 * @param string    $where The current `WHERE` clause.
+			 * @param \WP_Query $query The current query.
+			 *
+			 * @return string Possible altered `$where` clause.
 			 */
-			protected function search_post_ids()
+			public function _search_where_filter($where, \WP_Query $query)
 			{
 				if(!($search_terms = $this->sql_search_terms()))
-					return array(); // Not possible.
+					return $where; // Not possible.
 
 				# Construct SQL syntax to assist with searches below.
 
-				$sql_name_search_terms = $sql_post_title_search_terms = $sql_post_content_search_terms = array();
+				$sql_name_search_terms =  // Initialize each of these arrays.
+				$sql_post_title_search_terms = $sql_post_content_search_terms = array();
 
 				foreach($search_terms as $_key => $_term) // Build an array of searches.
 					$sql_name_search_terms[] = "`name` LIKE '%".esc_sql($this->plugin->utils_db->wp->esc_like($_term))."%'";
@@ -450,19 +462,16 @@ namespace wp_kb_articles // Root namespace.
 					"SELECT `object_id` AS `post_id` FROM `".esc_sql($this->plugin->utils_db->wp->term_relationships)."`".
 					" WHERE `term_taxonomy_id` IN(".$matching_tag_term_taxonomy_ids_sql.")";
 
-				$matching_post_ids_via_tags = $this->plugin->utils_db->wp->get_col($matching_tagged_post_ids_sql);
-
 				# Search for all KB article post IDs with a matching title or content body.
 
 				$matching_post_ids_sql = // All matching post IDs.
 					"SELECT `ID` FROM `".esc_sql($this->plugin->utils_db->wp->posts)."`".
 					" WHERE (".implode(' OR ', $sql_post_title_search_terms).") OR (".implode(' OR ', $sql_post_content_search_terms).")";
 
-				$matching_post_ids_via_posts = $this->plugin->utils_db->wp->get_col($matching_post_ids_sql);
+				# Search all of the matching post IDs; i.e. alter the `$where` clause.
 
-				# Return all of the matching post IDs for use in other SQL querys.
-
-				return array_unique(array_map('intval', array_merge($matching_post_ids_via_tags, $matching_post_ids_via_posts)));
+				return "AND (`".esc_sql($this->plugin->utils_db->wp->posts)."`.`ID` IN(".$matching_tagged_post_ids_sql.")".
+				       " OR `".esc_sql($this->plugin->utils_db->wp->posts)."`.`ID` IN(".$matching_post_ids_sql.")) ".$where;
 			}
 
 			/**

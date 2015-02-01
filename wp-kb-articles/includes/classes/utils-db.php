@@ -48,7 +48,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function prefix()
 			{
-				return $this->wp->prefix.__NAMESPACE__.'_';
+				return $this->wp->prefix.$this->plugin->post_type.'_';
 			}
 
 			/**
@@ -128,6 +128,41 @@ namespace wp_kb_articles // Root namespace.
 			public function is_float_key($key)
 			{
 				return FALSE; // Default; no float keys at this time.
+			}
+
+			/**
+			 * Check DB engine compat. w/ fulltext indexes.
+			 *
+			 * @since 150131 Adding statistics.
+			 *
+			 * @param string $sql Input SQL to check.
+			 *
+			 * @return string Output `$sql` w/ possible engine modification.
+			 *    Only MySQL v5.6.4+ supports fulltext indexes with the InnoDB engine.
+			 *    Otherwise, we use MyISAM for any table that includes a fulltext index.
+			 *
+			 * @note MySQL v5.6.4+ supports fulltext indexes w/ InnoDB.
+			 *    See: <http://bit.ly/ZVeF42>
+			 */
+			public function fulltext_compat($sql)
+			{
+				if(!($sql = trim((string)$sql)))
+					return $sql; // Empty.
+
+				if(!preg_match('/^CREATE\s+TABLE\s+/i', $sql))
+					return $sql; // Not applicable.
+
+				if(!preg_match('/\bFULLTEXT\s+KEY\b/i', $sql))
+					return $sql; // No fulltext index.
+
+				if(!preg_match('/\bENGINE\=InnoDB\b/i', $sql))
+					return $sql; // Not using InnoDB anyway.
+
+				$mysql_version = $this->wp->db_version();
+				if($mysql_version && version_compare($mysql_version, '5.6.4', '>='))
+					return $sql; // MySQL v5.6.4+ supports fulltext indexes.
+
+				return preg_replace('/\bENGINE\=InnoDB\b/i', 'ENGINE=MyISAM', $sql);
 			}
 
 			/**

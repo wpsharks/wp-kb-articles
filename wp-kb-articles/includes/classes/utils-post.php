@@ -37,12 +37,12 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @param integer $post_id WordPress post ID.
 			 *
-			 * @return string Article popularity.
+			 * @return integer Article popularity.
 			 */
 			public function get_popularity($post_id)
 			{
 				if(!($post_id = (integer)$post_id))
-					return ''; // Not possible.
+					return 0; // Not possible.
 
 				return (integer)get_post_meta($post_id, __NAMESPACE__.'_popularity', TRUE);
 			}
@@ -73,8 +73,6 @@ namespace wp_kb_articles // Root namespace.
 			 * @param integer $post_id WordPress post ID.
 			 *
 			 * @return boolean `TRUE` if the vote is allowed in.
-			 *
-			 * @throws \exception If unable to set transient data entry.
 			 */
 			public function cast_popularity_vote($post_id)
 			{
@@ -92,6 +90,33 @@ namespace wp_kb_articles // Root namespace.
 				$this->update_popularity($post_id, 1);
 
 				return TRUE; // The vote was cast :-)
+			}
+
+			/**
+			 * Record article stats.
+			 *
+			 * @since 150201 Adding trending/popular.
+			 *
+			 * @param integer $post_id WordPress post ID.
+			 */
+			public function record_stats($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($ip = $this->plugin->utils_ip->current()) || $ip === 'unknown')
+					return; // Not possible.
+
+				$ymd_time  = strtotime(date('Y-m-d'));
+				$transient = $this->plugin->transient_prefix.md5(__METHOD__.$post_id.$ymd_time.$ip);
+				if(!($already_visited_today = (boolean)get_transient($transient)))
+					set_transient($transient, time(), DAY_IN_SECONDS);
+
+				$sql = // Update views and visits for this article.
+					"INSERT INTO `".esc_sql($this->plugin->utils_db->prefix().'stats')."`".
+					" (`post_id`, `ymd_time`, `views`, `visits`) VALUES('".esc_sql($post_id)."', '".esc_sql($ymd_time)."', '1', '1')".
+					" ON DUPLICATE KEY UPDATE `views` = `views` + 1, `visits` = `visits` + ".($already_visited_today ? 0 : 1);
+				$this->plugin->utils_db->wp->query($sql);
 			}
 
 			/**
