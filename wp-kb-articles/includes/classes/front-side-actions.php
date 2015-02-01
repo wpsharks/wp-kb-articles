@@ -46,6 +46,7 @@ namespace wp_kb_articles // Root namespace.
 				$this->valid_actions = array(
 					'sc_list_via_ajax',
 					'cast_popularity_vote_via_ajax',
+					'record_stats_via_ajax',
 				);
 				$this->maybe_handle();
 			}
@@ -113,9 +114,34 @@ namespace wp_kb_articles // Root namespace.
 				$this->is_doing_ajax = TRUE;
 				$post_id             = (integer)$request_args;
 
+				define('DONOTCACHEPAGE', TRUE);
+				define('ZENCACHE_ALLOWED', FALSE);
+
 				status_header(200); // Return response.
+				nocache_headers(); // Disallow browser cache.
 				header('Content-Type: text/plain; charset=UTF-8');
 				exit((string)(integer)$this->plugin->utils_post->cast_popularity_vote($post_id));
+			}
+
+			/**
+			 * Record stats via AJAX.
+			 *
+			 * @since 150113 First documented version.
+			 *
+			 * @param mixed $request_args Input argument(s).
+			 */
+			protected function record_stats_via_ajax($request_args)
+			{
+				$this->is_doing_ajax = TRUE;
+				$post_id             = (integer)$request_args;
+
+				define('DONOTCACHEPAGE', TRUE);
+				define('ZENCACHE_ALLOWED', FALSE);
+
+				status_header(200); // Return response.
+				nocache_headers(); // Disallow browser cache.
+				header('Content-Type: text/plain; charset=UTF-8');
+				exit((string)(integer)$this->plugin->utils_post->record_stats($post_id));
 			}
 		}
 	}

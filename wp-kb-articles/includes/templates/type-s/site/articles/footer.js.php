@@ -60,6 +60,18 @@ namespace wp_kb_articles;
 				}
 				$this.toggleClass('-active');
 			});
+
+			(function() // Record stats.
+			{
+				var url, $this = $(this),
+					postId = $this.data('postId');
+
+				url = vars.ajaxEndpoint;
+				url += url.indexOf('?') === -1 ? '?' : '&';
+				url += encodeURIComponent(namespace + '[record_stats_via_ajax]') + '=' + encodeURIComponent(postId);
+
+				$.get(url, function(data){}); // Attempt to record statistics.
+			})();
 		};
 		$document.ready(plugin.onReady);
 	})(jQuery);
