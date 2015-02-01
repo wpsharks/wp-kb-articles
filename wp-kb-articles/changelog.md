@@ -1,3 +1,9 @@
+= v150201 =
+
+* Optimizing search functionality.
+* Move article popularity (hearts) to last item in list view.
+* Differentiate "Filter by Tag" button in list view.
+
 = v150117 =
 
 * Rewriting with OOP design.
