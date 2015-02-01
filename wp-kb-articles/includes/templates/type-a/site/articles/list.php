@@ -134,10 +134,6 @@ namespace wp_kb_articles;
 					</h3>
 
 					<div class="-meta">
-						<div class="-popularity">
-							<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
-						</div>
-
 						<div class="-author">
 							<span><?php echo __('by:', $plugin->text_domain); ?></span>
 							<a href="#" data-click-author="<?php echo esc_attr(get_the_author_meta('ID')); ?>"
@@ -165,6 +161,10 @@ namespace wp_kb_articles;
 
 						<div class="-date">
 							<?php echo esc_html(get_the_date()); ?>
+						</div>
+
+						<div class="-popularity">
+							<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
 						</div>
 					</div>
 
