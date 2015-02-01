@@ -400,12 +400,13 @@ namespace wp_kb_articles // Root namespace.
 					);
 				}
 				if($this->attr->q) // Searching? If so, add filter.
-					add_filter('posts_where', array($this, 'search_post_ids_filter'), 45645333, 2);
+					add_filter('posts_where', array($this, '_search_where_filter'), 45645333, 2);
 
 				$query = new \WP_Query($args); // Perform the query now.
-				remove_filter('posts_where', array($this, 'search_post_ids_filter'), 45645333, 2);
 
-				return $query;
+				remove_filter('posts_where', array($this, '_search_where_filter'), 45645333);
+
+				return $query; // Query class instance.
 			}
 
 			/**
@@ -418,9 +419,9 @@ namespace wp_kb_articles // Root namespace.
 			 * @param string    $where The current `WHERE` clause.
 			 * @param \WP_Query $query The current query.
 			 *
-			 * @return string Possible altered `$where` value.
+			 * @return string Possible altered `$where` clause.
 			 */
-			public function search_post_ids_filter($where, \WP_Query $query)
+			public function _search_where_filter($where, \WP_Query $query)
 			{
 				if(!($search_terms = $this->sql_search_terms()))
 					return $where; // Not possible.
