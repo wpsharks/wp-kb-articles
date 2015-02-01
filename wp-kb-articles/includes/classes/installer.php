@@ -32,6 +32,7 @@ namespace wp_kb_articles // Root namespace.
 				$this->plugin->setup();
 
 				$this->create_db_tables();
+				$this->register_post_type();
 				$this->activate_post_type_role_caps();
 				$this->maybe_enqueue_notice();
 				$this->flush_rewrite_rules();
@@ -65,11 +66,21 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Register post type.
+			 *
+			 * @since 150201 Adding trending/popular.
+			 */
+			protected function register_post_type()
+			{
+				$this->plugin->register_post_type();
+			}
+
+			/**
 			 * Activate post type role caps.
 			 *
 			 * @since 150113 First documented version.
 			 */
-			public function activate_post_type_role_caps()
+			protected function activate_post_type_role_caps()
 			{
 				$this->plugin->post_type_role_caps('activate');
 			}
@@ -96,7 +107,7 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 150113 First documented version.
 			 */
-			public function flush_rewrite_rules()
+			protected function flush_rewrite_rules()
 			{
 				flush_rewrite_rules();
 			}

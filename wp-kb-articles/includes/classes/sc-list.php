@@ -400,12 +400,10 @@ namespace wp_kb_articles // Root namespace.
 					);
 				}
 				if($this->attr->q) // Searching? If so, add filter.
-					add_filter('posts_where', array($this, 'search_post_ids_filter'), 45645334, 2);
+					add_filter('posts_where', array($this, 'search_post_ids_filter'), 45645333, 2);
 
 				$query = new \WP_Query($args); // Perform the query now.
-
-				if($this->attr->q) // Searching? If so, remove filter.
-					remove_filter('posts_where', array($this, 'search_post_ids_filter'), 45645334, 2);
+				remove_filter('posts_where', array($this, 'search_post_ids_filter'), 45645333, 2);
 
 				return $query;
 			}
