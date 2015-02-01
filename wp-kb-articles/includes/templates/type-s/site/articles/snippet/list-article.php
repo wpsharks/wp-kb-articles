@@ -3,10 +3,6 @@
 </h3>
 
 <div class="-meta">
-	<div class="-popularity">
-		[popularity]
-	</div>
-
 	<div class="-author">
 		<span>by:</span> <a href="#" data-click-author="[author_id]">[author]</a>
 	</div>
@@ -25,5 +21,9 @@
 
 	<div class="-date">
 		[date]
+	</div>
+
+	<div class="-popularity">
+		[popularity]
 	</div>
 </div>
