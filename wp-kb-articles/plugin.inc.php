@@ -46,6 +46,7 @@ namespace wp_kb_articles
 		 * @property-read utils_string          $utils_string
 		 * @property-read utils_url             $utils_url
 		 * @property-read utils_user            $utils_user
+		 * @property-read utils_yaml            $utils_yaml
 		 *
 		 * @since 150113 First documented version.
 		 */
