@@ -45,6 +45,9 @@ namespace wp_kb_articles;
 
 			$metaAuthorPopularityPopularity.on('click', function(e)
 			{
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
 				var url, $this = $(this);
 
 				if(!$this.hasClass('-active') && !$this.data('castPopularityVote'))
