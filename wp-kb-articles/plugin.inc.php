@@ -149,7 +149,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Site name.
 			 */
-			public $site_name = 'websharks-inc.com';
+			public $site_name = 'WPKBArticles.com';
 
 			/**
 			 * Plugin product page URL.
@@ -158,7 +158,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Plugin product page URL.
 			 */
-			public $product_url = 'http://www.websharks-inc.com/product/wp-kb-articles/';
+			public $product_url = 'http://wpkbarticles.com';
 
 			/**
 			 * Used by the plugin's uninstall handler.
@@ -442,6 +442,8 @@ namespace wp_kb_articles
 				/*
 				 * Setup all secondary plugin hooks.
 				 */
+				$_this = $this; // Referenced needed by closures.
+
 				add_action('init', array($this, 'register_post_type'), -11, 0);
 				add_action('init', array($this, 'register_rewrite_rules'), -11, 0);
 				add_action('init', array($this, 'actions'), -10, 0);
@@ -460,11 +462,13 @@ namespace wp_kb_articles
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
 
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
+
 				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
 
-				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 				add_filter('author_link', array($this, 'sc_author_link'), 10, 3);
 				add_filter('term_link', array($this, 'sc_term_link'), 10, 3);
+
+				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 				/*
 				 * Setup CRON-related hooks.
 				 */
