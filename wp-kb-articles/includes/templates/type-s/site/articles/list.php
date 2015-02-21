@@ -78,15 +78,6 @@ namespace wp_kb_articles;
 			</div>
 		<?php endif; ?>
 
-		<div class="-search">
-			<form novalidate>
-				<input type="search" class="-q" value="<?php echo esc_attr($attr->q); ?>"
-				       placeholder="<?php echo esc_attr(__('Search KB Articles...', $plugin->text_domain)); ?>" />
-				<button type="button" class="-button">
-					<i class="fa fa-search"></i>
-				</button>
-			</form>
-		</div>
 	</div>
 
 	<?php if($filters): ?>

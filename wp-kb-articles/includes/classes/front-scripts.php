@@ -32,8 +32,32 @@ namespace wp_kb_articles // Root namespace.
 				if(is_admin())
 					return; // Not applicable.
 
+				$this->maybe_enqueue_list_search_box_scripts();
 				$this->maybe_enqueue_list_scripts();
 				$this->maybe_enqueue_footer_scripts();
+			}
+
+			/**
+			 * Enqueue front-side scripts for list search box.
+			 *
+			 * @since 150220 Enhancing search box.
+			 */
+			protected function maybe_enqueue_list_search_box_scripts()
+			{
+				if(empty($GLOBALS['post']) || !is_singular())
+					return; // Not a post/page.
+
+				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list_search_box') === FALSE)
+					return; // Current singular post/page does not contain the shortcode.
+
+				wp_enqueue_script('jquery'); // Need jQuery.
+
+				add_action('wp_footer', function ()
+				{
+					$template = new template('site/articles/list-search-box.js.php');
+					echo $template->parse(); // Inline `<script></script>`.
+
+				}, PHP_INT_MAX - 10); // After WP footer scripts!
 			}
 
 			/**

@@ -33,6 +33,11 @@ namespace wp_kb_articles;
 					selectSomeTags  : '<?php echo esc_js(__('(select some tags) and click `filter by tags`', $plugin->text_domain)); ?>'
 				},
 				$list = $('.' + namespace + '-list'),
+				$listSearchBox = $('.' + namespace + '-list-search-box'),
+
+				$listSearchBoxForm = $listSearchBox.find('> form'),
+				$listSearchBoxFormQ = $listSearchBoxForm.find('> .-q'),
+				$listSearchBoxFormButton = $listSearchBoxForm.find('> .-button'),
 
 				$navigationTabs = $list.find('> .-navigation > .-tabs'),
 
@@ -41,11 +46,6 @@ namespace wp_kb_articles;
 				$navigationTabsListItemAnchors = $navigationTabsListItems.find('> a'),
 
 				$navigationTags = $list.find('> .-navigation > .-tags'),
-
-				$navigationSearch = $list.find('> .-navigation > .-search'),
-				$navigationSearchForm = $navigationSearch.find('> form'),
-				$navigationSearchFormQ = $navigationSearchForm.find('> .-q'),
-				$navigationSearchFormButton = $navigationSearchForm.find('> .-button'),
 
 				$navigationTagsFilter = $navigationTags.find('> .-filter'),
 				$navigationTagsFilterAnchor = $navigationTagsFilter.find('> a'),
@@ -71,7 +71,9 @@ namespace wp_kb_articles;
 				$attrCategory = $list.find('> .-hidden > .-attr-category'),
 				$attrTag = $list.find('> .-hidden > .-attr-tag'),
 				$attrQ = $list.find('> .-hidden > .-attr-q');
-
+			/*
+			 Functions/handlers.
+			 */
 			var reload = function(qvs)
 			{
 				if($navigationTagsFilterAnchor.hasClass('-active')) // Close list of tags?
@@ -148,6 +150,38 @@ namespace wp_kb_articles;
 					      });
 				return activeTags;
 			};
+			/*
+			 Search box handlers.
+			 */
+			$listSearchBoxForm.on('submit', function(e)
+			{
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			});
+			$listSearchBoxFormQ.on('keydown', function(e)
+			{
+				if(e.which !== 13)
+					return; // Not applicable.
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				var $this = $(this);
+
+				reload({q: $.trim($this.val())});
+			});
+			$listSearchBoxFormButton.on('click', function(e)
+			{
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				var $this = $(this);
+
+				reload({q: $.trim($listSearchBoxFormQ.val())});
+			});
+			/*
+			 Navigation handlers.
+			 */
 			$navigationTabsListItemAnchors.on('click', function(e)
 			{
 				e.preventDefault();
@@ -209,32 +243,9 @@ namespace wp_kb_articles;
 
 				reload();
 			});
-			$navigationSearchForm.on('submit', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
-			$navigationSearchFormQ.on('keydown', function(e)
-			{
-				if(e.which !== 13)
-					return; // Not applicable.
-
-				e.preventDefault();
-				e.stopImmediatePropagation();
-
-				var $this = $(this);
-
-				reload({q: $.trim($this.val())});
-			});
-			$navigationSearchFormButton.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-
-				var $this = $(this);
-
-				reload({q: $.trim($navigationSearchFormQ.val())});
-			});
+			/*
+			 Click handlers.
+			 */
 			$clickPageAnchors.on('click', function(e)
 			{
 				e.preventDefault();
