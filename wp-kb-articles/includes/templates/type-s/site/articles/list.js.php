@@ -153,141 +153,154 @@ namespace wp_kb_articles;
 			/*
 			 Search box handlers.
 			 */
-			$listSearchBoxForm.on('submit', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
-			$listSearchBoxFormQ.on('keydown', function(e)
-			{
-				if(e.which !== 13)
-					return; // Not applicable.
+			$listSearchBoxForm.off('submit.' + namespace),
+				$listSearchBoxForm.on('submit.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
+				});
+			$listSearchBoxFormQ.off('keydown.' + namespace),
+				$listSearchBoxFormQ.on('keydown.' + namespace, function(e)
+				{
+					if(e.which !== 13)
+						return; // Not applicable.
 
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				var $this = $(this);
+					var $this = $(this);
 
-				reload({q: $.trim($this.val())});
-			});
-			$listSearchBoxFormButton.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({q: $.trim($this.val())});
+				});
+			$listSearchBoxFormButton.off('click.' + namespace),
+				$listSearchBoxFormButton.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				var $this = $(this);
+					var $this = $(this);
 
-				reload({q: $.trim($listSearchBoxFormQ.val())});
-			});
+					reload({q: $.trim($listSearchBoxFormQ.val())});
+				});
 			/*
 			 Navigation handlers.
 			 */
-			$navigationTabsListItemAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-
-				var $this = $(this);
-
-				$navigationTabsListItemAnchors.removeClass('-active'),
-					$this.addClass('-active');
-
-				reload();
-			});
-			$navigationTagsFilterAnchor.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-
-				var $this = $(this);
-
-				if($this.hasClass('-active'))
+			$navigationTabsListItemAnchors.off('click.' + namespace),
+				$navigationTabsListItemAnchors.on('click.' + namespace, function(e)
 				{
-					$this.removeClass('-active');
-					$navigationTagsOverlay.fadeOut({duration: 100});
-				}
-				else // Show it now.
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					var $this = $(this);
+
+					$navigationTabsListItemAnchors.removeClass('-active'),
+						$this.addClass('-active');
+
+					reload();
+				});
+			$navigationTagsFilterAnchor.off('click.' + namespace),
+				$navigationTagsFilterAnchor.on('click.' + namespace, function(e)
 				{
-					$this.addClass('-active');
-					$navigationTagsOverlay.fadeIn({duration: 100});
-				}
-			});
-			$navigationTagsOverlayListItemAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				var $this = $(this),
-					selected = '<i class="fa fa-tags"></i>' +
-					           ' <strong>' + i18n.tagsSelected + ':</strong>',
-					selectedTags = ''; // Initialize.
+					var $this = $(this);
 
-				$this.toggleClass('-active');
+					if($this.hasClass('-active'))
+					{
+						$this.removeClass('-active');
+						$navigationTagsOverlay.fadeOut({duration: 100});
+					}
+					else // Show it now.
+					{
+						$this.addClass('-active');
+						$navigationTagsOverlay.fadeIn({duration: 100});
+					}
+				});
+			$navigationTagsOverlayListItemAnchors.off('click.' + namespace),
+				$navigationTagsOverlayListItemAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				$navigationTagsOverlayListItemAnchors
-					.each(function()
-					      {
-						      var $this = $(this);
-						      if($this.hasClass('-active'))
-							      selectedTags += (selectedTags ? ', ' : '') + $this.text();
-					      });
-				if(!selectedTags) // No tags selected currently?
-					selectedTags = '<strong>' + i18n.selectedTagsNone + '</strong> ' + i18n.selectSomeTags;
+					var $this = $(this),
+						selected = '<i class="fa fa-tags"></i>' +
+						           ' <strong>' + i18n.tagsSelected + ':</strong>',
+						selectedTags = ''; // Initialize.
 
-				$navigationTagsOverlaySelected.html(selected + ' ' + selectedTags);
-			});
-			$navigationTagsOverlayButton.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					$this.toggleClass('-active');
 
-				reload();
-			});
+					$navigationTagsOverlayListItemAnchors
+						.each(function()
+						      {
+							      var $this = $(this);
+							      if($this.hasClass('-active'))
+								      selectedTags += (selectedTags ? ', ' : '') + $this.text();
+						      });
+					if(!selectedTags) // No tags selected currently?
+						selectedTags = '<strong>' + i18n.selectedTagsNone + '</strong> ' + i18n.selectSomeTags;
+
+					$navigationTagsOverlaySelected.html(selected + ' ' + selectedTags);
+				});
+			$navigationTagsOverlayButton.off('click.' + namespace),
+				$navigationTagsOverlayButton.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					reload();
+				});
 			/*
 			 Click handlers.
 			 */
-			$clickPageAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+			$clickPageAnchors.off('click.' + namespace),
+				$clickPageAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({page: $(this).data('clickPage')});
-			});
-			$clickOrderbyAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({page: $(this).data('clickPage')});
+				});
+			$clickOrderbyAnchors.off('click.' + namespace),
+				$clickOrderbyAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({orderby: $(this).data('clickOrderby')});
-			});
-			$clickAuthorAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({orderby: $(this).data('clickOrderby')});
+				});
+			$clickAuthorAnchors.off('click.' + namespace),
+				$clickAuthorAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({author: $(this).data('clickAuthor')});
-			});
-			$clickCategoryAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({author: $(this).data('clickAuthor')});
+				});
+			$clickCategoryAnchors.off('click.' + namespace),
+				$clickCategoryAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({category: $(this).data('clickCategory')});
-			});
-			$clickTagAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({category: $(this).data('clickCategory')});
+				});
+			$clickTagAnchors.off('click.' + namespace),
+				$clickTagAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({tag: $(this).data('clickTag')});
-			});
-			$clickQAnchors.on('click', function(e)
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
+					reload({tag: $(this).data('clickTag')});
+				});
+			$clickQAnchors.off('click.' + namespace),
+				$clickQAnchors.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
 
-				reload({q: $(this).data('clickQ')});
-			});
+					reload({q: $(this).data('clickQ')});
+				});
 		};
 		$document.ready(plugin.onReady);
 	})(jQuery);
