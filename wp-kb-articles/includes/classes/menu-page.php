@@ -547,6 +547,41 @@ namespace wp_kb_articles // Root namespace.
 				if($this->plugin->options['template_type'] === 's') // Simple snippet-based templates.
 				{
 					echo '         <h2 class="pmp-section-heading">'.
+					     '            '.__('Templates for List Search Box Shortcode', $this->plugin->text_domain).
+					     '            <small>'.__('These are used by the <code>[kb_articles_list_search_box /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
+					     '         </h2>';
+
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('List Search Box Shortcode', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/html',
+							               'name'          => 'template__type_s__site__articles__snippet__list_search_box___php',
+							               'current_value' => $current_value_for('template__type_s__site__articles__snippet__list_search_box___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template constructs a search box that is produced the <code>[kb_articles_list_search_box /]</code> shortcode.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+							               'cm_details'    => $shortcode_details(array(
+								                                                     '[namespace]' => __('The plugin\'s namespace; used in class/id/name generation.', $this->plugin->text_domain),
+								                                                     '[name]'      => __('The search input field name; i.e, the name attribute.', $this->plugin->text_domain),
+								                                                     '[action]'    => __('The form action URL or absolute path.', $this->plugin->text_domain),
+								                                                     '[q]'         => __('Current search query.', $this->plugin->text_domain),
+							                                                     )),
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('List Search Box Shortcode', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
+					echo '         <h2 class="pmp-section-heading">'.
 					     '            '.__('Templates for Articles List Shortcode', $this->plugin->text_domain).
 					     '            <small>'.__('These are used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
 					     '         </h2>';
@@ -678,6 +713,71 @@ namespace wp_kb_articles // Root namespace.
 
 				else if($this->plugin->options['template_type'] === 'a') // Advanced PHP-based templates.
 				{
+					echo '         <h2 class="pmp-section-heading">'.
+					     '            '.__('Templates for List Search Box Shortcode', $this->plugin->text_domain).
+					     '            <small>'.__('These are used by the <code>[kb_articles_list_search_box /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
+					     '         </h2>';
+
+					/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('List Search Box Shortcode', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__list_search_box___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list_search_box___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the HTML markup output by the <code>[kb_articles_list_search_box /]</code> shortcode. See comments in the template file for further details.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('List Search Box Shortcode', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Search Box Styles', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'text/css',
+							               'name'          => 'template__type_a__site__articles__list_search_box___css',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list_search_box___css'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the CSS used by the <code>[kb_articles_list_search_box /]</code> shortcode.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Search Box Styles', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					$_panel_body = '<table>'.
+					               '  <tbody>'.
+					               $form_fields->textarea_row(
+						               array(
+							               'label'         => __('Search Box Scripts', $this->plugin->text_domain),
+							               'placeholder'   => __('Template Content...', $this->plugin->text_domain),
+							               'cm_mode'       => 'application/x-httpd-php',
+							               'name'          => 'template__type_a__site__articles__list_search_box___js___php',
+							               'current_value' => $current_value_for('template__type_a__site__articles__list_search_box___js___php'),
+							               'notes_before'  => '<p class="pmp-note pmp-notice">'.__('<strong>Note:</strong> The default template is already optimized for most WordPress installs; i.e. you shouldn\'t need to customize. However, if you don\'t like the defaults; tweak things a bit until you reach perfection <i class="fa fa-smile-o"></i>', $this->plugin->text_domain).'</p>'.
+							                                  '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> this particular template establishes all of the JavaScript used by the <code>[kb_articles_list_search_box /]</code> shortcode.', $this->plugin->text_domain).'</p>',
+							               'notes_after'   => '<p class="pmp-note pmp-info">'.__('<strong>Tip:</strong> If you mess up your template by accident; empty the field completely and save your options. This reverts you back to the default template file automatically.', $this->plugin->text_domain).'</p>',
+						               )).
+					               '  </tbody>'.
+					               '</table>';
+
+					echo $this->panel(__('Search Box Scripts', $this->plugin->text_domain), $_panel_body, array('icon' => '<i class="fa fa-code"></i>'));
+
+					unset($_panel_body); // Housekeeping.
+
+					/* ----------------------------------------------------------------------------------------- */
+
 					echo '         <h2 class="pmp-section-heading">'.
 					     '            '.__('Templates for Articles List Shortcode', $this->plugin->text_domain).
 					     '            <small>'.__('These are used by the <code>[kb_articles_list /]</code> shortcode.', $this->plugin->text_domain).'</small>'.
