@@ -28,6 +28,13 @@ namespace wp_kb_articles // Root namespace.
 			protected $valid_actions;
 
 			/**
+			 * @var boolean Doing AJAX?
+			 *
+			 * @since 150302 Adding support for AJAX.
+			 */
+			protected $is_doing_ajax = FALSE;
+
+			/**
 			 * Class constructor.
 			 *
 			 * @since 150113 First documented version.
@@ -47,6 +54,18 @@ namespace wp_kb_articles // Root namespace.
 					'export',
 				);
 				$this->maybe_handle();
+			}
+
+			/**
+			 * Read-only access to `is_doing_ajax`.
+			 *
+			 * @since 150302 Adding support for AJAX.
+			 *
+			 * @return boolean `TRUE` if we are doing AJAX.
+			 */
+			public function is_doing_ajax()
+			{
+				return $this->is_doing_ajax;
 			}
 
 			/**

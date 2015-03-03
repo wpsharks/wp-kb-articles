@@ -194,6 +194,10 @@ A menu page area ~ utilities.
 	margin-left : 1em;
 	float       : right !important;
 }
+.wp-kb-articles-menu-page-area .pmp-valign
+{
+	vertical-align : middle !important;
+}
 .wp-kb-articles-menu-page-area .pmp-borders-padding
 {
 	border-radius : 4px !important;
@@ -530,7 +534,7 @@ Menu page styles.
 
 	margin              : 0;
 	box-sizing          : border-box;
-	padding             : .25em;
+	padding             : .25em .5em;
 
 	outline             : none;
 
