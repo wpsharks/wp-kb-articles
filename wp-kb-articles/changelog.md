@@ -1,3 +1,7 @@
+= v150303 =
+
+* Enhancing framework.
+
 = v150201 =
 
 * Optimizing search functionality.
