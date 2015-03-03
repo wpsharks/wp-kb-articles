@@ -203,7 +203,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Current version of the software.
 			 */
-			public $version = '150201';
+			public $version = '150303';
 
 			/*
 			 * Public Properties (Defined @ Setup)
@@ -475,6 +475,9 @@ namespace wp_kb_articles
 
 				add_shortcode('kb_articles_list_search_box', array($this, 'sc_list_search_box'));
 				add_shortcode('kb_articles_list', array($this, 'sc_list'));
+
+				add_filter('post_row_actions', array($this, 'article_row_action_links'), 10, 2);
+				add_action('edit_form_before_permalink', array($this, 'article_action_links_bp'), 10, 1);
 				/*
 				 * Setup CRON-related hooks.
 				 */
@@ -1180,6 +1183,45 @@ namespace wp_kb_articles
 				$footer = new footer(); // Footer class instance.
 
 				return $footer->filter($content); // With footer.
+			}
+
+			/**
+			 * Handles article row actions.
+			 *
+			 * @since 150302 Adding row actions.
+			 *
+			 * @attaches-to `post_row_actions` filter.
+			 *
+			 * @param array    $actions Current actions.
+			 * @param \WP_Post $post Current post.
+			 *
+			 * @return array New row actions after having been filtered.
+			 */
+			public function article_row_action_links(array $actions, \WP_Post $post)
+			{
+				if($post->post_type !== $this->post_type)
+					return $actions; // Not applicable.
+
+				$row_action_links = new row_action_links(); // Row actions instance.
+
+				return $row_action_links->filter($actions, $post);
+			}
+
+			/**
+			 * Handles article actions before permalink.
+			 *
+			 * @since 150302 Adding article actions.
+			 *
+			 * @attaches-to `edit_form_before_permalink` hook.
+			 *
+			 * @param \WP_Post $post Current post.
+			 */
+			public function article_action_links_bp(\WP_Post $post)
+			{
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				new action_links_bp($post);
 			}
 
 			/*

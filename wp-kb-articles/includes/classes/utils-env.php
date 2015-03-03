@@ -184,6 +184,69 @@ namespace wp_kb_articles // Root namespace.
 
 				return ($max = min($limits));
 			}
+
+			/**
+			 * Doing AJAX request?
+			 *
+			 * @since 150302 Adding AJAX check.
+			 *
+			 * @param boolean|null $doing Pass this to set the value.
+			 *
+			 * @return boolean `TRUE` if doing an AJAX request.
+			 */
+			public function doing_ajax($doing = NULL)
+			{
+				if(isset($doing)) // Setting the value?
+					$GLOBALS[__NAMESPACE__.'_doing_ajax'] = (boolean)$doing;
+
+				if((defined('DOING_AJAX') && DOING_AJAX)
+				   || !empty($GLOBALS[__NAMESPACE__.'_doing_ajax'])
+				) return TRUE; // Doing an AJAX request.
+
+				return FALSE; // Default response.
+			}
+
+			/**
+			 * Doing a CRON job?
+			 *
+			 * @since 150302 Adding CRON check.
+			 *
+			 * @param boolean|null $doing Pass this to set the value.
+			 *
+			 * @return boolean `TRUE` if doing a CRON job.
+			 */
+			public function doing_cron($doing = NULL)
+			{
+				if(isset($doing)) // Setting the value?
+					$GLOBALS[__NAMESPACE__.'_doing_cron'] = (boolean)$doing;
+
+				if((defined('DOING_CRON') && DOING_CRON)
+				   || !empty($GLOBALS[__NAMESPACE__.'_doing_cron'])
+				) return TRUE; // Doing a CRON job.
+
+				return FALSE; // Default response.
+			}
+
+			/**
+			 * Doing a redirect?
+			 *
+			 * @since 150302 Adding redirect check.
+			 *
+			 * @param boolean|null $doing Pass this to set the value.
+			 *
+			 * @return boolean `TRUE` if doing a redirection.
+			 */
+			public function doing_redirect($doing = NULL)
+			{
+				if(isset($doing)) // Setting the value?
+					$GLOBALS[__NAMESPACE__.'_doing_redirect'] = (boolean)$doing;
+
+				if((defined('DOING_REDIRECT') && DOING_REDIRECT)
+				   || !empty($GLOBALS[__NAMESPACE__.'_doing_redirect'])
+				) return TRUE; // Doing a redirection.
+
+				return FALSE; // Default response.
+			}
 		}
 	}
 }
