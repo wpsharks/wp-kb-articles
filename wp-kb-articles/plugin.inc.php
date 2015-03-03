@@ -476,7 +476,8 @@ namespace wp_kb_articles
 				add_shortcode('kb_articles_list_search_box', array($this, 'sc_list_search_box'));
 				add_shortcode('kb_articles_list', array($this, 'sc_list'));
 
-				add_filter('post_row_actions', array($this, 'article_row_actions'), 10, 2);
+				add_filter('post_row_actions', array($this, 'article_row_action_links'), 10, 2);
+				add_action('edit_form_before_permalink', array($this, 'article_action_links_bp'), 10, 1);
 				/*
 				 * Setup CRON-related hooks.
 				 */
@@ -1196,14 +1197,31 @@ namespace wp_kb_articles
 			 *
 			 * @return array New row actions after having been filtered.
 			 */
-			public function article_row_actions(array $actions, \WP_Post $post)
+			public function article_row_action_links(array $actions, \WP_Post $post)
 			{
 				if($post->post_type !== $this->post_type)
 					return $actions; // Not applicable.
 
-				$row_actions = new row_actions(); // Row actions instance.
+				$row_action_links = new row_action_links(); // Row actions instance.
 
-				return $row_actions->filter($actions, $post);
+				return $row_action_links->filter($actions, $post);
+			}
+
+			/**
+			 * Handles article actions before permalink.
+			 *
+			 * @since 150302 Adding article actions.
+			 *
+			 * @attaches-to `edit_form_before_permalink` hook.
+			 *
+			 * @param \WP_Post $post Current post.
+			 */
+			public function article_action_links_bp(\WP_Post $post)
+			{
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				new action_links_bp($post);
 			}
 
 			/*
