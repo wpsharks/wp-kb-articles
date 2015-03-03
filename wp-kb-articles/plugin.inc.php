@@ -475,6 +475,8 @@ namespace wp_kb_articles
 
 				add_shortcode('kb_articles_list_search_box', array($this, 'sc_list_search_box'));
 				add_shortcode('kb_articles_list', array($this, 'sc_list'));
+
+				add_filter('post_row_actions', array($this, 'article_row_actions'), 10, 2);
 				/*
 				 * Setup CRON-related hooks.
 				 */
@@ -1180,6 +1182,28 @@ namespace wp_kb_articles
 				$footer = new footer(); // Footer class instance.
 
 				return $footer->filter($content); // With footer.
+			}
+
+			/**
+			 * Handles article row actions.
+			 *
+			 * @since 150302 Adding row actions.
+			 *
+			 * @attaches-to `post_row_actions` filter.
+			 *
+			 * @param array    $actions Current actions.
+			 * @param \WP_Post $post Current post.
+			 *
+			 * @return array New row actions after having been filtered.
+			 */
+			public function article_row_actions(array $actions, \WP_Post $post)
+			{
+				if($post->post_type !== $this->post_type)
+					return $actions; // Not applicable.
+
+				$row_actions = new row_actions(); // Row actions instance.
+
+				return $row_actions->filter($actions, $post);
 			}
 
 			/*
