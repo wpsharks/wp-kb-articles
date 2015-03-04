@@ -247,6 +247,23 @@ namespace wp_kb_articles // Root namespace.
 
 				return FALSE; // Default response.
 			}
+
+			/**
+			 * Max execution time.
+			 *
+			 * @since 150303 Adding max execution time.
+			 *
+			 * @return integer Max execution time; in seconds.
+			 *
+			 * @note This ignores an inifinite timeout, and it ignores anything less than 30.
+			 *    In such a case, a default value of 30 is returned; i.e., we expect to have a limit, and it must be >= 30.
+			 */
+			public function max_execution_time()
+			{
+				$max_execution_time = (integer)@ini_get('max_execution_time');
+
+				return $max_execution_time >= 30 ? $max_execution_time : 30;
+			}
 		}
 	}
 }

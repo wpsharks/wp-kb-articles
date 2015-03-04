@@ -1,6 +1,6 @@
 === WP KB Articles ===
 
-Stable tag: 150303
+Stable tag: 150304
 Requires at least: 4.1
 Tested up to: 4.2-alpha
 Text Domain: wp-kb-articles
@@ -77,7 +77,7 @@ Released under the terms of the [GNU General Public License](http://www.gnu.org/
 
 == Changelog ==
 
-= v150303 =
+= v150304 =
 
 * Enhancing framework.
 

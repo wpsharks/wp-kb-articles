@@ -284,6 +284,25 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->select_row(
+					                array(
+						                'label'           => sprintf(__('Enable Manual GitHub Processing?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						                'name'            => 'github_processor_button_enable',
+						                'current_value'   => $current_value_for('github_processor_button_enable'),
+						                'allow_arbitrary' => FALSE,
+						                'options'         => array(
+							                '0' => __('No, I will rely on behind-the-scenes procesing via WP-Cron (recommended)', $this->plugin->text_domain),
+							                '1' => __('Yes, give me the option to run the GitHub Processor manually (see note below)', $this->plugin->text_domain),
+						                ),
+						                'notes_after'     => '<p>'.__('The GitHub Processor runs behind-the-scenes at all times (via WP-Cron), no matter what you choose here. Selecting Yes adds a "Run GitHub Processor (Force Update)" button atop the list of KB Articles in WordPress. The GitHub Processor will attempt to synchronize all of your existing articles, and also pull in any that do not yet exist within WordPress. Running it manually can be helpful whenever you add new KB articles to your GitHub repo, and don\'t care to wait for the automatic behind-the-scenes processing to kick-in on the WordPress side—which can take up to an hour (or more) in some cases.', $this->plugin->text_domain).'</p>'.
+						                                     '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> Each time you run the GitHub Processor manually, it will only run for so long before it stops automatically. This is to avoid a script/browser timeout. Therefore, running it once might do the trick, or not. It just depends on how many KB articles you have. If once is not enough to see the changes you desire, please click it a second or third time. Running it <strong>too many times</strong> in a single hour could put you over the GitHub API rate limit; i.e., a max of 5000 API connections (KB article updates) per hour.', $this->plugin->text_domain).'</p>'
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
 				                ' <hr />'.
 
 				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these settings configured, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.

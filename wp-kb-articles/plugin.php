@@ -7,7 +7,7 @@
  * @license GNU General Public License, version 3
  */
 /*
-Version: 150303
+Version: 150304
 Text Domain: wp-kb-articles
 Plugin Name: WP KB Articles
 
