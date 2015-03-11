@@ -903,9 +903,12 @@ namespace wp_kb_articles // Root namespace.
 				if(!class_exists('\\Parsedown')) // Need Parsedown class here.
 					require_once dirname(dirname(dirname(__FILE__))).'/submodules/parsedown/Parsedown.php';
 
+				if(!class_exists('\\ParsedownExtra')) // Need Parsedown Extra class here.
+					require_once dirname(dirname(dirname(__FILE__))).'/submodules/parsedown-extra/ParsedownExtra.php';
+
 				if(is_null($parsedown = &$this->cache_key(__FUNCTION__, 'parsedown')))
-					/** @var $parsedown \Parsedown Reference for IDEs. */
-					$parsedown = new \Parsedown(); // Single instance.
+					/** @var $parsedown \ParsedownExtra Reference for IDEs. */
+					$parsedown = new \ParsedownExtra(); // Single instance.
 
 				$html = $parsedown->text($string);
 

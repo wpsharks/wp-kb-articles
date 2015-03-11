@@ -13,3 +13,6 @@
 [submodule "wp-kb-articles/submodules/yaml"]
 	path = wp-kb-articles/submodules/yaml
 	url = https://github.com/symfony/Yaml
+[submodule "wp-kb-articles/submodules/parsedown-extra"]
+	path = wp-kb-articles/submodules/parsedown-extra
+	url = https://github.com/erusev/parsedown-extra
