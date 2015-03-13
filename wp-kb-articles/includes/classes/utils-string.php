@@ -879,12 +879,14 @@ namespace wp_kb_articles // Root namespace.
 
 				$default_args = array(
 					'oembed' => FALSE,
+					'breaks' => TRUE,
 					'no_p'   => FALSE,
 				);
 				$args         = array_merge($default_args, $args);
 				$args         = array_intersect_key($args, $default_args);
 
 				$oembed = (boolean)$args['oembed'];
+				$breaks = (boolean)$args['breaks'];
 				$no_p   = (boolean)$args['no_p'];
 
 				if($oembed && strpos($string, '://') !== FALSE)
@@ -908,8 +910,9 @@ namespace wp_kb_articles // Root namespace.
 
 				if(is_null($parsedown = &$this->cache_key(__FUNCTION__, 'parsedown')))
 					/** @var $parsedown \ParsedownExtra Reference for IDEs. */
-					$parsedown = new \ParsedownExtra(); // Single instance.
+					$parsedown = new \ParsedownExtra(); // Singleton.
 
+				$parsedown->setBreaksEnabled($breaks);
 				$html = $parsedown->text($string);
 
 				if($no_p) // Remove `<p></p>` wrap?
@@ -998,7 +1001,8 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function spcsm_tokens($string, array $tokenize_only = array(), $marker = '')
 			{
-				$marker = uniqid('', TRUE).($marker ? '.'.$marker : '');
+				$marker = str_replace('.', '', uniqid('', TRUE)).
+				          ($marker ? sha1($marker) : '');
 
 				if(!($string = trim((string)$string))) // Nothing to tokenize.
 					return array('string' => $string, 'tokens' => array(), 'marker' => $marker);
@@ -1017,7 +1021,7 @@ namespace wp_kb_articles // Root namespace.
 				$spcsm['string'] = preg_replace_callback('/'.get_shortcode_regex().'/s', function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Shortcodes replaced by tokens.
 
@@ -1039,7 +1043,7 @@ namespace wp_kb_articles // Root namespace.
 				$spcsm['string'] = preg_replace_callback($pre, function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Tags replaced by tokens.
 
@@ -1061,7 +1065,7 @@ namespace wp_kb_articles // Root namespace.
 				$spcsm['string'] = preg_replace_callback($code, function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Tags replaced by tokens.
 
@@ -1083,7 +1087,7 @@ namespace wp_kb_articles // Root namespace.
 				$spcsm['string'] = preg_replace_callback($samp, function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Tags replaced by tokens.
 
@@ -1103,7 +1107,7 @@ namespace wp_kb_articles // Root namespace.
 				$spcsm['string'] = preg_replace_callback($md_fences, function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Fences replaced by tokens.
 
@@ -1122,7 +1126,7 @@ namespace wp_kb_articles // Root namespace.
 				                                               '/\!?\[(?:(?R)|[^\]]*)\]\([^)]+\)(?:\{[^}]*\})?/'), function ($m) use (&$spcsm)
 				{
 					$spcsm['tokens'][] = $m[0]; // Tokenize.
-					return '%#%spcsm_'.$spcsm['marker'].'|'.(count($spcsm['tokens']) - 1).'%#%'; // Done.
+					return '%#%spcsm-'.$spcsm['marker'].'-'.(count($spcsm['tokens']) - 1).'%#%'; #
 
 				}, $spcsm['string']); // Shortcodes replaced by tokens.
 
@@ -1153,7 +1157,7 @@ namespace wp_kb_articles // Root namespace.
 					return $string; // Nothing to restore in this case.
 
 				foreach(array_reverse($tokens, TRUE) as $_token => $_value)
-					$string = str_replace('%#%spcsm_'.$marker.'|'.$_token.'%#%', $_value, $string);
+					$string = str_replace('%#%spcsm-'.$marker.'-'.$_token.'%#%', $_value, $string);
 				// Must go in reverse order so nested tokens unfold properly.
 				unset($_token, $_value); // Housekeeping.
 
