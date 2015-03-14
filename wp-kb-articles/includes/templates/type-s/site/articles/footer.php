@@ -29,6 +29,7 @@ echo $template->snippet(
 	'comments_open'          => comments_open(),
 	'comments_number'        => get_comments_number(),
 	'show_avatars'           => get_option('show_avatars'),
+	'current_user_can_edit'  => current_user_can('edit_post', $post->ID),
 
 	'[namespace]'            => esc_attr(__NAMESPACE__),
 
