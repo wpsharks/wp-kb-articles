@@ -368,7 +368,7 @@ namespace wp_kb_articles // Root namespace.
 							'compare' => 'EXISTS', 'type' => 'SIGNED',
 						),
 					),
-					'ignore_sticky_posts' => FALSE, // Allow stickies.
+					'ignore_sticky_posts' => $this->attr->author || $this->attr->category || $this->attr->tag || $this->attr->q,
 				);
 				if($this->attr->author)
 				{
