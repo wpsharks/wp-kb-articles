@@ -249,6 +249,28 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Doing an exit?
+			 *
+			 * @since 150313 Adding exit check.
+			 *
+			 * @param boolean|null $doing Pass this to set the value.
+			 *
+			 * @return boolean `TRUE` if doing an exit.
+			 */
+			public function doing_exit($doing = NULL)
+			{
+				if(isset($doing)) // Setting the value?
+					$GLOBALS[__NAMESPACE__.'_doing_exit'] = (boolean)$doing;
+
+				if((defined('DOING_EXIT') && DOING_EXIT)
+				   || !empty($GLOBALS[__NAMESPACE__.'_doing_exit'])
+				   || $this->doing_ajax() || $this->doing_cron() || $this->doing_redirect()
+				) return TRUE; // Doing an exit.
+
+				return FALSE; // Default response.
+			}
+
+			/**
 			 * Max execution time.
 			 *
 			 * @since 150303 Adding max execution time.
