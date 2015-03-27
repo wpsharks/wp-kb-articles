@@ -736,9 +736,6 @@ namespace wp_kb_articles
 				if(!current_user_can($this->cap))
 					return; // Do not add.
 
-				// Menu page icon uses an SVG graphic.
-				$icon = $this->utils_fs->inline_icon_svg();
-
 				$divider = // Dividing line used by various menu items below.
 					'<span style="display:block; padding:0; margin:0 0 12px 0; height:1px; line-height:1px; background:#CCCCCC; opacity:0.1;"></span>';
 
@@ -1307,8 +1304,8 @@ namespace wp_kb_articles
 			 */
 			public function register_post_type()
 			{
-				// Menu page icon uses an SVG graphic.
 				$icon = $this->utils_fs->inline_icon_svg();
+				$icon = $this->utils_markup->color_svg_menu_icon($icon);
 
 				$post_type_args           = array
 				(
