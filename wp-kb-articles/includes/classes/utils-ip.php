@@ -33,6 +33,8 @@ namespace wp_kb_articles // Root namespace.
 			/**
 			 * Get the current visitor's real IP address.
 			 *
+			 * @since 150113 First documented version.
+			 *
 			 * @return string Real IP address; else `unknown` on failure.
 			 *
 			 * @note This supports both IPv4 and IPv6 addresses.
@@ -75,6 +77,8 @@ namespace wp_kb_articles // Root namespace.
 
 			/**
 			 * Gets a valid/public IP address.
+			 *
+			 * @since 150113 First documented version.
 			 *
 			 * @param string $list_of_possible_ips A single IP or a comma-delimited list of IPs.
 			 *
