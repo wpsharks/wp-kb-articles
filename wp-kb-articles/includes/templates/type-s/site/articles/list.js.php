@@ -37,7 +37,8 @@ namespace wp_kb_articles;
 
 				$listSearchBoxForm = $listSearchBox.find('> form'),
 				$listSearchBoxFormQ = $listSearchBoxForm.find('> .-q'),
-				$listSearchBoxFormButton = $listSearchBoxForm.find('> .-button'),
+				$listSearchBoxFormClear = $listSearchBoxForm.find('> .-clear'),
+				$listSearchBoxFormSubmit = $listSearchBoxForm.find('> .-submit'),
 
 				$navigationTabs = $list.find('> .-navigation > .-tabs'),
 
@@ -64,7 +65,7 @@ namespace wp_kb_articles;
 				$clickTagAnchors = $list.find('a[data-click-tag]'),
 				$clickQAnchors = $list.find('a[data-click-q]'),
 
-				$attrRaw = $list.find('> .-hidden > .-attr-raw'),
+				$attr = $list.find('> .-hidden > .-attr'),
 				$attrPage = $list.find('> .-hidden > .-attr-page'),
 				$attrOrderby = $list.find('> .-hidden > .-attr-orderby'),
 				$attrAuthor = $list.find('> .-hidden > .-attr-author'),
@@ -74,81 +75,50 @@ namespace wp_kb_articles;
 			/*
 			 Functions/handlers.
 			 */
-			var reload = function(qvs)
+			var reload = function(qvs, qvsOnly)
 			{
-				if($navigationTagsFilterAnchor.hasClass('-active')) // Close list of tags?
-					$navigationTagsFilterAnchor.removeClass('-active'), $navigationTagsOverlay.fadeOut({duration: 100});
+				qvs = qvs || {}; // Force object value.
 
-				var url, attrRaw = $attrRaw.data('attr'),
+				var url, attrRaw = $attr.data('attr'),
 					requestAttrs = {}, _prop;
 
-				requestAttrs['page'] = 1; // From the beginning.
-				requestAttrs['orderby'] = $attrOrderby.data('attr');
-				requestAttrs['author'] = $attrAuthor.data('attr');
-				requestAttrs['category'] = activeCategories();
-				requestAttrs['tag'] = activeTags();
-				requestAttrs['q'] = $attrQ.data('attr');
+				if($navigationTagsFilterAnchor.hasClass('-active'))
+					$navigationTagsFilterAnchor.removeClass('-active'),
+						$navigationTagsOverlay.hide();
 
-				if(qvs) // Alter request?
-				{
-					$.extend(requestAttrs, qvs);
+				requestAttrs.page = $attrPage.data('attr');
+				requestAttrs.orderby = $attrOrderby.data('attr');
+				requestAttrs.author = $attrAuthor.data('attr');
+				requestAttrs.category = $attrCategory.data('attr');
+				requestAttrs.tag = $attrTag.data('attr');
+				requestAttrs.q = $attrQ.data('attr');
 
-					if(qvs.author) for(_prop in requestAttrs)
-						if(_prop !== 'author' && requestAttrs.hasOwnProperty(_prop))
-							requestAttrs[_prop] = '';
+				if(!qvs.hasOwnProperty('page'))
+					qvs.page = 1; // Page one.
 
-					if(qvs.category) for(_prop in requestAttrs)
-						if(_prop !== 'category' && requestAttrs.hasOwnProperty(_prop))
-							requestAttrs[_prop] = '';
+				$.extend(requestAttrs, qvs); // Merge query vars.
 
-					if(qvs.tag) for(_prop in requestAttrs)
-						if(_prop !== 'tag' && requestAttrs.hasOwnProperty(_prop))
-							requestAttrs[_prop] = '';
+				if(qvsOnly) // Using query vars only in this case?
+					for(_prop in requestAttrs) // Iterate request attributes.
+						if(requestAttrs.hasOwnProperty(_prop) && _prop !== 'page' && !qvs.hasOwnProperty(_prop))
+							requestAttrs[_prop] = ''; // Remove this attribute; it's not from qvs.
 
-					if(qvs.q) for(_prop in requestAttrs)
-						if(_prop !== 'q' && requestAttrs.hasOwnProperty(_prop))
-							requestAttrs[_prop] = '';
-				}
-				url = vars.ajaxEndpoint;
-				url += url.indexOf('?') === -1 ? '?' : '&';
-				url += 'zcAC=1'; // ZenCache compatibility.
+				$listSearchBoxFormQ.val(requestAttrs.q), // Sync search box.
+					$listSearchBoxFormClear[requestAttrs.q ? 'show' : 'hide']();
+
+				url = vars.ajaxEndpoint; // Initialize endpoint URL.
+				url += url.indexOf('?') === -1 ? '?zcAC=1' : '&zcAC=1';
 				url += '&' + encodeURIComponent(namespace + '[sc_list_via_ajax]') + '=' + encodeURIComponent(attrRaw);
 
-				for(_prop in requestAttrs)
-					if(requestAttrs.hasOwnProperty(_prop))
-						url += '&' + encodeURIComponent(qvPrefix + _prop) + '=' + encodeURIComponent(requestAttrs[_prop]);
+				for(_prop in requestAttrs) if(requestAttrs.hasOwnProperty(_prop))
+					url += '&' + encodeURIComponent(qvPrefix + _prop) + '=' + encodeURIComponent(requestAttrs[_prop]);
 
 				$list.css({opacity: 0.5}), $.get(url, function(data)
 				{
-					$list.replaceWith(data);
-					plugin.onReady();
+					$list.replaceWith(data); // Use new list/results.
+					scrollTo($('.' + namespace + '-list').offset().top, 0);
+					plugin.onReady(); // Attach new event handler.
 				});
-			};
-			var activeCategories = function()
-			{
-				var activeCategories = '';
-
-				$navigationTabsListItemAnchors
-					.each(function()
-					      {
-						      var $this = $(this);
-						      if($this.hasClass('-active'))
-							      activeCategories += (activeCategories ? ',' : '') + $this.data('category');
-					      });
-				return activeCategories;
-			};
-			var activeTags = function()
-			{
-				var activeTags = '';
-
-				$navigationTagsOverlayListItemAnchors
-					.each(function()
-					      {
-						      var $this = $(this);
-						      if($this.hasClass('-active'))
-							      activeTags += (activeTags ? ',' : '') + $this.data('tag');
-					      });
-				return activeTags;
 			};
 			/*
 			 Search box handlers.
@@ -168,19 +138,32 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					var $this = $(this);
+					var $this = $(this),
+						qvsOnly = true; // Always.
 
-					reload({q: $.trim($this.val())});
+					reload({q: $.trim($this.val())}, qvsOnly);
 				});
-			$listSearchBoxFormButton.off('click.' + namespace),
-				$listSearchBoxFormButton.on('click.' + namespace, function(e)
+			$listSearchBoxFormClear.off('click.' + namespace),
+				$listSearchBoxFormClear.on('click.' + namespace, function(e)
 				{
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					var $this = $(this);
+					var $this = $(this),
+						qvsOnly = false; // Never.
 
-					reload({q: $.trim($listSearchBoxFormQ.val())});
+					reload({q: ''}, qvsOnly);
+				});
+			$listSearchBoxFormSubmit.off('click.' + namespace),
+				$listSearchBoxFormSubmit.on('click.' + namespace, function(e)
+				{
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					var $this = $(this),
+						qvsOnly = true; // Always.
+
+					reload({q: $.trim($listSearchBoxFormQ.val())}, qvsOnly);
 				});
 			/*
 			 Navigation handlers.
@@ -191,12 +174,13 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					var $this = $(this);
+					var $this = $(this),
+						qvsOnly = $this.hasClass('-active');
 
 					$navigationTabsListItemAnchors.removeClass('-active'),
-						$this.addClass('-active');
+						$this.addClass('-active'); // Make active.
 
-					reload();
+					reload({category: $this.data('category')}, qvsOnly);
 				});
 			$navigationTagsFilterAnchor.off('click.' + namespace),
 				$navigationTagsFilterAnchor.on('click.' + namespace, function(e)
@@ -248,7 +232,17 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload();
+					var qvsOnly = false, // Change tag(s) only.
+						tags = ''; // Initialize list of tags.
+
+					$navigationTagsOverlayListItemAnchors
+						.each(function()
+						      {
+							      var $this = $(this);
+							      if($this.hasClass('-active'))
+								      tags += (tags ? ',' : '') + $this.data('tag');
+						      });
+					reload({tag: tags}, qvsOnly); // Reload the list now.
 				});
 			/*
 			 Click handlers.
@@ -259,7 +253,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({page: $(this).data('clickPage')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = false; // Never on paging.
+
+					reload({page: $this.data('clickPage')}, qvsOnly);
 				});
 			$clickOrderbyAnchors.off('click.' + namespace),
 				$clickOrderbyAnchors.on('click.' + namespace, function(e)
@@ -267,7 +265,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({orderby: $(this).data('clickOrderby')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = false; // Never on ordering.
+
+					reload({orderby: $this.data('clickOrderby')}, qvsOnly);
 				});
 			$clickAuthorAnchors.off('click.' + namespace),
 				$clickAuthorAnchors.on('click.' + namespace, function(e)
@@ -275,7 +277,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({author: $(this).data('clickAuthor')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = isClear ? false : true;
+
+					reload({author: $this.data('clickAuthor')}, qvsOnly);
 				});
 			$clickCategoryAnchors.off('click.' + namespace),
 				$clickCategoryAnchors.on('click.' + namespace, function(e)
@@ -283,7 +289,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({category: $(this).data('clickCategory')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = isClear ? false : true;
+
+					reload({category: $this.data('clickCategory')}, qvsOnly);
 				});
 			$clickTagAnchors.off('click.' + namespace),
 				$clickTagAnchors.on('click.' + namespace, function(e)
@@ -291,7 +301,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({tag: $(this).data('clickTag')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = isClear ? false : true;
+
+					reload({tag: $this.data('clickTag')}, qvsOnly);
 				});
 			$clickQAnchors.off('click.' + namespace),
 				$clickQAnchors.on('click.' + namespace, function(e)
@@ -299,7 +313,11 @@ namespace wp_kb_articles;
 					e.preventDefault();
 					e.stopImmediatePropagation();
 
-					reload({q: $(this).data('clickQ')});
+					var $this = $(this),
+						isClear = $this.hasClass('-clear'),
+						qvsOnly = isClear ? false : true;
+
+					reload({q: $this.data('clickQ')}, qvsOnly);
 				});
 		};
 		$document.ready(plugin.onReady);

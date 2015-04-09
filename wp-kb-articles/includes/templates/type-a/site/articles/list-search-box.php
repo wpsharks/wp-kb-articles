@@ -20,7 +20,10 @@ namespace wp_kb_articles;
 		<input name="<?php echo esc_attr($plugin->qv_prefix.'q'); ?>"
 		       type="search" class="-q" value="<?php echo esc_attr($attr->q); ?>"
 		       placeholder="<?php echo esc_attr(__('Search KB Articles...', $plugin->text_domain)); ?>" />
-		<button type="button" class="-button">
+		<button type="button" class="-clear">
+			<i class="fa fa-times-circle"></i>
+		</button>
+		<button type="submit" class="-submit">
 			<i class="fa fa-search"></i>
 		</button>
 	</form>

@@ -724,10 +724,10 @@ namespace wp_kb_articles // Root namespace.
 				{
 					if(isset($qvs[$_qv])) continue; // Set already.
 
-					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_qv]))
+					if(isset($_REQUEST[$this->plugin->qv_prefix.$_qv]))
 						$qvs[$_qv] = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_qv]));
 
-					else if(($_qv_value = get_query_var($this->plugin->qv_prefix.$_qv)))
+					else if(!is_null($_qv_value = get_query_var($this->plugin->qv_prefix.$_qv, NULL)))
 						$qvs[$_qv] = (string)$_qv_value; // Current value.
 				}
 				unset($_qv, $_qv_value); // Housekeeping.

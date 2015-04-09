@@ -71,12 +71,12 @@ namespace wp_kb_articles // Root namespace.
 				$this->content = (string)$content;
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `q` is all that's supported here for now.
-					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && ($_qv = get_query_var($this->plugin->qv_prefix.$_prop)))
+					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && !is_null($_qv = get_query_var($this->plugin->qv_prefix.$_prop, NULL)))
 						$_value = (string)$_qv; // e.g. `q` is all that's supported here for now.
 				unset($_prop, $_value, $_qv); // Housekeeping.
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `q` is all that's supported here for now.
-					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, $this->plugin->qv_keys, TRUE))
+					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && isset($_REQUEST[$this->plugin->qv_prefix.$_prop]))
 						$_value = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_prop]));
 				unset($_prop, $_value); // Housekeeping.
 

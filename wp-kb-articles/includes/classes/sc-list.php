@@ -21,15 +21,6 @@ namespace wp_kb_articles // Root namespace.
 		class sc_list extends abs_base
 		{
 			/**
-			 * Raw shortcode attributes.
-			 *
-			 * @since 150113 First documented version.
-			 *
-			 * @var array Raw shortcode attributes.
-			 */
-			protected $attr_;
-
-			/**
 			 * Shortcode attributes.
 			 *
 			 * @since 150113 First documented version.
@@ -92,16 +83,15 @@ namespace wp_kb_articles // Root namespace.
 				$attr = array_intersect_key($attr, $default_attr);
 
 				$this->attr    = (object)$attr;
-				$this->attr_   = $attr; // Originals.
 				$this->content = (string)$content;
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `page`, `author`, etc.
-					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && ($_qv = get_query_var($this->plugin->qv_prefix.$_prop)))
+					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && !is_null($_qv = get_query_var($this->plugin->qv_prefix.$_prop, NULL)))
 						$_value = (string)$_qv; // e.g. `page`, `author`, etc.
 				unset($_prop, $_value, $_qv); // Housekeeping.
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `page`, `author`, etc.
-					if(!empty($_REQUEST[$this->plugin->qv_prefix.$_prop]) && in_array($_prop, $this->plugin->qv_keys, TRUE))
+					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && isset($_REQUEST[$this->plugin->qv_prefix.$_prop]))
 						$_value = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_prop]));
 				unset($_prop, $_value); // Housekeeping.
 
@@ -121,10 +111,9 @@ namespace wp_kb_articles // Root namespace.
 				if($this->attr->per_page > $upper_max_limit)
 					$this->attr->per_page = $upper_max_limit;
 
-				$_orderbys            = preg_split('/,+/', $this->attr->orderby, NULL, PREG_SPLIT_NO_EMPTY);
-				$_orderbys            = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_orderbys));
-				$this->attr->orderbys = $_orderbys; // Preserve the array of orderby clauses for templates.
-				$this->attr->orderby  = array(); // Reset; convert to an associative array.
+				$_orderbys           = preg_split('/,+/', $this->attr->orderby, NULL, PREG_SPLIT_NO_EMPTY);
+				$_orderbys           = $this->plugin->utils_array->remove_emptys($this->plugin->utils_string->trim_deep($_orderbys));
+				$this->attr->orderby = array(); // Reset; convert to an associative array.
 				foreach($_orderbys as $_orderby) // Validate each orderby.
 				{
 					if(strpos($_orderby, ':', 1) === FALSE)
@@ -214,6 +203,23 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->attr->q   = trim((string)$this->attr->q);
 				$this->attr->url = trim((string)$this->attr->url);
+
+				$_attr_strings = array(); // Initialize string values.
+				foreach($this->attr as $_key => $_value) if(is_array($_value))
+				{
+					if($_key === 'orderby') // Associative.
+					{
+						$_attr_strings[$_key] = '';
+						foreach($_value as $__key => $__value)
+							$_attr_strings[$_key] .= ','.$__key.':'.$__value;
+						$_attr_strings[$_key] = trim($_attr_strings[$_key], ',');
+					}
+					else $_attr_strings[$_key] = implode(',', $_value);
+				}
+				else $_attr_strings[$_key] = (string)$_value; // Force string value.
+
+				$this->attr->strings = $_attr_strings; // Special property.
+				unset($_attr_strings, $_key, $_value, $__key, $__value); // Housekeeping.
 			}
 
 			/**
@@ -226,7 +232,6 @@ namespace wp_kb_articles // Root namespace.
 			public function parse()
 			{
 				$attr            = $this->attr;
-				$attr_           = $this->attr_;
 				$filters         = $this->filters();
 				$tab_categories  = $this->tab_categories();
 				$tags            = $this->tags();

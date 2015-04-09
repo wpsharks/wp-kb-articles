@@ -10,8 +10,7 @@ namespace wp_kb_articles;
  * @var array       $filters All filters that apply.
  * @var \stdClass[] $tab_categories An array of categories; for tabs.
  * @var \stdClass[] $tags An array of all KB article tags.
- * @var \stdClass   $attr Parsed/normalized/validated shortcode attributes.
- * @var array       $attr_ Unparsed/raw shortcode attributes.
+ * @var \stdClass   $attr Parsed/normalized/validated attributes.
  * @var \WP_Query   $query WP Query class instance ready for iteration.
  * @var \stdClass   $pagination_vars Object containing pagination vars.
  *
@@ -210,7 +209,7 @@ namespace wp_kb_articles;
 	<?php endif; ?>
 
 	<div class="-hidden">
-		<div class="-attr-raw" data-attr="<?php echo esc_attr($plugin->utils_enc->xencrypt(serialize($attr_))); ?>"></div>
+		<div class="-attr" data-attr="<?php echo esc_attr($plugin->utils_enc->xencrypt(serialize($attr->strings))); ?>"></div>
 		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->page); ?>"></div>
 		<div class="-attr-orderby" data-attr="<?php echo esc_attr(implode(',', $attr->orderbys)); ?>"></div>
 		<div class="-attr-author" data-attr="<?php echo esc_attr(implode(',', $attr->author)); ?>"></div>

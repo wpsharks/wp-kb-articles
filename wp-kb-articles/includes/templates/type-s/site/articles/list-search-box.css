@@ -48,7 +48,7 @@
   font-style: italic;
   color: rgba(0, 0, 0, 0.2);
 }
-.wp_kb_articles-list-search-box > form > .-button, .wp_kb_articles-list-search-box > form > .-button:hover, .wp_kb_articles-list-search-box > form > .-button:focus {
+.wp_kb_articles-list-search-box > form > .-clear, .wp_kb_articles-list-search-box > form > .-clear:hover, .wp_kb_articles-list-search-box > form > .-clear:focus, .wp_kb_articles-list-search-box > form > .-submit, .wp_kb_articles-list-search-box > form > .-submit:hover, .wp_kb_articles-list-search-box > form > .-submit:focus {
   margin: 0;
   padding: 0;
   width: auto;
@@ -61,6 +61,12 @@
   -webkit-appearance: none;
   box-sizing: border-box;
   top: 0;
-  right: 1em;
   position: absolute;
+}
+.wp_kb_articles-list-search-box > form > .-clear, .wp_kb_articles-list-search-box > form > .-clear:hover, .wp_kb_articles-list-search-box > form > .-clear:focus {
+  display: none;
+  right: 2.5em;
+}
+.wp_kb_articles-list-search-box > form > .-submit, .wp_kb_articles-list-search-box > form > .-submit:hover, .wp_kb_articles-list-search-box > form > .-submit:focus {
+  right: 1em;
 }
