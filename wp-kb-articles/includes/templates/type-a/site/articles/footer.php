@@ -21,7 +21,7 @@ namespace wp_kb_articles;
 			<div class="-popularity">
 				<?php echo esc_html($plugin->utils_post->get_popularity($post->ID)); ?>
 			</div>
-			<?php if(($_terms = get_the_terms($post->ID, $plugin->post_type.'_tag'))): ?>
+			<?php if(($_terms = get_the_terms($post->ID, $plugin->post_type.'_tag')) && !is_wp_error($_terms)): ?>
 				<div class="-tags">
 					<em><?php echo __('Tagged:', $plugin->text_domain); ?></em>
 					<?php $_tags = ''; // Initialize.

@@ -15,12 +15,12 @@ namespace wp_kb_articles;
  */
 ?>
 <?php $_tags = ''; // Initialize.
-if(($_tag_terms = get_the_terms($post->ID, $plugin->post_type.'_tag'))):
-	foreach($_tag_terms as $_term) // Iterate the tags that it has.
+if(($_terms = get_the_terms($post->ID, $plugin->post_type.'_tag')) && !is_wp_error($_terms)):
+	foreach($_terms as $_term) // Iterate the tags that it has.
 		$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
 		          '<a href="'.esc_attr(get_term_link($_term)).'">'.esc_attr($_term->name).'</a>';
 endif; // End if article has tags.
-unset($_tag_terms, $_term); // Housekeeping.
+unset($_terms, $_term); // Housekeeping.
 
 echo $template->snippet(
 	'footer.php', array(

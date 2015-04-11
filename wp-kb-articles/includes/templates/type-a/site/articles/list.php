@@ -116,7 +116,7 @@ namespace wp_kb_articles;
 	<div class="-articles">
 		<?php if($query->wp_query->have_posts()): ?>
 			<?php while($query->wp_query->have_posts()): $query->wp_query->the_post(); ?>
-				<?php $_post_id = get_the_ID(); ?>
+				<?php $_post = $GLOBALS['post']; ?>
 				<div class="-article">
 
 					<h3 class="-title">
@@ -125,10 +125,10 @@ namespace wp_kb_articles;
 						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo $_title; ?></a>
 					</h3>
 
-					<?php if(!empty($query->results[$_post_id]->snippet)): ?>
+					<?php if(!empty($query->results[$_post->ID]->snippet)): ?>
 						<div class="-snippet">
 							<?php $_snippet = // Hilite any search terms in snippet also.
-								$plugin->utils_markup->hilite_search_terms($attr->q, esc_html($query->results[$_post_id]->snippet)); ?>
+								$plugin->utils_markup->hilite_search_terms($attr->q, esc_html($query->results[$_post->ID]->snippet)); ?>
 							<?php echo '...'.$_snippet.'...'; ?>
 						</div>
 					<?php endif; ?>
@@ -140,7 +140,7 @@ namespace wp_kb_articles;
 								><?php echo esc_html(get_the_author()); ?></a>
 						</div>
 
-						<?php if(($_terms = get_the_terms($_post_id, $plugin->post_type.'_tag'))): ?>
+						<?php if(($_terms = get_the_terms($_post->ID, $plugin->post_type.'_tag')) && !is_wp_error($_terms)): ?>
 							<div class="-tags">
 								<span><?php echo __('tagged:', $plugin->text_domain); ?></span>
 								<?php $_tags = ''; // Initialize.
@@ -164,13 +164,13 @@ namespace wp_kb_articles;
 						</div>
 
 						<div class="-popularity">
-							<?php echo esc_html($plugin->utils_post->get_popularity($_post_id)); ?>
+							<?php echo esc_html($plugin->utils_post->get_popularity($_post->ID)); ?>
 						</div>
 					</div>
 
 				</div>
 			<?php endwhile; ?>
-			<?php unset($_post_id, $_title, $_snippet); ?>
+			<?php unset($_post, $_title, $_snippet); ?>
 			<?php wp_reset_postdata(); ?>
 		<?php else: ?>
 			<p><i class="fa fa-meh-o"></i> <?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>
