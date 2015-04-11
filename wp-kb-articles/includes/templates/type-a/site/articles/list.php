@@ -212,12 +212,12 @@ namespace wp_kb_articles;
 
 	<div class="-hidden">
 		<div class="-attr" data-attr="<?php echo esc_attr($plugin->utils_enc->xencrypt(serialize($attr->strings))); ?>"></div>
-		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->page); ?>"></div>
-		<div class="-attr-orderby" data-attr="<?php echo esc_attr(implode(',', $attr->orderbys)); ?>"></div>
-		<div class="-attr-author" data-attr="<?php echo esc_attr(implode(',', $attr->author)); ?>"></div>
-		<div class="-attr-category" data-attr="<?php echo esc_attr(implode(',', $attr->category)); ?>"></div>
-		<div class="-attr-tag" data-attr="<?php echo esc_attr(implode(',', $attr->tag)); ?>"></div>
-		<div class="-attr-q" data-attr="<?php echo esc_attr($attr->q); ?>"></div>
+		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->strings['page']); ?>"></div>
+		<div class="-attr-orderby" data-attr="<?php echo esc_attr($attr->strings['orderby']); ?>"></div>
+		<div class="-attr-author" data-attr="<?php echo esc_attr($attr->strings['author']); ?>"></div>
+		<div class="-attr-category" data-attr="<?php echo esc_attr($attr->strings['category']); ?>"></div>
+		<div class="-attr-tag" data-attr="<?php echo esc_attr($attr->strings['tag']); ?>"></div>
+		<div class="-attr-q" data-attr="<?php echo esc_attr($attr->strings['q']); ?>"></div>
 	</div>
 
 </div>
