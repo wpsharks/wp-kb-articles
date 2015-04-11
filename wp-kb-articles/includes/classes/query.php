@@ -330,7 +330,7 @@ namespace wp_kb_articles // Root namespace.
 					" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts` ON `index`.`post_id` = `posts`.`ID`".
 					($this->args->category_no_tp || $this->args->tag // Do we need the term relationships table for category(s) and/or tag(s)?
 						? " INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` AS `term_relationships` ON `index`.`post_id` = `term_relationships`.`object_id`" : '').
-					" LEFT JOIN `".esc_sql($this->plugin->utils_db->prefix.'stats')."` AS `stats` ON `index`.`post_id` = `stats`.`post_id`".
+					" LEFT JOIN `".esc_sql($this->plugin->utils_db->prefix().'stats')."` AS `stats` ON `index`.`post_id` = `stats`.`post_id`".
 					" LEFT JOIN `".esc_sql($this->plugin->utils_db->wp->postmeta)."` AS `popularity` ON `index`.`post_id` = `popularity`.`post_id` AND `popularity`.`meta_key` = '".esc_sql(__NAMESPACE__.'_popularity')."'".
 
 					" WHERE 1=1". // Required matches and other query filters.
