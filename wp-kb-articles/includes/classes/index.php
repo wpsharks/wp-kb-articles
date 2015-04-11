@@ -78,68 +78,75 @@ namespace wp_kb_articles // Root namespace.
 			 *
 			 * @since 150410 Improving searches.
 			 *
-			 * @param integer $post_id WordPress post ID.
-			 * @param string  $action One of `save` or `delete`.
+			 * @param integer|array $post_ids WordPress post IDs.
+			 * @param string        $action One of `save` or `delete`.
 			 */
-			public function sync($post_id, $action)
+			public function sync($post_ids, $action)
 			{
-				if(!($post_id = (integer)$post_id))
-					return; // Not possible.
-
-				if(!($post = get_post($post_id)))
-					return; // Not possible.
-
-				if($post->post_type !== $this->plugin->post_type)
-					return; // Not applicable.
+				if(!$post_ids || !($post_ids = (array)$post_ids))
+					return; // Nothing to sync up with.
 
 				if(!($action = trim(strtolower((string)$action))))
 					return; // Not applicable.
 
-				switch($action) // Sync in what way exactly?
+				foreach($post_ids as $_post_id)
 				{
-					case 'delete': // Deleting an article.
+					if(!($_post_id = (integer)$_post_id))
+						continue; // Not possible.
 
-						$this->plugin->utils_db->wp->delete(
-							$this->plugin->utils_db->prefix().'index',
-							array('post_id' => $post->ID)
-						);
-						break; // Break switch handler.
+					if(!($_post = get_post($_post_id)))
+						continue; // Not possible.
 
-					case 'save': // New article. Or, updating an existing article.
+					if($_post->post_type !== $this->plugin->post_type)
+						continue; // Not applicable.
 
-						$post_tags_sql_frag = // Sub-select that acquires post tag names.
-							"SELECT GROUP_CONCAT(`terms`.`name` SEPARATOR ', ')". // Comma-delimited tag names.
+					switch($action) // Sync in what way exactly?
+					{
+						case 'delete': // Deleting an article.
 
-							" FROM `".esc_sql($this->plugin->utils_db->wp->terms)."` AS `terms`".
-							" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_taxonomy)."` AS `term_taxonomy` ON `term_taxonomy`.`term_id` = `terms`.`term_id`".
-							" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` AS `term_relationships` ON `term_relationships`.`term_taxonomy_id` = `term_taxonomy`.`term_taxonomy_id`".
+							$this->plugin->utils_db->wp->delete(
+								$this->plugin->utils_db->prefix().'index',
+								array('post_id' => $_post->ID)
+							);
+							break; // Break switch handler.
 
-							" WHERE 1=1". // Initialize where clause.
-							" AND `term_taxonomy`.`taxonomy` = '".esc_sql($this->plugin->post_type.'_tag')."'".
-							" AND `term_relationships`.`object_id` = `post_id`";
+						case 'save': // New article. Or, updating an existing article.
 
-						$sql = // Insert|replace syntax; w/ built-in sub-selects.
-							"REPLACE INTO `".esc_sql($this->plugin->utils_db->prefix().'index')."`".
-							" (`post_id`, `post_title`, `post_tags`, `post_content`)".
+							$post_tags_sql_frag = // Sub-select that acquires post tag names.
+								"SELECT GROUP_CONCAT(`terms`.`name` SEPARATOR ', ')". // Comma-delimited tag names.
 
-							" SELECT". // Insert selection.
+								" FROM `".esc_sql($this->plugin->utils_db->wp->terms)."` AS `terms`".
+								" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_taxonomy)."` AS `term_taxonomy` ON `term_taxonomy`.`term_id` = `terms`.`term_id`".
+								" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` AS `term_relationships` ON `term_relationships`.`term_taxonomy_id` = `term_taxonomy`.`term_taxonomy_id`".
 
-							" `posts`.`ID` AS `post_id`,".
-							" `posts`.`post_title` AS `post_title`,".
-							" (".$post_tags_sql_frag.") AS `post_tags`,".
-							" `posts`.`post_content` AS `post_content`".
+								" WHERE 1=1". // Initialize where clause.
+								" AND `term_taxonomy`.`taxonomy` = '".esc_sql($this->plugin->post_type.'_tag')."'".
+								" AND `term_relationships`.`object_id` = `post_id`";
 
-							" FROM `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts`".
+							$sql = // Insert|replace syntax; w/ built-in sub-selects.
+								"REPLACE INTO `".esc_sql($this->plugin->utils_db->prefix().'index')."`".
+								" (`post_id`, `post_title`, `post_tags`, `post_content`)".
 
-							" WHERE 1=1". // Initialize where clause.
-							" AND `posts`.`ID` = '".esc_sql($post->ID)."'".
-							" AND `posts`.`post_type` = '".esc_sql($this->plugin->post_type)."'".
-							" AND `posts`.`post_status` NOT IN('auto-draft')";
+								" SELECT". // Insert selection.
 
-						$this->plugin->utils_db->wp->query($sql);
+								" `posts`.`ID` AS `post_id`,".
+								" `posts`.`post_title` AS `post_title`,".
+								" (".$post_tags_sql_frag.") AS `post_tags`,".
+								" `posts`.`post_content` AS `post_content`".
 
-						break; // Break switch handler.
+								" FROM `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts`".
+
+								" WHERE 1=1". // Initialize where clause.
+								" AND `posts`.`ID` = '".esc_sql($_post->ID)."'".
+								" AND `posts`.`post_type` = '".esc_sql($this->plugin->post_type)."'".
+								" AND `posts`.`post_status` NOT IN('auto-draft')";
+
+							$this->plugin->utils_db->wp->query($sql);
+
+							break; // Break switch handler.
+					}
 				}
+				unset($_post_id, $_post); // Housekeeping.
 			}
 		}
 	}
