@@ -467,6 +467,10 @@ namespace wp_kb_articles
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
 
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
+				add_action('before_delete_post', array($this, 'delete_article'), 10, 1);
+
+				add_action('set_object_terms', array($this, 'save_article_terms'), 10, 1);
+				add_action('deleted_term_relationships', array($this, 'delete_article_terms'), 10, 1);
 
 				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
 
@@ -1148,7 +1152,7 @@ namespace wp_kb_articles
 			 */
 
 			/**
-			 * Handle article-save actions.
+			 * Handle article save actions.
 			 *
 			 * @since 150113 First documented version.
 			 *
@@ -1158,7 +1162,91 @@ namespace wp_kb_articles
 			 */
 			public function save_article($post_id)
 			{
-				$this->utils_post->update_popularity($post_id, 0);
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$this->utils_post->update_popularity($post->ID, 0);
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
+			}
+
+			/**
+			 * Handle article deletion actions.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `before_delete_post` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function delete_article($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'delete'); // Delete.
+			}
+
+			/**
+			 * Handle article save terms changes.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `set_object_terms` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function save_article_terms($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
+			}
+
+			/**
+			 * Handle article term deletions.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `deleted_term_relationships` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function delete_article_terms($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
 			}
 
 			/**
