@@ -216,17 +216,37 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function drop_db_tables()
 			{
-				foreach(scandir($tables_dir = dirname(dirname(__FILE__)).'/tables') as $_sql_file)
+				foreach(scandir($tables_dir = dirname(dirname(__FILE__)).'/db-tables') as $_sql_file)
 					if(substr($_sql_file, -4) === '.sql' && is_file($tables_dir.'/'.$_sql_file))
 					{
 						$_sql_file_table = substr($_sql_file, 0, -4);
 						$_sql_file_table = str_replace('-', '_', $_sql_file_table);
 						$_sql_file_table = $this->plugin->utils_db->prefix().$_sql_file_table;
 
-						if(!$this->plugin->utils_db->wp->query('DROP TABLE IF EXISTS `'.esc_sql($_sql_file_table).'`'))
+						if($this->plugin->utils_db->wp->query('DROP TABLE IF EXISTS `'.esc_sql($_sql_file_table).'`') === FALSE)
 							throw new \exception(sprintf(__('DB table deletion failure: `%1$s`.', $this->plugin->text_domain), $_sql_file_table));
 					}
 				unset($_sql_file, $_sql_file_table); // Housekeeping.
+			}
+
+			/**
+			 * Uninstall DB functions.
+			 *
+			 * @since 150411 Enhancing search functionality.
+			 */
+			protected function drop_db_functions()
+			{
+				foreach(scandir($functions_dir = dirname(dirname(__FILE__)).'/db-functions') as $_sql_file)
+					if(substr($_sql_file, -4) === '.sql' && is_file($functions_dir.'/'.$_sql_file))
+					{
+						$_sql_file_function = substr($_sql_file, 0, -4);
+						$_sql_file_function = str_replace('-', '_', $_sql_file_function);
+						$_sql_file_function = $this->plugin->utils_db->prefix().$_sql_file_function;
+
+						if($this->plugin->utils_db->wp->query('DROP FUNCTION IF EXISTS `'.esc_sql($_sql_file_function).'`') === FALSE)
+							throw new \exception(sprintf(__('DB function deletion failure: `%1$s`.', $this->plugin->text_domain), $_sql_file_function));
+					}
+				unset($_sql_file, $_sql_file_function); // Housekeeping.
 			}
 		}
 	}

@@ -429,6 +429,16 @@
 			{
 				margin : 0 0 .5em 0;
 			}
+			& > .-snippet
+			{
+				opacity    : 0.5;
+				font-style : italic;
+				margin     : -.5em 0 .5em .5em;
+			}
+			& > .-title > a > b
+			{
+				color : #000000;
+			}
 			& > .-meta
 			{
 				font-size  : 80%;

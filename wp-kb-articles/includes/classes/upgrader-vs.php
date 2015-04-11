@@ -50,6 +50,24 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function run_handlers()
 			{
+				$this->from_lte_v150304();
+			}
+
+			/**
+			 * Runs upgrade handler for this specific version.
+			 *
+			 * @since 150411 Improving search functionality.
+			 */
+			protected function from_lte_v150304()
+			{
+				if(version_compare($this->prev_version, '150304', '>'))
+					return; // Not applicable.
+
+				new installer(); // Reinstall; forcing table recreation.
+				// ↑ This adds the new `index` table that we need below.
+
+				$index = new index(); // Index class instance.
+				$index->rebuild(); // Rebuild entire index.
 			}
 		}
 	}

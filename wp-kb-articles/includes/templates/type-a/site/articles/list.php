@@ -7,12 +7,11 @@ namespace wp_kb_articles;
  *
  * Other variables made available in this template file:
  *
- * @var array       $filters All filters that apply.
- * @var \stdClass[] $tab_categories An array of categories; for tabs.
- * @var \stdClass[] $tags An array of all KB article tags.
- * @var \stdClass   $attr Parsed/normalized/validated attributes.
- * @var \WP_Query   $query WP Query class instance ready for iteration.
- * @var \stdClass   $pagination_vars Object containing pagination vars.
+ * @var \stdClass   $attr Parsed attributes.
+ * @var query       $query Query class instance.
+ * @var \stdClass[] $tab_categories Tab categories.
+ * @var \stdClass[] $tags An array of all KB tags.
+ * @var array       $filters Filters that apply.
  *
  * -------------------------------------------------------------------
  * @note In addition to plugin-specific variables & functionality,
@@ -115,13 +114,24 @@ namespace wp_kb_articles;
 	<?php endif; ?>
 
 	<div class="-articles">
-		<?php if($query->have_posts()): ?>
-			<?php while($query->have_posts()): $query->the_post(); ?>
+		<?php if($query->wp_query->have_posts()): ?>
+			<?php while($query->wp_query->have_posts()): $query->wp_query->the_post(); ?>
+				<?php $_post = $GLOBALS['post']; ?>
 				<div class="-article">
 
 					<h3 class="-title">
-						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
+						<?php $_title = // Hilite any search terms in title.
+							$plugin->utils_markup->hilite_search_terms($attr->q, esc_html(get_the_title())); ?>
+						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo $_title; ?></a>
 					</h3>
+
+					<?php if(!empty($query->results[$_post->ID]->snippet)): ?>
+						<div class="-snippet">
+							<?php $_snippet = // Hilite any search terms in snippet also.
+								$plugin->utils_markup->hilite_search_terms($attr->q, esc_html($query->results[$_post->ID]->snippet)); ?>
+							<?php echo '...'.$_snippet.'...'; ?>
+						</div>
+					<?php endif; ?>
 
 					<div class="-meta">
 						<div class="-author">
@@ -130,7 +140,7 @@ namespace wp_kb_articles;
 								><?php echo esc_html(get_the_author()); ?></a>
 						</div>
 
-						<?php if(($_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))): ?>
+						<?php if(($_terms = get_the_terms($_post->ID, $plugin->post_type.'_tag')) && !is_wp_error($_terms)): ?>
 							<div class="-tags">
 								<span><?php echo __('tagged:', $plugin->text_domain); ?></span>
 								<?php $_tags = ''; // Initialize.
@@ -154,26 +164,27 @@ namespace wp_kb_articles;
 						</div>
 
 						<div class="-popularity">
-							<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
+							<?php echo esc_html($plugin->utils_post->get_popularity($_post->ID)); ?>
 						</div>
 					</div>
 
 				</div>
 			<?php endwhile; ?>
+			<?php unset($_post, $_title, $_snippet); ?>
 			<?php wp_reset_postdata(); ?>
 		<?php else: ?>
 			<p><i class="fa fa-meh-o"></i> <?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>
 		<?php endif; ?>
 	</div>
 
-	<?php if($pagination_vars->total_pages > 1): ?>
+	<?php if($query->pagination->total_pages > 1): ?>
 		<div class="-pagination">
 			<div class="-pages">
 				<ul class="-list">
-					<?php if($pagination_vars->current_page > 1): // Create a previous page link? ?>
+					<?php if($query->pagination->current_page > 1): // Create a previous page link? ?>
 						<li class="-prev -prev-next">
-							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $pagination_vars->current_page - 1))); ?>"
-							   data-click-page="<?php echo esc_attr($pagination_vars->current_page - 1); ?>">&laquo; <?php echo __('prev', $plugin->text_domain); ?></a>
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $query->pagination->current_page - 1))); ?>"
+							   data-click-page="<?php echo esc_attr($query->pagination->current_page - 1); ?>">&laquo; <?php echo __('prev', $plugin->text_domain); ?></a>
 						</li>
 					<?php else: // Not possible; this is the first page. ?>
 						<li class="-prev -prev-next">
@@ -184,22 +195,22 @@ namespace wp_kb_articles;
 					<?php // Individual page links now.
 					$_max_page_links           = 15; // Max individual page links to show on each page.
 					$_page_links_start_at_page = // This is a mildly complex calculation that we can do w/ help from the plugin class.
-						$plugin->utils_db->pagination_links_start_page($pagination_vars->current_page, $pagination_vars->total_pages, $_max_page_links);
+						$plugin->utils_db->pagination_links_start_page($query->pagination->current_page, $query->pagination->total_pages, $_max_page_links);
 
-					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $pagination_vars->total_pages; $_i++, $_page++): ?>
+					for($_i = 1, $_page = $_page_links_start_at_page; $_i <= $_max_page_links && $_page <= $query->pagination->total_pages; $_i++, $_page++): ?>
 						<li>
 							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $_page))); ?>"
 							   data-click-page="<?php echo esc_attr($_page); ?>"
-								<?php if($_page === $pagination_vars->current_page): ?> class="-active"<?php endif; ?>
+								<?php if($_page === $query->pagination->current_page): ?> class="-active"<?php endif; ?>
 								><?php echo esc_html($_page); ?></a>
 						</li>
 					<?php endfor; // End the iteration of page links.
 					unset($_max_page_links, $_page_links_start_at_page, $_page, $_i); // Housekeeping. ?>
 
-					<?php if($pagination_vars->current_page < $pagination_vars->total_pages): // Create a next page link? ?>
+					<?php if($query->pagination->current_page < $query->pagination->total_pages): // Create a next page link? ?>
 						<li class="-next -prev-next">
-							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $pagination_vars->current_page + 1))); ?>"
-							   data-click-page="<?php echo esc_attr($pagination_vars->current_page + 1); ?>"><?php echo __('next', $plugin->text_domain); ?> &raquo;</a>
+							<a href="<?php echo esc_attr($plugin->utils_url->sc_list($attr->url, array('page' => $query->pagination->current_page + 1))); ?>"
+							   data-click-page="<?php echo esc_attr($query->pagination->current_page + 1); ?>"><?php echo __('next', $plugin->text_domain); ?> &raquo;</a>
 						</li>
 					<?php else: // Not possible; this is the last page. ?>
 						<li class="-next -prev-next">
@@ -213,12 +224,12 @@ namespace wp_kb_articles;
 
 	<div class="-hidden">
 		<div class="-attr" data-attr="<?php echo esc_attr($plugin->utils_enc->xencrypt(serialize($attr->strings))); ?>"></div>
-		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->page); ?>"></div>
-		<div class="-attr-orderby" data-attr="<?php echo esc_attr(implode(',', $attr->orderbys)); ?>"></div>
-		<div class="-attr-author" data-attr="<?php echo esc_attr(implode(',', $attr->author)); ?>"></div>
-		<div class="-attr-category" data-attr="<?php echo esc_attr(implode(',', $attr->category)); ?>"></div>
-		<div class="-attr-tag" data-attr="<?php echo esc_attr(implode(',', $attr->tag)); ?>"></div>
-		<div class="-attr-q" data-attr="<?php echo esc_attr($attr->q); ?>"></div>
+		<div class="-attr-page" data-attr="<?php echo esc_attr($attr->strings['page']); ?>"></div>
+		<div class="-attr-orderby" data-attr="<?php echo esc_attr($attr->strings['orderby']); ?>"></div>
+		<div class="-attr-author" data-attr="<?php echo esc_attr($attr->strings['author']); ?>"></div>
+		<div class="-attr-category" data-attr="<?php echo esc_attr($attr->strings['category']); ?>"></div>
+		<div class="-attr-tag" data-attr="<?php echo esc_attr($attr->strings['tag']); ?>"></div>
+		<div class="-attr-q" data-attr="<?php echo esc_attr($attr->strings['q']); ?>"></div>
 	</div>
 
 </div>

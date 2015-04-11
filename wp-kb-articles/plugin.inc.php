@@ -203,7 +203,7 @@ namespace wp_kb_articles
 			 *
 			 * @var string Current version of the software.
 			 */
-			public $version = '150304';
+			public $version = '150411';
 
 			/*
 			 * Public Properties (Defined @ Setup)
@@ -467,6 +467,10 @@ namespace wp_kb_articles
 				add_action('wp_print_styles', array($this, 'enqueue_front_styles'), 10, 0);
 
 				add_action('save_post_'.$this->post_type, array($this, 'save_article'), 10, 1);
+				add_action('before_delete_post', array($this, 'delete_article'), 10, 1);
+
+				add_action('set_object_terms', array($this, 'save_article_terms'), 10, 1);
+				add_action('deleted_term_relationships', array($this, 'delete_article_terms'), 10, 1);
 
 				add_filter('the_content', array($this, 'article_footer'), PHP_INT_MAX, 1);
 
@@ -1148,7 +1152,7 @@ namespace wp_kb_articles
 			 */
 
 			/**
-			 * Handle article-save actions.
+			 * Handle article save actions.
 			 *
 			 * @since 150113 First documented version.
 			 *
@@ -1158,7 +1162,91 @@ namespace wp_kb_articles
 			 */
 			public function save_article($post_id)
 			{
-				$this->utils_post->update_popularity($post_id, 0);
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$this->utils_post->update_popularity($post->ID, 0);
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
+			}
+
+			/**
+			 * Handle article deletion actions.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `before_delete_post` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function delete_article($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'delete'); // Delete.
+			}
+
+			/**
+			 * Handle article save terms changes.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `set_object_terms` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function save_article_terms($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
+			}
+
+			/**
+			 * Handle article term deletions.
+			 *
+			 * @since 150411 Improving searches.
+			 *
+			 * @attaches-to `deleted_term_relationships` hook.
+			 *
+			 * @param integer $post_id Post ID.
+			 */
+			public function delete_article_terms($post_id)
+			{
+				if(!($post_id = (integer)$post_id))
+					return; // Not possible.
+
+				if(!($post = get_post($post_id)))
+					return; // Not possible.
+
+				if($post->post_type !== $this->post_type)
+					return; // Not applicable.
+
+				$index = new index(); // Index class instance.
+				$index->sync($post->ID, 'save'); // Save changes.
 			}
 
 			/**
@@ -1304,6 +1392,10 @@ namespace wp_kb_articles
 			 */
 			public function register_post_type()
 			{
+				if(!is_null($done = &$this->static_key(__FUNCTION__)))
+					return; // Already did this; one time only please.
+				$done = TRUE; // Flag this as being done.
+
 				$icon = $this->utils_fs->inline_icon_svg();
 				$icon = $this->utils_markup->color_svg_menu_icon($icon);
 
@@ -1354,6 +1446,65 @@ namespace wp_kb_articles
 				                                                   'delete_terms' => 'delete_others_'.$this->post_type.'s')
 				);
 				register_taxonomy($this->post_type.'_tag', array($this->post_type), $tag_taxonomy_args);
+			}
+
+			/**
+			 * Registers rewrite rules/tags.
+			 *
+			 * @since 150113 First documented version.
+			 *
+			 * @attaches-to `init` action.
+			 */
+			public function register_rewrite_rules()
+			{
+				if(!is_null($done = &$this->static_key(__FUNCTION__)))
+					return; // Already did this; one time only please.
+				$done = TRUE; // Flag this as being done.
+
+				foreach($this->qv_keys as $_qv) // e.g. `page`, `author`, etc.
+					add_rewrite_endpoint($this->rewrite_prefix.$_qv, EP_PERMALINK | EP_PAGES, $this->qv_prefix.$_qv);
+				unset($_qv); // Housekeeping.
+				/*
+				 * Endpoints are not that powerful; i.e. there's no way to collect them in any
+				 *    sequence; or with more than one at a time. So we filter query vars.
+				 */
+				$_this = $this; // Needed by closure below.
+				add_filter('request', function ($query_vars) use ($_this)
+				{
+					$current_path           = trim($_this->utils_url->current_path(), '/');
+					$current_path_info      = trim($_this->utils_url->current_path_info(), '/');
+					$current_path_with_info = trim($current_path.'/'.$current_path_info, '/');
+
+					if(stripos($current_path_with_info, $_this->rewrite_prefix) === FALSE)
+						return $query_vars; // Not applicable.
+
+					if(($home_path = trim(parse_url(home_url(), PHP_URL_PATH), '/')))
+						$current_path_with_info = preg_replace('/^'.preg_quote($home_path, '/').'/', '', $current_path_with_info);
+
+					$rewrite_prefix_length        = strlen($_this->rewrite_prefix);
+					$current_path_with_info_parts = explode('/', $current_path_with_info);
+
+					for($_i = 0; $_i < count($current_path_with_info_parts); $_i++)
+					{
+						$_part = $current_path_with_info_parts[$_i];
+						if(isset($current_path_with_info_parts[$_i + 1]))
+							$_next_part = $current_path_with_info_parts[$_i + 1];
+						else break; // Last item in this case.
+
+						if(strpos($_part, $_this->rewrite_prefix) !== 0)
+							continue; // Not applicable.
+
+						$_unprefixed_part = substr($_part, $rewrite_prefix_length);
+						if(!in_array($_unprefixed_part, $_this->qv_keys, TRUE))
+							continue; // Not applicable.
+
+						$query_vars[$_this->qv_prefix.$_unprefixed_part] = $_next_part;
+						$_i++; // Skip the next part in this case.
+					}
+					unset($_i, $_part, $_next_part, $_unprefixed_part);
+
+					return $query_vars; // Filter through.
+				});
 			}
 
 			/**
@@ -1430,59 +1581,6 @@ namespace wp_kb_articles
 							break; // Break switch handler.
 					}
 				unset($_roles, $_role, $_cap); // Housekeeping.
-			}
-
-			/**
-			 * Registers rewrite rules/tags.
-			 *
-			 * @since 150113 First documented version.
-			 */
-			public function register_rewrite_rules()
-			{
-				foreach($this->qv_keys as $_qv) // e.g. `page`, `author`, etc.
-					add_rewrite_endpoint($this->rewrite_prefix.$_qv, EP_PERMALINK | EP_PAGES, $this->qv_prefix.$_qv);
-				unset($_qv); // Housekeeping.
-				/*
-				 * Endpoints are not that powerful; i.e. there's no way to collect them in any
-				 *    sequence; or with more than one at a time. So we filter query vars.
-				 */
-				$_this = $this; // Needed by closure below.
-				add_filter('request', function ($query_vars) use ($_this)
-				{
-					$current_path           = trim($_this->utils_url->current_path(), '/');
-					$current_path_info      = trim($_this->utils_url->current_path_info(), '/');
-					$current_path_with_info = trim($current_path.'/'.$current_path_info, '/');
-
-					if(stripos($current_path_with_info, $_this->rewrite_prefix) === FALSE)
-						return $query_vars; // Not applicable.
-
-					if(($home_path = trim(parse_url(home_url(), PHP_URL_PATH), '/')))
-						$current_path_with_info = preg_replace('/^'.preg_quote($home_path, '/').'/', '', $current_path_with_info);
-
-					$rewrite_prefix_length        = strlen($_this->rewrite_prefix);
-					$current_path_with_info_parts = explode('/', $current_path_with_info);
-
-					for($_i = 0; $_i < count($current_path_with_info_parts); $_i++)
-					{
-						$_part = $current_path_with_info_parts[$_i];
-						if(isset($current_path_with_info_parts[$_i + 1]))
-							$_next_part = $current_path_with_info_parts[$_i + 1];
-						else break; // Last item in this case.
-
-						if(strpos($_part, $_this->rewrite_prefix) !== 0)
-							continue; // Not applicable.
-
-						$_unprefixed_part = substr($_part, $rewrite_prefix_length);
-						if(!in_array($_unprefixed_part, $_this->qv_keys, TRUE))
-							continue; // Not applicable.
-
-						$query_vars[$_this->qv_prefix.$_unprefixed_part] = $_next_part;
-						$_i++; // Skip the next part in this case.
-					}
-					unset($_i, $_part, $_next_part, $_unprefixed_part);
-
-					return $query_vars; // Filter through.
-				});
 			}
 
 			/*
