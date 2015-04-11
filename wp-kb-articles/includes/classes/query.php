@@ -152,15 +152,14 @@ namespace wp_kb_articles // Root namespace.
 				$this->args = (object)$args; // Convert to object now.
 
 				# Collect trending/popular category IDs; if they exist on this site.
-				#  ~ This is disabled in the lite version.
 
-				#if(($_term_info = term_exists('trending', $this->plugin->post_type.'_category')))
-				#	$this->trending = (integer)$_term_info['term_id'];
+				if(($_term_info = term_exists('trending', $this->plugin->post_type.'_category')))
+					$this->trending = (integer)$_term_info['term_id'];
 
-				#if(($_term_info = term_exists('popular', $this->plugin->post_type.'_category')))
-				#	$this->popular = (integer)$_term_info['term_id'];
+				if(($_term_info = term_exists('popular', $this->plugin->post_type.'_category')))
+					$this->popular = (integer)$_term_info['term_id'];
 
-				#unset($_term_info); // Housekeeping.
+				unset($_term_info); // Housekeeping.
 
 				# Resolve, typecast, and validate all arguments.
 

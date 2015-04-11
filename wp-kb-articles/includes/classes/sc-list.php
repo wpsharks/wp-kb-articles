@@ -60,6 +60,16 @@ namespace wp_kb_articles // Root namespace.
 				$attr = array_merge($default_attr, $attr);
 				$attr = array_intersect_key($attr, $default_attr);
 
+				foreach($attr as $_key => &$_value) // e.g. `page`, `author`, etc.
+					if(in_array($_key, $this->plugin->qv_keys, TRUE) && !is_null($_qv = get_query_var($this->plugin->qv_prefix.$_key, NULL)))
+						$_value = (string)$_qv; // e.g. `page`, `author`, etc.
+				unset($_key, $_value, $_qv); // Housekeeping.
+
+				foreach($attr as $_key => &$_value) // e.g. `page`, `author`, etc.
+					if(in_array($_key, $this->plugin->qv_keys, TRUE) && isset($_REQUEST[$this->plugin->qv_prefix.$_key]))
+						$_value = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_key]));
+				unset($_key, $_value); // Housekeeping.
+
 				$this->query = new query($attr); // Perform DB query.
 				$this->attr  = array_merge($attr, (array)$this->query->args);
 				$this->attr  = (object)$this->attr; // Object now.
