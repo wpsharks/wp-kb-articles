@@ -334,7 +334,7 @@ namespace wp_kb_articles // Root namespace.
 
 					" `".esc_sql($this->plugin->utils_db->prefix().'index')."` AS `index`".
 					" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts` ON `index`.`post_id` = `posts`.`ID`".
-					($this->args->category_no_tp || $this->args->tag // Do we need the term relationships table for category(s) and/or tag(s)?
+					($this->args->category_no_tp // Do we need the term relationships table for category(s)? Note: this is not necessary for tag filters.
 						? " INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` AS `term_relationships` ON `index`.`post_id` = `term_relationships`.`object_id`" : '').
 					" LEFT JOIN `".esc_sql($this->plugin->utils_db->prefix().'stats')."` AS `stats` ON `index`.`post_id` = `stats`.`post_id`".
 					" LEFT JOIN `".esc_sql($this->plugin->utils_db->wp->postmeta)."` AS `popularity` ON `index`.`post_id` = `popularity`.`post_id` AND `popularity`.`meta_key` = '".esc_sql(__NAMESPACE__.'_popularity')."'".
@@ -347,12 +347,12 @@ namespace wp_kb_articles // Root namespace.
 					($this->args->author // Filter by author(s)?
 						? " AND `posts`.`post_author` IN('".implode("','", $this->args->author)."')"
 						: '').
-					($this->args->category_no_tp && $this->args->tag // Filter by category(s) and by tag(s)?
-						? " AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_tp)."')".
-						  " AND (SELECT COUNT(1) FROM `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` WHERE `term_taxonomy_id` IN('".implode("','", $this->args->tag)."') AND `object_id` = `index`.`post_id`) = 1"
-						: ($this->args->category_no_tp || $this->args->tag ? // Only by one of these? This is a bit easier to deal with.
-							" AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_tp ? $this->args->category_no_tp : $this->args->tag)."')"
-							: '')).
+					($this->args->category_no_tp // Filter by category(s)? This is an OR/any check.
+						? " AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_tp)."')"
+						: '').
+					($this->args->tag // Filter by tag(s)? This is an AND/all check; i.e., has all of the tags?
+						? " AND (SELECT COUNT(1) FROM `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` WHERE `term_taxonomy_id` IN('".implode("','", $this->args->tag)."') AND `object_id` = `index`.`post_id`) = ".count($this->args->tag)
+						: '').
 					($this->args->q // Performing a search query?
 						? " AND MATCH(`index`.`post_title`, `index`.`post_tags`, `index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)"
 						: '').
