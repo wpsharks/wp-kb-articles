@@ -62,7 +62,7 @@ namespace wp_kb_articles // Root namespace.
 					" `posts`.`ID` AS `post_id`,".
 					" `posts`.`post_title` AS `post_title`,".
 					" (".$post_tags_sql_frag.") AS `post_tags`,".
-					" `posts`.`post_content` AS `post_content`".
+					" ".$this->sql_textify('`posts`.`post_content`')." AS `post_content`".
 
 					" FROM `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts`".
 
@@ -132,7 +132,7 @@ namespace wp_kb_articles // Root namespace.
 								" `posts`.`ID` AS `post_id`,".
 								" `posts`.`post_title` AS `post_title`,".
 								" (".$post_tags_sql_frag.") AS `post_tags`,".
-								" `posts`.`post_content` AS `post_content`".
+								" ".$this->sql_textify('`posts`.`post_content`')." AS `post_content`".
 
 								" FROM `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts`".
 
@@ -147,6 +147,28 @@ namespace wp_kb_articles // Root namespace.
 					}
 				}
 				unset($_post_id, $_post); // Housekeeping.
+			}
+
+			/**
+			 * Uses custom SQL functions to force plain text.
+			 *
+			 * @param string $col The column to textify.
+			 *
+			 * @return string SQL function calls around column identifier.
+			 */
+			protected function sql_textify($col)
+			{
+				if(!($col = trim((string)$col)))
+					return ''; // Not possible.
+
+				if(!is_null($sql = &$this->cache_key(__FUNCTION__, $col)))
+					return $sql; // Already cached this.
+
+				$sql_strip_tags      = esc_sql($this->plugin->utils_db->prefix().'strip_tags');
+				$sql_strip_md_syntax = esc_sql($this->plugin->utils_db->prefix().'strip_md_syntax');
+				$sql_strip_vert_ws   = esc_sql($this->plugin->utils_db->prefix().'strip_vert_ws');
+
+				return ($sql = "TRIM(".$sql_strip_vert_ws."(".$sql_strip_md_syntax."(".$sql_strip_tags."(".esc_sql($col)."))))");
 			}
 		}
 	}

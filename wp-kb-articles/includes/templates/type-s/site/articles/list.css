@@ -294,6 +294,14 @@
 .wp_kb_articles-list > .-articles > .-article > .-title {
   margin: 0 0 .5em 0;
 }
+.wp_kb_articles-list > .-articles > .-article > .-snippet {
+  opacity: 0.5;
+  font-style: italic;
+  margin: -.5em 0 .5em .5em;
+}
+.wp_kb_articles-list > .-articles > .-article > .-title > a > b {
+  color: #000000;
+}
 .wp_kb_articles-list > .-articles > .-article > .-meta {
   font-size: 80%;
   color: #A2A2A2;

@@ -239,8 +239,8 @@ namespace wp_kb_articles // Root namespace.
 				unset($_key, $_tag, $_term); // Housekeeping.
 
 				$this->args->q                           = trim((string)$this->args->q);
-				$this->args->trending_days               = min(1, (integer)$this->args->trending_days);
-				$this->args->snippet_before_after_length = min(10, (integer)$this->args->snippet_before_after_length);
+				$this->args->trending_days               = max(1, (integer)$this->args->trending_days);
+				$this->args->snippet_before_after_length = max(10, (integer)$this->args->snippet_before_after_length);
 				$this->args->category_no_tp              = array_diff($this->args->category, array($this->trending, $this->popular));
 				$this->is_trending                       = $this->trending && in_array($this->trending, $this->args->category, TRUE);
 				$this->is_popular                        = !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
@@ -261,20 +261,24 @@ namespace wp_kb_articles // Root namespace.
 				);
 				# Convert all arguments into strings; needed by some callers.
 
-				$_arg_strings = array(); // Initialize string values.
-				foreach($this->args as $_key => $_value) if(is_array($_value))
+				$_arg_strings = array(); // Initialize.
+				foreach($this->args as $_key => $_value)
 				{
-					if($_key === 'orderby') // Associative.
-					{
-						$_arg_strings[$_key] = '';
-						foreach($_value as $__key => $__value)
-							$_arg_strings[$_key] .= ','.$__key.':'.$__value;
-						$_arg_strings[$_key] = trim($_arg_strings[$_key], ',');
-					}
-					else $_arg_strings[$_key] = implode(',', $_value);
-				}
-				else $_arg_strings[$_key] = (string)$_value; // Force string.
+					if($_key === 'strings') continue; // Skip.
 
+					if(is_array($_value)) // Implode all arrays.
+					{
+						if($_key === 'orderby') // Associative.
+						{
+							$_arg_strings[$_key] = '';
+							foreach($_value as $__key => $__value)
+								$_arg_strings[$_key] .= ','.$__key.':'.$__value;
+							$_arg_strings[$_key] = trim($_arg_strings[$_key], ',');
+						}
+						else $_arg_strings[$_key] = implode(',', $_value);
+					}
+					else $_arg_strings[$_key] = (string)$_value;
+				}
 				$this->args->strings = $_arg_strings; // Special property.
 				unset($_arg_strings, $_key, $_value, $__key, $__value); // Housekeeping.
 
@@ -308,21 +312,23 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function do_query()
 			{
-				$sql      = // Complex DB query that uses a custom fulltext-enabled index table.
+				$sql = // Complex DB query that uses a custom fulltext-enabled index table.
 
-					"SELECT SQL_CALC_FOUND_ROWS `index`.`post_id` AS `post_id`". // Columns/data.
+					"SELECT SQL_CALC_FOUND_ROWS `index`.`post_id` AS `post_id`,".
+					" SUM(`stats`.`visits`) AS `visits`,". // Unique visitors.
+					" CAST(`popularity`.`meta_value` AS UNSIGNED) AS `hearts`".
 
 					($this->args->q // Performing a search query?
 						? ", (". // Break these down to give each column different weights.
 						  " (1.5 * (MATCH(`index`.`post_title`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE))) +".
 						  " (1.0 * (MATCH(`index`.`post_tags`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE))) +".
 						  " (0.5 * (MATCH(`index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)))".
-						  ") AS `relevance`". // For ordering below.
+						  ") AS `relevance`,". // For ordering below.
 
 						  " SUBSTRING(`index`.`post_content`,". // Collect a snippet of the content based on the configured before/after length.
 						  "   IF(LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) > ".$this->args->snippet_before_after_length.", LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) - ".$this->args->snippet_before_after_length.", 1),".
 						  "   ".$this->args->snippet_before_after_length." + LENGTH('".esc_sql($this->args->q)."') + ".$this->args->snippet_before_after_length.
-						  " ) AS `snipppet`"
+						  " ) AS `snippet`"
 						: '').
 					" FROM ". // Which tables are we selecting/joining on?
 
@@ -348,9 +354,11 @@ namespace wp_kb_articles // Root namespace.
 							" AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_tp ? $this->args->category_no_tp : $this->args->tag)."')"
 							: '')).
 					($this->args->q // Performing a search query?
-						? " MATCH(`index`.`post_title`, `index`.`post_tags`, `index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)".
-						  " HAVING `relevance` > 0"
-						: '');
+						? " AND MATCH(`index`.`post_title`, `index`.`post_tags`, `index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)"
+						: '').
+					" GROUP BY `index`.`post_id`". // Required for SUM ordering below.
+					($this->args->q ? " HAVING `relevance` > 0" : ''); // Relevant results only.
+
 				$_orderby = ''; // Initialize list of ordered orderby items.
 				// This results in an ordered list of orderby items; as configured by query args.
 				foreach($this->args->orderby as $_key => $_value) switch($_key)
@@ -361,11 +369,11 @@ namespace wp_kb_articles // Root namespace.
 						break; // Break switch handler.
 
 					case 'popularity': // By article popularity/hearts.
-						$_orderby .= " CAST(`popularity`.`meta_value` AS UNSIGNED) ".esc_sql($_value).",";
+						$_orderby .= " `hearts` ".esc_sql($_value).",";
 						break; // Break switch handler.
 
 					case 'visits': // By total unique visitors.
-						$_orderby .= " SUM(`stats`.`visits`) ".esc_sql($_value).",";
+						$_orderby .= " `visits` ".esc_sql($_value).",";
 						break; // Break switch handler.
 
 					case 'comment_count': // By article comment count.
@@ -382,6 +390,7 @@ namespace wp_kb_articles // Root namespace.
 				$sql .= " LIMIT ".(($this->args->page - 1) * $this->args->per_page).", ".$this->args->per_page;
 
 				$this->results                 = $this->plugin->utils_db->wp->get_results($sql, OBJECT_K);
+				$this->results                 = $this->plugin->utils_db->typify_deep($this->results);
 				$this->pagination->found_rows  = (integer)$this->plugin->utils_db->wp->get_var("SELECT FOUND_ROWS()");
 				$this->pagination->total_pages = ceil($this->pagination->found_rows / $this->args->per_page);
 
@@ -401,7 +410,8 @@ namespace wp_kb_articles // Root namespace.
 					'suppress_filters'    => TRUE,
 					'no_found_rows'       => TRUE,
 					'orderby'             => 'post__in',
-					'post__in'            => array_keys($this->results),
+					'post__in'            => $this->results ? array_keys($this->results) : array(0),
+					// ↑ Don't let an empty array slide through. See: <http://jas.xyz/1EmDjvm>
 					'post_type'           => $this->plugin->post_type,
 				);
 				$this->wp_query = new \WP_Query($args);

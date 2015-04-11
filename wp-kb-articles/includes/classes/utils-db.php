@@ -103,6 +103,9 @@ namespace wp_kb_articles // Root namespace.
 					'time',
 					'count',
 					'counter',
+					'views',
+					'visits',
+					'hearts',
 				);
 				$preg_quoted_integer_keys = array_map(function ($key)
 				{

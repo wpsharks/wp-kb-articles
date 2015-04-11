@@ -116,11 +116,22 @@ namespace wp_kb_articles;
 	<div class="-articles">
 		<?php if($query->wp_query->have_posts()): ?>
 			<?php while($query->wp_query->have_posts()): $query->wp_query->the_post(); ?>
+				<?php $_post_id = get_the_ID(); ?>
 				<div class="-article">
 
 					<h3 class="-title">
-						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
+						<?php $_title = // Hilite any search terms in title.
+							$plugin->utils_markup->hilite_search_terms($attr->q, esc_html(get_the_title())); ?>
+						<a href="<?php echo esc_attr(get_permalink()); ?>"><?php echo $_title; ?></a>
 					</h3>
+
+					<?php if(!empty($query->results[$_post_id]->snippet)): ?>
+						<div class="-snippet">
+							<?php $_snippet = // Hilite any search terms in snippet also.
+								$plugin->utils_markup->hilite_search_terms($attr->q, esc_html($query->results[$_post_id]->snippet)); ?>
+							<?php echo '...'.$_snippet.'...'; ?>
+						</div>
+					<?php endif; ?>
 
 					<div class="-meta">
 						<div class="-author">
@@ -129,7 +140,7 @@ namespace wp_kb_articles;
 								><?php echo esc_html(get_the_author()); ?></a>
 						</div>
 
-						<?php if(($_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))): ?>
+						<?php if(($_terms = get_the_terms($_post_id, $plugin->post_type.'_tag'))): ?>
 							<div class="-tags">
 								<span><?php echo __('tagged:', $plugin->text_domain); ?></span>
 								<?php $_tags = ''; // Initialize.
@@ -153,12 +164,13 @@ namespace wp_kb_articles;
 						</div>
 
 						<div class="-popularity">
-							<?php echo esc_html($plugin->utils_post->get_popularity(get_the_ID())); ?>
+							<?php echo esc_html($plugin->utils_post->get_popularity($_post_id)); ?>
 						</div>
 					</div>
 
 				</div>
 			<?php endwhile; ?>
+			<?php unset($_post_id, $_title, $_snippet); ?>
 			<?php wp_reset_postdata(); ?>
 		<?php else: ?>
 			<p><i class="fa fa-meh-o"></i> <?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>

@@ -315,7 +315,7 @@ namespace wp_kb_articles // Root namespace.
 				check_option_key: // Target point.
 
 				// e.g. type `a` for `site/comment-form/snippet/file.php`.
-				// becomes: `template__type_a__site__comment_form__snipppet__file___php`.
+				// becomes: `template__type_a__site__comment_form__snippet__file___php`.
 				$option_key = static::data_option_key(array('type' => $this->type, 'file' => $this->snippet_sub_dir.'/'.$file));
 
 				if(!empty($this->plugin->options[$option_key]))

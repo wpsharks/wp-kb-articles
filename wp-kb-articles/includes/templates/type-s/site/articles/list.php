@@ -117,9 +117,10 @@ namespace wp_kb_articles;
 	<div class="-articles">
 		<?php if($query->wp_query->have_posts()): ?>
 			<?php while($query->wp_query->have_posts()): $query->wp_query->the_post(); ?>
+				<?php $_post_id = get_the_ID(); ?>
 				<div class="-article">
 					<?php $_tags = ''; // Initialize.
-					if(($_terms = get_the_terms(get_the_ID(), $plugin->post_type.'_tag'))):
+					if(($_terms = get_the_terms($_post_id, $plugin->post_type.'_tag'))):
 						foreach($_terms as $_term) // Iterate the tags that it has.
 							$_tags .= ($_tags ? ', ' : ''). // Comma-delimited tags.
 							          '<a href="#" data-click-tag="'.esc_attr($_term->term_id).'">'.esc_attr($_term->name).'</a>';
@@ -133,15 +134,18 @@ namespace wp_kb_articles;
 						'comments_open'          => comments_open(),
 						'comments_number'        => get_comments_number(),
 						'show_avatars'           => get_option('show_avatars'),
-						'current_user_can_edit'  => current_user_can('edit_post', get_the_ID()),
+						'has_snippet'            => !empty($query->results[$_post_id]->snippet),
+						'current_user_can_edit'  => current_user_can('edit_post', $_post_id),
 
 						'[namespace]'            => esc_attr(__NAMESPACE__),
 
-						'[post_id]'              => esc_html(get_the_ID()),
+						'[post_id]'              => esc_html($_post_id),
 						'[permalink]'            => esc_attr(get_permalink()),
-						'[title]'                => esc_html(get_the_title()),
+						'[title]'                => $plugin->utils_markup->hilite_search_terms($attr->q, esc_html(get_the_title())),
+						'[snippet]'              => !empty($query->results[$_post_id]->snippet) // Only if we have a snippet.
+							? $plugin->utils_markup->hilite_search_terms($attr->q, esc_html($query->results[$_post_id]->snippet)) : '',
 
-						'[popularity]'           => esc_html($plugin->utils_post->get_popularity(get_the_ID())),
+						'[popularity]'           => esc_html($plugin->utils_post->get_popularity($_post_id)),
 
 						'[author_id]'            => esc_attr(get_the_author_meta('ID')),
 						'[author_posts_url]'     => esc_attr(get_author_posts_url(get_the_author_meta('ID'))),
@@ -156,6 +160,7 @@ namespace wp_kb_articles;
 					unset($_tags); // Housekeeping. ?>
 				</div>
 			<?php endwhile; ?>
+			<?php unset($_post_id); ?>
 			<?php wp_reset_postdata(); ?>
 		<?php else: ?>
 			<p><i class="fa fa-meh-o"></i> <?php echo __('No articles matching search criteria.', $plugin->text_domain); ?></p>

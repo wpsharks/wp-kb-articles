@@ -97,6 +97,35 @@ namespace wp_kb_articles // Root namespace.
 			}
 
 			/**
+			 * Hilites search terms in a string.
+			 *
+			 * @since 150411 Improve search functionality.
+			 *
+			 * @param string $q The full, original search query.
+			 * @param string $string The snippet to hilite.
+			 *
+			 * @return string The string; now as HTML markup.
+			 */
+			public function hilite_search_terms($q, $string)
+			{
+				if(!($q = trim((string)$q)))
+					return $string; // Not possible.
+
+				if(!($string = trim((string)$string)))
+					return $string; // Not possible.
+
+				if(!($string = strip_tags($string)))
+					return $string; // Not possible.
+
+				if(!preg_match_all('/\w+/', $q, $words))
+					return $string; // No word chars.
+
+				$words = array_unique(array_map('strtolower', $words[0]));
+
+				return preg_replace('/\b('.implode('|', $words).')\b/i', '<b>${0}</b>', $string);
+			}
+
+			/**
 			 * Markup for select menu options.
 			 *
 			 * @since 150113 First documented version.
