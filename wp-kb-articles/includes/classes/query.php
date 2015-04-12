@@ -373,30 +373,30 @@ namespace wp_kb_articles // Root namespace.
 				// This results in an ordered list of orderby items; as configured by query args.
 				foreach($this->args->orderby as $_key => $_value) switch($_key)
 				{
-					case 'relevance': // By search relevance.
-						if($this->args->q) // Only if applicable.
+					case 'relevance': // by search relevance.
+						if($this->args->q) // only if applicable.
 							$_orderby .= " `relevance` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 
-					case 'popularity': // By article popularity/hearts.
+					case 'popularity': // by article popularity/hearts.
 						$_orderby .= " `hearts` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 
-					case 'visits': // By total unique visitors.
+					case 'visits': // by total unique visitors.
 						$_orderby .= " `visits` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 
-					case 'comment_count': // By article comment count.
+					case 'comment_count': // by article comment count.
 						$_orderby .= " `posts`.`comment_count` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 
-					case 'views': // By total hits; i.e., page views.
+					case 'views': // by total hits; i.e., page views.
 						$_orderby .= " `views` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 
-					case 'date': // By article date.
+					case 'date': // by article date.
 						$_orderby .= " `posts`.`post_date` ".esc_sql($_value).",";
-						break; // Break switch handler.
+						break; // break switch handler.
 				}
 				$sql .= " ORDER BY ".$this->plugin->utils_string->trim($_orderby, '', ',');
 				unset($_orderby, $_key, $_value); // Housekeeping.
@@ -407,6 +407,14 @@ namespace wp_kb_articles // Root namespace.
 				$this->results                   = $this->plugin->utils_db->typify_deep($this->results);
 				$this->pagination->total_results = (integer)$this->plugin->utils_db->wp->get_var("SELECT FOUND_ROWS()");
 				$this->pagination->total_pages   = ceil($this->pagination->total_results / $this->args->per_page);
+
+				foreach($this->results as $_result) // Sanitize snippets.
+					// @TODO Replace this hackety sanitizer and other MySQL functions with regex.
+					//    Currently, there is no REGEXP_REPLACE function in MySQL. Research needed.
+					//    Ideally, regex would be applied during indexing to sanitize the snippet.
+					//    We do some of this already, but only what it possible given MySQL limitations.
+					$_result->snippet = preg_replace('/\s+/', ' ', strip_shortcodes($_result->snippet));
+				unset($_result); // Housekeeping.
 
 				$this->do_wp_query(); // Now do a WP query with the post IDs we need for this page.
 			}
