@@ -130,7 +130,24 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			public function is_float_key($key)
 			{
-				return FALSE; // Default; no float keys at this time.
+				if(!$key || !is_string($key))
+					return FALSE;
+
+				$key = strtolower($key);
+
+				$float_keys             = array(
+					'relevance',
+				);
+				$preg_quoted_float_keys = array_map(function ($key)
+				{
+					return preg_quote($key, '/'); #
+
+				}, $float_keys);
+
+				if(preg_match('/(?:^|_)(?:'.implode('|', $preg_quoted_float_keys).')(?:_before)?$/i', $key))
+					return TRUE; // e.g. `id`, `x_id`, `x_x_id`, `x_id_before`, `time_before`, `x_time_before`.
+
+				return FALSE; // Default.
 			}
 
 			/**

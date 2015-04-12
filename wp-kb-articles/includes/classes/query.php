@@ -100,26 +100,27 @@ namespace wp_kb_articles // Root namespace.
 			 * @var array Default query args.
 			 */
 			public static $default_args = array(
-				'page'                        => 1, // Page number.
-				'per_page'                    => 25, // Cannot exceed max limit.
+				'page'           => 1, // Page number.
+				'per_page'       => 25, // Cannot exceed max limit.
 
-				'orderby'                     => array(
+				'orderby'        => array(
 					'relevance'     => 'DESC', // By search relevance.
 					'popularity'    => 'DESC', // By article popularity/hearts.
 					'visits'        => 'DESC', // By total unique visitors.
 					'comment_count' => 'DESC', // By article comment count.
+					'views'         => 'DESC', // By total hits; i.e., page views.
 					'date'          => 'DESC', // By article date.
 				),
-				'author'                      => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'category'                    => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'category_no_tp'              => array(), // For internal use only. Categories without trending or popular IDs.
-				'tag'                         => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'q'                           => '', // Search query.
+				'author'         => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'category'       => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'category_no_tp' => array(), // For internal use only. Categories without trending or popular IDs.
+				'tag'            => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'q'              => '', // Search query. Correleates with `snippet` and `relevance`.
 
-				'trending_days'               => 7, // Number of days to use in trending calculation.
-				'snippet_before_after_length' => 45, // Before & after search term.
+				'trending_days'  => 7, // Number of days to use in trending calculation.
+				'snippet_length' => 100, // Total characters in snippet; for searches only.
 
-				'strings'                     => array(), // For internal use only; args converted to strings.
+				'strings'        => array(), // For internal use only; args converted to strings.
 			);
 
 			/**
@@ -238,18 +239,19 @@ namespace wp_kb_articles // Root namespace.
 				}
 				unset($_key, $_tag, $_term); // Housekeeping.
 
-				$this->args->q                           = trim((string)$this->args->q);
-				$this->args->trending_days               = max(1, (integer)$this->args->trending_days);
-				$this->args->snippet_before_after_length = max(10, (integer)$this->args->snippet_before_after_length);
-				$this->args->category_no_tp              = array_diff($this->args->category, array($this->trending, $this->popular));
-				$this->is_trending                       = $this->trending && in_array($this->trending, $this->args->category, TRUE);
-				$this->is_popular                        = !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
+				$this->args->q              = trim((string)$this->args->q);
+				$this->args->trending_days  = max(1, (integer)$this->args->trending_days);
+				$this->args->snippet_length = max(20, (integer)$this->args->snippet_length);
+				$this->args->category_no_tp = array_diff($this->args->category, array($this->trending, $this->popular));
+				$this->is_trending          = $this->trending && in_array($this->trending, $this->args->category, TRUE);
+				$this->is_popular           = !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
 
 				if($this->is_trending) $this->args->orderby = array(
 					'relevance'     => 'DESC', // By search relevance.
 					'visits'        => 'DESC', // By total unique visitors.
 					'popularity'    => 'DESC', // By article popularity/hearts.
 					'comment_count' => 'DESC', // By article comment count.
+					'views'         => 'DESC', // By total hits; i.e., page views.
 					'date'          => 'DESC', // By article date.
 				);
 				else if($this->is_popular) $this->args->orderby = array(
@@ -257,6 +259,7 @@ namespace wp_kb_articles // Root namespace.
 					'popularity'    => 'DESC', // By article popularity/hearts.
 					'visits'        => 'DESC', // By total unique visitors.
 					'comment_count' => 'DESC', // By article comment count.
+					'views'         => 'DESC', // By total hits; i.e., page views.
 					'date'          => 'DESC', // By article date.
 				);
 				# Convert all arguments into strings; needed by some callers.
@@ -286,10 +289,10 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->results    = array();
 				$this->pagination = (object)array(
-					'found_rows'   => 0, // Set after query.
-					'total_pages'  => 0, // Set after query.
-					'per_page'     => $this->args->per_page,
-					'current_page' => $this->args->page,
+					'total_results' => 0, // Set after query.
+					'total_pages'   => 0, // Set after query.
+					'per_page'      => $this->args->per_page,
+					'current_page'  => $this->args->page,
 				);
 				$this->wp_query   = NULL; // Set after query.
 
@@ -312,10 +315,14 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function do_query()
 			{
-				$sql = // Complex DB query that uses a custom fulltext-enabled index table.
+				$snippet_before_after_length = ceil($this->args->snippet_length / 2);
+
+				$sql      = // Complex DB query that uses a custom fulltext-enabled index table.
 
 					"SELECT SQL_CALC_FOUND_ROWS `index`.`post_id` AS `post_id`,".
-					" SUM(`stats`.`visits`) AS `visits`,". // Unique visitors.
+					" SUM(`stats`.`visits`) AS `visits`,".
+					" SUM(`stats`.`views`) AS `views`,".
+					" MAX(`stats`.`ymd_time`) AS `last_view_time`,".
 					" CAST(`popularity`.`meta_value` AS UNSIGNED) AS `hearts`".
 
 					($this->args->q // Performing a search query?
@@ -326,10 +333,10 @@ namespace wp_kb_articles // Root namespace.
 						  ") AS `relevance`,". // For ordering below.
 
 						  " SUBSTRING(`index`.`post_content`,". // Collect a snippet of the content based on the configured before/after length.
-						  "   IF(LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) > ".$this->args->snippet_before_after_length.", LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) - ".$this->args->snippet_before_after_length.", 1),".
-						  "   ".$this->args->snippet_before_after_length." + LENGTH('".esc_sql($this->args->q)."') + ".$this->args->snippet_before_after_length.
+						  "   IF(LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) > ".$snippet_before_after_length.", LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) - ".$snippet_before_after_length.", 1),".
+						  "   ".$snippet_before_after_length." + LENGTH('".esc_sql($this->args->q)."') + ".$snippet_before_after_length.
 						  " ) AS `snippet`"
-						: '').
+						: ", 0 AS `relevance`, '' AS `snippet`").
 					" FROM ". // Which tables are we selecting/joining on?
 
 					" `".esc_sql($this->plugin->utils_db->prefix().'index')."` AS `index`".
@@ -357,8 +364,11 @@ namespace wp_kb_articles // Root namespace.
 						? " AND MATCH(`index`.`post_title`, `index`.`post_tags`, `index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)"
 						: '').
 					" GROUP BY `index`.`post_id`". // Required for SUM ordering below.
-					($this->args->q ? " HAVING `relevance` > 0" : ''); // Relevant results only.
-
+					($this->args->q ? " HAVING `relevance` > 0" : ''). // Relevant results only.
+					($this->is_trending // Filter down to trending (i.e., recently viewed) articles?
+						? ($this->args->q ? " AND " : " HAVING "). // Second condition or first?
+						  "`last_view_time` >= '".esc_sql(strtotime('-'.$this->args->trending_days.' days'))."'"
+						: '');
 				$_orderby = ''; // Initialize list of ordered orderby items.
 				// This results in an ordered list of orderby items; as configured by query args.
 				foreach($this->args->orderby as $_key => $_value) switch($_key)
@@ -380,6 +390,10 @@ namespace wp_kb_articles // Root namespace.
 						$_orderby .= " `posts`.`comment_count` ".esc_sql($_value).",";
 						break; // Break switch handler.
 
+					case 'views': // By total hits; i.e., page views.
+						$_orderby .= " `views` ".esc_sql($_value).",";
+						break; // Break switch handler.
+
 					case 'date': // By article date.
 						$_orderby .= " `posts`.`post_date` ".esc_sql($_value).",";
 						break; // Break switch handler.
@@ -389,10 +403,10 @@ namespace wp_kb_articles // Root namespace.
 
 				$sql .= " LIMIT ".(($this->args->page - 1) * $this->args->per_page).", ".$this->args->per_page;
 
-				$this->results                 = $this->plugin->utils_db->wp->get_results($sql, OBJECT_K);
-				$this->results                 = $this->plugin->utils_db->typify_deep($this->results);
-				$this->pagination->found_rows  = (integer)$this->plugin->utils_db->wp->get_var("SELECT FOUND_ROWS()");
-				$this->pagination->total_pages = ceil($this->pagination->found_rows / $this->args->per_page);
+				$this->results                   = $this->plugin->utils_db->wp->get_results($sql, OBJECT_K);
+				$this->results                   = $this->plugin->utils_db->typify_deep($this->results);
+				$this->pagination->total_results = (integer)$this->plugin->utils_db->wp->get_var("SELECT FOUND_ROWS()");
+				$this->pagination->total_pages   = ceil($this->pagination->total_results / $this->args->per_page);
 
 				$this->do_wp_query(); // Now do a WP query with the post IDs we need for this page.
 			}
