@@ -118,7 +118,7 @@ namespace wp_kb_articles // Root namespace.
 				'q'              => '', // Search query. Correleates with `snippet` and `relevance`.
 
 				'trending_days'  => 7, // Number of days to use in trending calculation.
-				'snippet_length' => 100, // Total characters in snippet; for searches only.
+				'snippet_size'   => 100, // Total characters in snippet; for searches only.
 
 				'strings'        => array(), // For internal use only; args converted to strings.
 			);
@@ -241,7 +241,7 @@ namespace wp_kb_articles // Root namespace.
 
 				$this->args->q              = trim((string)$this->args->q);
 				$this->args->trending_days  = max(1, (integer)$this->args->trending_days);
-				$this->args->snippet_length = max(20, (integer)$this->args->snippet_length);
+				$this->args->snippet_size   = max(20, (integer)$this->args->snippet_size);
 				$this->args->category_no_tp = array_diff($this->args->category, array($this->trending, $this->popular));
 				$this->is_trending          = $this->trending && in_array($this->trending, $this->args->category, TRUE);
 				$this->is_popular           = !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
@@ -315,7 +315,7 @@ namespace wp_kb_articles // Root namespace.
 			 */
 			protected function do_query()
 			{
-				$snippet_before_after_length = ceil($this->args->snippet_length / 2);
+				$snippet_before_after_size = ceil($this->args->snippet_size / 2);
 
 				$sql      = // Complex DB query that uses a custom fulltext-enabled index table.
 
@@ -333,8 +333,8 @@ namespace wp_kb_articles // Root namespace.
 						  ") AS `relevance`,". // For ordering below.
 
 						  " SUBSTRING(`index`.`post_content`,". // Collect a snippet of the content based on the configured before/after length.
-						  "   IF(LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) > ".$snippet_before_after_length.", LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) - ".$snippet_before_after_length.", 1),".
-						  "   ".$snippet_before_after_length." + LENGTH('".esc_sql($this->args->q)."') + ".$snippet_before_after_length.
+						  "   IF(LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) > ".$snippet_before_after_size.", LOCATE('".esc_sql($this->args->q)."', `index`.`post_content`) - ".$snippet_before_after_size.", 1),".
+						  "   ".$snippet_before_after_size." + LENGTH('".esc_sql($this->args->q)."') + ".$snippet_before_after_size.
 						  " ) AS `snippet`"
 						: ", 0 AS `relevance`, '' AS `snippet`").
 					" FROM ". // Which tables are we selecting/joining on?
