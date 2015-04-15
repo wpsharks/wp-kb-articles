@@ -152,7 +152,7 @@ namespace wp_kb_articles // Root namespace.
 							               '0' => __('No, disable GitHub repo integration', $this->plugin->text_domain),
 							               '1' => __('Yes, I want to pull KB articles from a GitHub repo', $this->plugin->text_domain),
 						               ),
-						               'notes_after'     => '<p>'.sprintf(__('This allows you to pull KB articles (written in Markdown) from a GitHub repo and even integrate %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+						               'notes_after'     => '<p>'.sprintf(__('This allows you to pull KB articles (written in Markdown) from a GitHub repo and even integrate %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
@@ -207,7 +207,7 @@ namespace wp_kb_articles // Root namespace.
 						                'placeholder'   => __('e.g. x6x3g9tpxuebatqn3ssbb9nabv8ymmc6z3ba7tbg', $this->plugin->text_domain),
 						                'name'          => 'github_mirror_api_key',
 						                'current_value' => $current_value_for('github_mirror_api_key'),
-						                'notes_after'   => '<p>'.sprintf(__('Required for private repos and to remove API connection limits imposed on public access. Please generate your %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/settings/applications', __('personal access token', $this->plugin->text_domain))).'</p>',
+						                'notes_after'   => '<p>'.sprintf(__('Required for private repos and to remove API connection limits imposed on public access. Please generate your %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/r/github-personal-access-token/', __('personal access token', $this->plugin->text_domain))).'</p>',
 					                )).
 				                '    </tbody>'.
 				                ' </table>'.
@@ -222,7 +222,7 @@ namespace wp_kb_articles // Root namespace.
 						                'placeholder'   => __('e.g. johndoe', $this->plugin->text_domain),
 						                'name'          => 'github_mirror_author',
 						                'current_value' => $current_value_for('github_mirror_author'),
-						                'notes_after'   => '<p>'.sprintf(__('If your %1$s does not specify an <code>author:</code>, who should be set as a default author?', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+						                'notes_after'   => '<p>'.sprintf(__('If your %1$s does not specify an <code>author:</code>, who should be set as a default author?', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					                )).
 				                '    </tbody>'.
 				                ' </table>'.
@@ -251,6 +251,24 @@ namespace wp_kb_articles // Root namespace.
 				                '    <tbody>'.
 				                $form_fields->select_row(
 					                array(
+						                'label'           => sprintf(__('Automatically Link Images?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						                'name'            => 'github_link_images_enable',
+						                'current_value'   => $current_value_for('github_link_images_enable'),
+						                'allow_arbitrary' => FALSE,
+						                'options'         => array(
+							                '1' => __('Yes, automatically link HTML &lt;img&gt; tags and/or Markdown images; i.e., click to enlarge', $this->plugin->text_domain),
+							                '0' => __('No, leave as-is; I would rather my articles not be enhanced by this filter', $this->plugin->text_domain),
+						                ),
+						                'notes_after'     => '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable linked images, but you have a few articles where you\'d prefer to exclude this functionality; you can simply add a Custom Field to the article in WordPress: <code>%1$s_github_link_images=true|false</code>. You can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>link-images: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->select_row(
+					                array(
 						                'label'           => sprintf(__('Enable Feedback via GitHub Issues?', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						                'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
 						                'name'            => 'github_issue_feedback_enable',
@@ -260,7 +278,7 @@ namespace wp_kb_articles // Root namespace.
 							                '1' => __('Yes, display a link that leads to the underlying GitHub Issue', $this->plugin->text_domain),
 							                '0' => __('No, I don\'t maintain GitHub Issues for KB articles, or I don\'t care to expose them', $this->plugin->text_domain),
 						                ),
-						                'notes_after'     => '<p>'.sprintf(__('If you associate each KB article with a GitHub Issue (where you discuss changes/improvements to the article); enabling this feature provides viewers with a link to the underlying Issue where they can leave you feedback. To take advantage of this feature you should connect each KB article to a GitHub Issue using %1$s. In the case of an article that is not connected to a specific GitHub Issue, the link that viewers click will lead them to a list of all of your GitHub Issues.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+						                'notes_after'     => '<p>'.sprintf(__('If you associate each KB article with a GitHub Issue (where you discuss changes/improvements to the article); enabling this feature provides viewers with a link to the underlying Issue where they can leave you feedback. To take advantage of this feature you should connect each KB article to a GitHub Issue using %1$s. In the case of an article that is not connected to a specific GitHub Issue, the link that viewers click will lead them to a list of all of your GitHub Issues.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					                )).
 				                '    </tbody>'.
 				                ' </table>'.
@@ -278,7 +296,7 @@ namespace wp_kb_articles // Root namespace.
 							                '1' => __('Yes, keep the content in WordPress read-only to avoid edits that would be overwritten by the underlying GitHub repo anyway', $this->plugin->text_domain),
 							                '0' => __('No, I intend to juggle edits in both WordPress and in the GitHub repo too (not recommended)', $this->plugin->text_domain),
 						                ),
-						                'notes_after'     => '<p>'.sprintf(__('Articles pulled into WordPress from the underlying GitHub repo are automatically sychronized periodically. For this reason, all article content should almost always be read-only in WordPress. This is to avoid a scenario where someone changes an article in WordPress without also changing it in the GitHub repo. When you integrate with GitHub, all article changes should normally occur (and be tracked) by the underlying GitHub repo; not from within WordPress. That being said, it is quite common for site owners to exclude some of the %1$s fields on the GitHub side, thereby gaining exclusive control over Post Metadata from within WordPress. See: %1$s for further details on this.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+						                'notes_after'     => '<p>'.sprintf(__('Articles pulled into WordPress from the underlying GitHub repo are automatically sychronized periodically. For this reason, all article content should almost always be read-only in WordPress. This is to avoid a scenario where someone changes an article in WordPress without also changing it in the GitHub repo. When you integrate with GitHub, all article changes should normally occur (and be tracked) by the underlying GitHub repo; not from within WordPress. That being said, it is quite common for site owners to exclude some of the %1$s fields on the GitHub side, thereby gaining exclusive control over Post Metadata from within WordPress. See: %1$s for further details on this.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
 						                                     '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> This setting has no impact on KB articles that are created within WordPress; i.e. articles that did not originate at GitHub will always be editable.</p>', $this->plugin->text_domain),
 					                )).
 				                '    </tbody>'.
@@ -303,9 +321,22 @@ namespace wp_kb_articles // Root namespace.
 				                '    </tbody>'.
 				                ' </table>'.
 
+				                ' <table style="margin-bottom:0;">'.
+				                '    <tbody>'.
+				                $form_fields->input_row(
+					                array(
+						                'label'         => __('Enable Automatic GitHub Event Handling w/ this Payload URL:', $this->plugin->text_domain),
+						                'name'          => '___github_event_url', // Not applicable here.
+						                'other_attrs'   => 'readonly="readonly" disabled="disabled"', // Read only value at all times.
+						                'current_value' => $this->plugin->utils_url->github_event(), // Front-side action URL w/ secret event key.
+						                'notes_after'   => '<p>'.sprintf(__('<strong>Optional.</strong> If you want <strong>push</strong> events at GitHub to automatically trigger article updates on the WordPress side (i.e., without needing to wait for CRON or manual processing), you can take the URL shown here and use it to %1$s on the GitHub side. The URL (in the field above) is your Payload URL. Please tell GitHub to send the Payload to this URL, with <code>Content-Type: application/json</code>. Also, please tell GitHub to send <em>everything</em> when you %1$s.', $this->plugin->text_domain), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/r/github-create-webhook/', __('create a Webhook', $this->plugin->text_domain))).'</p>',
+					                )).
+				                '    </tbody>'.
+				                ' </table>'.
+
 				                ' <hr />'.
 
-				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these settings configured, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+				                ' <p class="pmp-note pmp-notice">'.sprintf(__('With all of these settings configured, %1$s&trade; will begin to mirror your GitHub repo; pulling all <code>.md</code> and/or <code>.html</code> files from your repo into WordPress. See also: %2$s. The %1$s&trade; GitHub repo processor runs once every 15 minutes. It looks at the SHA1 hash of each article in your repo and compares this to articles in WordPress. If updates are necessary, changes will be pulled automatically and WordPress is updated to match your repo.', $this->plugin->text_domain), esc_html($this->plugin->name), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
 
 				                ' </table>'.
 
@@ -331,7 +362,7 @@ namespace wp_kb_articles // Root namespace.
 							               '0' => __('No, I prefer that my articles not be enhanced by this filter', $this->plugin->text_domain),
 						               ),
 						               'notes_after'     => '<p>'.__('Heading IDs make it possible for links to lead to a specific scroll position in the document. Anchored sections are generated when you use headings (i.e., <code>&lt;h[1-6]&gt;</code> tags) in your article. Headings can be found in raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
-						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable heading IDs, but you have a few articles where you\'d prefer to exclude these anchored sections; you can simply add a Custom Field to the article in WordPress: <code>%1$s_hids_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>hids-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable heading IDs, but you have a few articles where you\'d prefer to exclude these anchored sections; you can simply add a Custom Field to the article in WordPress: <code>%1$s_hids_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>hids-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
@@ -356,7 +387,7 @@ namespace wp_kb_articles // Root namespace.
 							               '0' => __('No, I prefer that my articles not be displayed with a TOC', $this->plugin->text_domain),
 						               ),
 						               'notes_after'     => '<p>'.__('A TOC (Table of Contents) is a structured list of clickable topics discussed in each article; where each of these links in the TOC leads to a specific scroll position in the document. A TOC can be auto-generated whenever you use headings (i.e., <code>&lt;h[1-6]&gt;</code> tags) in your article. Headings can be found in raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
-						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable TOC generation, but you have a few articles where you\'d prefer to exclude the TOC; you can simply add a Custom Field to the article in WordPress: <code>%1$s_toc_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>toc-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable TOC generation, but you have a few articles where you\'d prefer to exclude the TOC; you can simply add a Custom Field to the article in WordPress: <code>%1$s_toc_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>toc-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('http://wpkbarticles.com/kb-article/yaml-front-matter-for-github-integration/', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
 						                                    '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> TOC generation is dependent upon heading IDs. Therefore, if a TOC is generated for an article, heading IDs are <em>also</em> generated—even if you disabled heading IDs in some other way. If you want to completely disable heading IDs, you will need to disable TOC generation also.', $this->plugin->text_domain).'</p>',
 					               )).
 				               '  </tbody>'.
