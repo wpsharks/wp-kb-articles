@@ -321,6 +321,31 @@ namespace wp_kb_articles // Root namespace.
 				               '  <tbody>'.
 				               $form_fields->select_row(
 					               array(
+						               'label'           => sprintf(__('Auto-Generate Heading IDs?', $this->plugin->text_domain), esc_html($this->plugin->name)),
+						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
+						               'name'            => 'hids_generation_enable',
+						               'current_value'   => $current_value_for('hids_generation_enable'),
+						               'allow_arbitrary' => FALSE,
+						               'options'         => array(
+							               '1' => __('Yes, automatically generate anchored IDs for each article w/ headings', $this->plugin->text_domain),
+							               '0' => __('No, I prefer that my articles not be enhanced by this filter', $this->plugin->text_domain),
+						               ),
+						               'notes_after'     => '<p>'.__('Heading IDs make it possible for links to lead to a specific scroll position in the document. Anchored sections are generated when you use headings (i.e., <code>&lt;h[1-6]&gt;</code> tags) in your article. Headings can be found in raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable heading IDs, but you have a few articles where you\'d prefer to exclude these anchored sections; you can simply add a Custom Field to the article in WordPress: <code>%1$s_hids_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>hids-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+					               )).
+				               '  </tbody>'.
+				               '</table>';
+
+				echo $this->panel(__('HIDs (Heading IDs)', $this->plugin->text_domain), $_panel_body, array('pro_only' => TRUE));
+
+				unset($_panel_body); // Housekeeping.
+
+				/* ----------------------------------------------------------------------------------------- */
+
+				$_panel_body = '<table>'.
+				               '  <tbody>'.
+				               $form_fields->select_row(
+					               array(
 						               'label'           => sprintf(__('Auto-Generate TOC (Table of Contents)?', $this->plugin->text_domain), esc_html($this->plugin->name)),
 						               'placeholder'     => __('Select an Option...', $this->plugin->text_domain),
 						               'name'            => 'toc_generation_enable',
@@ -330,8 +355,9 @@ namespace wp_kb_articles // Root namespace.
 							               '1' => __('Yes, automatically generate a TOC for each article w/ headings', $this->plugin->text_domain),
 							               '0' => __('No, I prefer that my articles not be displayed with a TOC', $this->plugin->text_domain),
 						               ),
-						               'notes_after'     => '<p>'.__('A TOC (Table of Contents) is a structured list of clickable topics discussed in each article; where each of these links in the TOC leads to a specific scroll position in the document. A TOC can be auto-generated whenever you use headings (i.e. <code>&lt;h[1-6]&gt;</code> tags) in your article. Adding these headings can be accomplished with raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
-						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable TOC generation, but you have a few articles where you\'d prefer to exclude the TOC; you can simply add a Custom Field to the article in WordPress: <code>%1$s_toc_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>toc-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>',
+						               'notes_after'     => '<p>'.__('A TOC (Table of Contents) is a structured list of clickable topics discussed in each article; where each of these links in the TOC leads to a specific scroll position in the document. A TOC can be auto-generated whenever you use headings (i.e., <code>&lt;h[1-6]&gt;</code> tags) in your article. Headings can be found in raw HTML, or with ATX-style headings in Markdown. An ATX-style heading consists of one to six <code>#</code> signs, followed by a space, and then a line of text.', $this->plugin->text_domain).'</p>'.
+						                                    '<p class="pmp-note pmp-info">'.sprintf(__('<strong>Tip:</strong> If you enable TOC generation, but you have a few articles where you\'d prefer to exclude the TOC; you can simply add a Custom Field to the article in WordPress: <code>%1$s_toc_enable=true|false</code>. If you\'ve integrated with GitHub, you can also use %2$s to accomplish this. The YAML configuration option should be written as: <code>toc-enable: true|false</code>', $this->plugin->text_domain), esc_html(__NAMESPACE__), $this->plugin->utils_markup->x_anchor('https://github.com/websharks/wp-kb-articles/wiki/YAML-Front-Matter-for-GitHub-Integration', __('YAML Front Matter', $this->plugin->text_domain))).'</p>'.
+						                                    '<p class="pmp-note pmp-info">'.__('<strong>Note:</strong> TOC generation is dependent upon heading IDs. Therefore, if a TOC is generated for an article, heading IDs are <em>also</em> generated—even if you disabled heading IDs in some other way. If you want to completely disable heading IDs, you will need to disable TOC generation also.', $this->plugin->text_domain).'</p>',
 					               )).
 				               '  </tbody>'.
 				               '</table>';
