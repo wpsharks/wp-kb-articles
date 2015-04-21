@@ -728,7 +728,7 @@ namespace wp_kb_articles // Root namespace.
 						$qvs[$_qv] = trim(stripslashes((string)$_REQUEST[$this->plugin->qv_prefix.$_qv]));
 
 					else if(!is_null($_qv_value = get_query_var($this->plugin->qv_prefix.$_qv, NULL)))
-						$qvs[$_qv] = (string)$_qv_value; // Current value.
+						$qvs[$_qv] = urldecode((string)$_qv_value); // Current value.
 				}
 				unset($_qv, $_qv_value); // Housekeeping.
 

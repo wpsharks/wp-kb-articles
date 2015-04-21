@@ -72,7 +72,7 @@ namespace wp_kb_articles // Root namespace.
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `q` is all that's supported here for now.
 					if(in_array($_prop, $this->plugin->qv_keys, TRUE) && !is_null($_qv = get_query_var($this->plugin->qv_prefix.$_prop, NULL)))
-						$_value = (string)$_qv; // e.g. `q` is all that's supported here for now.
+						$_value = urldecode((string)$_qv); // e.g. `q` is all that's supported here for now.
 				unset($_prop, $_value, $_qv); // Housekeeping.
 
 				foreach($this->attr as $_prop => &$_value) // e.g. `q` is all that's supported here for now.

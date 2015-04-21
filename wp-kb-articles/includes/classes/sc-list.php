@@ -62,7 +62,7 @@ namespace wp_kb_articles // Root namespace.
 
 				foreach($attr as $_key => &$_value) // e.g. `page`, `author`, etc.
 					if(in_array($_key, $this->plugin->qv_keys, TRUE) && !is_null($_qv = get_query_var($this->plugin->qv_prefix.$_key, NULL)))
-						$_value = (string)$_qv; // e.g. `page`, `author`, etc.
+						$_value = urldecode((string)$_qv); // e.g. `page`, `author`, etc.
 				unset($_key, $_value, $_qv); // Housekeeping.
 
 				foreach($attr as $_key => &$_value) // e.g. `page`, `author`, etc.
