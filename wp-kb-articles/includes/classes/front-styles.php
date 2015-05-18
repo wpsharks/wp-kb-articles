@@ -47,7 +47,7 @@ namespace wp_kb_articles // Root namespace.
 				if(empty($GLOBALS['post']) || !is_singular())
 					return; // Not a post/page.
 
-				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list_search_box') === FALSE)
+				if(stripos($GLOBALS['post']->post_content, '[kb_articles_list_search_box') === FALSE && !apply_filters(__METHOD__, false))
 					return; // Current singular post/page does not contain the shortcode.
 
 				wp_enqueue_style('font-awesome', set_url_scheme('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'), array(), NULL, 'all');
