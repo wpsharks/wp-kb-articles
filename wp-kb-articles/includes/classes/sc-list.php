@@ -132,7 +132,7 @@ namespace wp_kb_articles // Root namespace.
 			protected function tab_categories()
 			{
 				$args = array(
-					'orderby'    => 'none',
+					'orderby'    => 'include',
 					'hide_empty' => FALSE,
 					'include'    => $this->attr->tab_categories,
 				);
