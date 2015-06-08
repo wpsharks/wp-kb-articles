@@ -51,11 +51,14 @@ namespace wp_kb_articles // Root namespace.
 
 				$default_attr = array_merge(
 					query::$default_args, array(
-					'tab_categories' => 'trending,popular',
+					'tab_categories' => 'recent,trending,popular',
 					'url'            => $this->plugin->utils_url->current(),
 				));
 				if(isset($attr['tab_category']) && !isset($attr['tab_categories']))
 					$attr['tab_categories'] = $attr['tab_category'];
+
+				if(empty($attr['orderby']) && empty($attr['author']) && empty($attr['category']) && empty($attr['tag']) && empty($attr['q']))
+					$attr['category'] = 'recent'; // Default internal category; if exists.
 
 				$attr = array_merge($default_attr, $attr);
 				$attr = array_intersect_key($attr, $default_attr);

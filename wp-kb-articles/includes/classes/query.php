@@ -30,6 +30,24 @@ namespace wp_kb_articles // Root namespace.
 			protected $args;
 
 			/**
+			 * Recent category ID.
+			 *
+			 * @since 150607 Adding recent.
+			 *
+			 * @var integer Recent category ID.
+			 */
+			protected $recent = 0;
+
+			/**
+			 * A recent view?
+			 *
+			 * @since 150607 Adding recent.
+			 *
+			 * @var boolean A recent view?
+			 */
+			protected $is_recent = FALSE;
+
+			/**
 			 * Trending category ID.
 			 *
 			 * @since 150410 Improving searches.
@@ -111,12 +129,13 @@ namespace wp_kb_articles // Root namespace.
 					'views'         => 'DESC', // By total hits; i.e., page views.
 					'date'          => 'DESC', // By article date.
 				),
-				'author'         => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'category'       => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'category_no_tp' => array(), // For internal use only. Categories without trending or popular IDs.
-				'tag'            => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
-				'q'              => '', // Search query. Correleates with `snippet` and `relevance`.
+				'author'          => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'category'        => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'category_no_rtp' => array(), // For internal use only. Categories without trending or popular IDs.
+				'tag'             => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
+				'q'               => '', // Search query. Correleates with `snippet` and `relevance`.
 
+				'recent_days'    => 14, // Number of days to use in recent calculation.
 				'trending_days'  => 7, // Number of days to use in trending calculation.
 				'snippet_size'   => 100, // Total characters in snippet; for searches only.
 
@@ -152,7 +171,10 @@ namespace wp_kb_articles // Root namespace.
 				$args       = array_intersect_key($args, static::$default_args);
 				$this->args = (object)$args; // Convert to object now.
 
-				# Collect trending/popular category IDs; if they exist on this site.
+				# Collect recent/trending/popular category IDs; if they exist on this site.
+
+				if(($_term_info = term_exists('recent', $this->plugin->post_type.'_category')))
+					$this->recent = (integer)$_term_info['term_id'];
 
 				if(($_term_info = term_exists('trending', $this->plugin->post_type.'_category')))
 					$this->trending = (integer)$_term_info['term_id'];
@@ -240,13 +262,24 @@ namespace wp_kb_articles // Root namespace.
 				unset($_key, $_tag, $_term); // Housekeeping.
 
 				$this->args->q              = trim((string)$this->args->q);
+				$this->args->recent_days    = max(1, (integer)$this->args->recent_days);
 				$this->args->trending_days  = max(1, (integer)$this->args->trending_days);
 				$this->args->snippet_size   = max(20, (integer)$this->args->snippet_size);
-				$this->args->category_no_tp = array_diff($this->args->category, array($this->trending, $this->popular));
-				$this->is_trending          = $this->trending && in_array($this->trending, $this->args->category, TRUE);
-				$this->is_popular           = !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
 
-				if($this->is_trending) $this->args->orderby = array(
+				$this->args->category_no_rtp = array_diff($this->args->category, array($this->recent, $this->trending, $this->popular));
+				$this->is_recent            = $this->recent && in_array($this->recent, $this->args->category, TRUE);
+				$this->is_trending          = !$this->is_recent && $this->trending && in_array($this->trending, $this->args->category, TRUE);
+				$this->is_popular           = !$this->is_recent && !$this->is_trending && $this->popular && in_array($this->popular, $this->args->category, TRUE);
+
+				if($this->is_recent) $this->args->orderby = array(
+					'relevance'     => 'DESC', // By search relevance.
+					'date'          => 'DESC', // By article date.
+					'visits'        => 'DESC', // By total unique visitors.
+					'popularity'    => 'DESC', // By article popularity/hearts.
+					'comment_count' => 'DESC', // By article comment count.
+					'views'         => 'DESC', // By total hits; i.e., page views.
+				);
+				else if($this->is_trending) $this->args->orderby = array(
 					'relevance'     => 'DESC', // By search relevance.
 					'visits'        => 'DESC', // By total unique visitors.
 					'popularity'    => 'DESC', // By article popularity/hearts.
@@ -341,7 +374,7 @@ namespace wp_kb_articles // Root namespace.
 
 					" `".esc_sql($this->plugin->utils_db->prefix().'index')."` AS `index`".
 					" INNER JOIN `".esc_sql($this->plugin->utils_db->wp->posts)."` AS `posts` ON `index`.`post_id` = `posts`.`ID`".
-					($this->args->category_no_tp // Do we need the term relationships table for category(s)? Note: this is not necessary for tag filters.
+					($this->args->category_no_rtp // Do we need the term relationships table for category(s)? Note: this is not necessary for tag filters.
 						? " INNER JOIN `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` AS `term_relationships` ON `index`.`post_id` = `term_relationships`.`object_id`" : '').
 					" LEFT JOIN `".esc_sql($this->plugin->utils_db->prefix().'stats')."` AS `stats` ON `index`.`post_id` = `stats`.`post_id`".
 					" LEFT JOIN `".esc_sql($this->plugin->utils_db->wp->postmeta)."` AS `popularity` ON `index`.`post_id` = `popularity`.`post_id` AND `popularity`.`meta_key` = '".esc_sql(__NAMESPACE__.'_popularity')."'".
@@ -354,8 +387,8 @@ namespace wp_kb_articles // Root namespace.
 					($this->args->author // Filter by author(s)?
 						? " AND `posts`.`post_author` IN('".implode("','", $this->args->author)."')"
 						: '').
-					($this->args->category_no_tp // Filter by category(s)? This is an OR/any check.
-						? " AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_tp)."')"
+					($this->args->category_no_rtp // Filter by category(s)? This is an OR/any check.
+						? " AND `term_relationships`.`term_taxonomy_id` IN('".implode("','", $this->args->category_no_rtp)."')"
 						: '').
 					($this->args->tag // Filter by tag(s)? This is an AND/all check; i.e., has all of the tags?
 						? " AND (SELECT COUNT(1) FROM `".esc_sql($this->plugin->utils_db->wp->term_relationships)."` WHERE `term_taxonomy_id` IN('".implode("','", $this->args->tag)."') AND `object_id` = `index`.`post_id`) = ".count($this->args->tag)
@@ -364,7 +397,13 @@ namespace wp_kb_articles // Root namespace.
 						? " AND MATCH(`index`.`post_title`, `index`.`post_tags`, `index`.`post_content`) AGAINST('".esc_sql($this->args->q)."' IN BOOLEAN MODE)"
 						: '').
 					" GROUP BY `index`.`post_id`". // Required for SUM ordering below.
+
 					($this->args->q ? " HAVING `relevance` > 0" : ''). // Relevant results only.
+
+					($this->is_recent // Filter down to recent (i.e., recently published) articles?
+						? ($this->args->q ? " AND " : " HAVING "). // Second condition or first?
+						  "`posts`.`post_date_gmt` >= '".esc_sql(date('Y-m-d H:i:s', strtotime('-'.$this->args->recent_days.' days')))."'"
+						: '').
 					($this->is_trending // Filter down to trending (i.e., recently viewed) articles?
 						? ($this->args->q ? " AND " : " HAVING "). // Second condition or first?
 						  "`last_view_time` >= '".esc_sql(strtotime('-'.$this->args->trending_days.' days'))."'"
