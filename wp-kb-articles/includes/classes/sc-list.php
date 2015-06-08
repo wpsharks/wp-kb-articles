@@ -187,7 +187,8 @@ namespace wp_kb_articles // Root namespace.
 							$_authors[] = ($_show_avatars ? get_avatar($_author->ID, 32).' ' : '').
 							              esc_html($_author->display_name ? $_author->display_name : $_author->user_login);
 
-					$filters['author'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_authors));
+					if($_authors) // Filtered by author(s)?
+						$filters['author'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_authors));
 
 					unset($_authors, $_show_avatars, $_author_id, $_author); // Housekeeping.
 				}
@@ -197,9 +198,11 @@ namespace wp_kb_articles // Root namespace.
 
 					foreach($this->attr->category as $_term_id)
 						if(($_term = get_term_by('id', $_term_id, $this->plugin->post_type.'_category')))
-							$_categories[] = esc_html($_term->name ? $_term->name : $_term->slug);
+							if(!in_array($_term_id, $this->attr->tab_categories, TRUE))
+								$_categories[] = esc_html($_term->name ? $_term->name : $_term->slug);
 
-					$filters['category'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_categories));
+					if($_categories) // Filtered by category(s)?
+						$filters['category'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_categories));
 
 					unset($_categories, $_term_id, $_term); // Housekeeping.
 				}
@@ -211,7 +214,8 @@ namespace wp_kb_articles // Root namespace.
 						if(($_term = get_term_by('id', $_term_id, $this->plugin->post_type.'_tag')))
 							$_tags[] = esc_html($_term->name ? $_term->name : $_term->slug);
 
-					$filters['tag'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_tags));
+					if($_tags) // Filtered by tag(s)?
+						$filters['tag'] = sprintf(__('<strong>%1$s</strong>', $this->plugin->text_domain), implode('</strong>, <strong>', $_tags));
 
 					unset($_tags, $_term_id, $_term); // Housekeeping.
 				}

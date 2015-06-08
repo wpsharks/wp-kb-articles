@@ -135,7 +135,7 @@ namespace wp_kb_articles // Root namespace.
 				'tag'             => array(), // Satisfy all. Comma-delimited slugs/IDs; or an array of slugs/IDs.
 				'q'               => '', // Search query. Correleates with `snippet` and `relevance`.
 
-				'recent_days'    => 14, // Number of days to use in recent calculation.
+				'recent_days'    => 36500, // Number of days to use in recent calculation.
 				'trending_days'  => 7, // Number of days to use in trending calculation.
 				'snippet_size'   => 100, // Total characters in snippet; for searches only.
 
