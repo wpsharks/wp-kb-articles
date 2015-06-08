@@ -55,6 +55,7 @@ namespace wp_kb_articles // Root namespace.
 				update_option(__NAMESPACE__.'_options', $this->plugin->options);
 
 				new upgrader_vs($this->prev_version); // Run version-specific upgrader(s).
+				flush_rewrite_rules(); // Flush rewrite rules for good measure.
 
 				$this->plugin->enqueue_notice // Notify site owner about this upgrade process.
 				(
