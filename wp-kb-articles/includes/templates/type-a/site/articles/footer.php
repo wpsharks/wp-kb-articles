@@ -48,7 +48,10 @@ namespace wp_kb_articles;
 					<span class="-by"><?php echo __('Article written by:', $plugin->text_domain); ?></span>
 					<a class="-author" href="<?php echo esc_attr(get_author_posts_url(get_the_author_meta('ID'))); ?>"
 						><?php echo esc_html(get_the_author()); ?></a>
-					<span class="-date"><?php echo esc_html(get_the_date()); ?></span>
+					<span class="-dates">
+						<span class="-pub-date"><?php echo esc_html(get_the_date()); ?></span>
+						<span class="-mod-date"><?php echo __('Last Modified:', $plugin->text_domain); ?> <span><?php echo esc_html(get_the_modified_date()); ?></span></span>
+					</span>
 				</div>
 			</div>
 			<a href="#" class="-popularity" data-post-id="<?php echo esc_attr($post->ID); ?>">

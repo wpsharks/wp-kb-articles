@@ -25,8 +25,8 @@
 		</div>
 	[endif]
 
-	<div class="-date">
-		[date]
+	<div class="-pub-date">
+		[pub_date]
 	</div>
 
 	<div class="-popularity">

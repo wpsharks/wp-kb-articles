@@ -155,7 +155,8 @@ namespace wp_kb_articles;
 						'[tags]'                 => $_tags, // Contains raw HTML markup.
 
 						'[comments_number_text]' => esc_html(get_comments_number_text()),
-						'[date]'                 => esc_html(get_the_date()),
+						'[pub_date]'             => esc_html(get_the_date()),
+						'[mod_date]'             => esc_html(get_the_modified_date()),
 					));
 					unset($_tags); // Housekeeping. ?>
 				</div>

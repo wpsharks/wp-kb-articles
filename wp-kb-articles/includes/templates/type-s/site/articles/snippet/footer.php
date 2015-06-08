@@ -22,7 +22,10 @@
 				<div class="-byline">
 					<span class="-by">Article written by:</span>
 					<a class="-author" href="[author_posts_url]">[author]</a>
-					<span class="-date">[date]</span>
+					<span class="-dates">
+						<span class="-pub-date">[pub_date]</span>
+						<span class="-mod-date">Last Modified: <span>[mod_date]</span></span>
+					</span>
 				</div>
 			</div>
 			<a href="#" class="-popularity" data-post-id="[post_id]">

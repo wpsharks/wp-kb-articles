@@ -44,7 +44,7 @@
 		margin-top : 1em;
 		border-top : 1px solid #E5E5E5;
 
-		& > .-popularity-tags
+		& > .-popularity-tags-feedback
 		{
 			@include clearfix;
 			margin : 1em 0 1em 0;
@@ -69,6 +69,7 @@
 			& > .-tags
 			{
 				display : inline-block;
+				margin  : 0 1em 0 0;
 
 				&::before
 				{
@@ -78,6 +79,58 @@
 
 					float                  : left;
 					margin                 : 0 .25em 0 0;
+				}
+				&:not(:last-child)
+				{
+					float  : right;
+					margin : 0 0 0 1em;
+
+					@include laptops-or-smaller
+					{
+						float  : none;
+						margin : 0 1em 0 0;
+					}
+				}
+			}
+			& > .-feedback
+			{
+				display : inline-block;
+				margin  : 0 1em 0 0;
+
+				@include laptops-or-smaller
+				{
+					display : block;
+					margin  : 1em 0 0 0;
+				}
+				&::before
+				{
+					content                : '\f113';
+					font-family            : FontAwesome;
+					-webkit-font-smoothing : antialiased;
+
+					float                  : left;
+					margin                 : 0 .25em 0 0;
+				}
+				& > .-edit
+				{
+					margin  : 0 0 0 1em;
+					display : inline-block;
+				}
+				& > .-edit::before
+				{
+					font-family            : FontAwesome;
+					-webkit-font-smoothing : antialiased;
+
+					float                  : left;
+					margin                 : 0 .25em 0 0;
+				}
+				& > .-edit.-github-edit::before
+				{
+					content : '\f092';
+				}
+				& > .-edit.-wp-edit::before
+				{
+					content : '\f19a';
 				}
 			}
 		}
@@ -138,8 +191,8 @@
 				{
 					& > .-by
 					{
-						display : block;
-						margin  : .8em 0 0 0;
+						display : inline-block;
+						margin  : .8em .15em 0 0;
 
 						@include laptops-or-smaller
 						{
@@ -152,24 +205,48 @@
 					{
 						display : inline-block;
 					}
-					& > .-date
+					& > .-dates
 					{
-						opacity    : 0.5;
-						font-size  : 90%;
-						font-style : italic;
-						display    : inline-block;
-						margin     : 0 0 0 1em;
+						display: block;
 
-						&::before
+						& > .-pub-date
 						{
-							content                : '\f133';
-							font-family            : FontAwesome;
-							-webkit-font-smoothing : antialiased;
+							opacity    : 0.5;
+							font-size  : 90%;
+							font-style : italic;
+							display    : inline-block;
 
-							float                  : left;
-							margin                 : 0 .5em 0 0;
+							&::before
+							{
+								content                : '\f133';
+								font-family            : FontAwesome;
+								-webkit-font-smoothing : antialiased;
 
-							font-style             : normal;
+								float                  : left;
+								margin                 : 0 .5em 0 0;
+
+								font-style             : normal;
+							}
+						}
+						& > .-mod-date
+						{
+							opacity    : 0.5;
+							font-size  : 90%;
+							font-style : italic;
+							display    : inline-block;
+							margin     : 0 0 0 1em;
+
+							& > span::before
+							{
+								content                : '\f040';
+								font-family            : FontAwesome;
+								-webkit-font-smoothing : antialiased;
+
+								float                  : left;
+								margin                 : 0 .5em 0 0;
+
+								font-style             : normal;
+							}
 						}
 					}
 				}
