@@ -356,7 +356,8 @@ namespace wp_kb_articles // Root namespace.
 					" SUM(`stats`.`visits`) AS `visits`,".
 					" SUM(`stats`.`views`) AS `views`,".
 					" MAX(`stats`.`ymd_time`) AS `last_view_time`,".
-					" CAST(`popularity`.`meta_value` AS UNSIGNED) AS `hearts`".
+					" CAST(`popularity`.`meta_value` AS UNSIGNED) AS `hearts`,".
+					" `posts`.`post_date_gmt`". // For possible HAVING clause.
 
 					($this->args->q // Performing a search query?
 						? ", (". // Break these down to give each column different weights.
