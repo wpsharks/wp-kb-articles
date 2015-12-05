@@ -161,12 +161,12 @@ namespace wp_kb_articles // Root namespace.
 			 * @since 150113 First documented version.
 			 *
 			 * @param string    $link The URL/link that WordPress has.
-			 * @param \stdClass $term The term object associated w/ this link.
+			 * @param \WP_Term $term The term object associated w/ this link.
 			 * @param string    $taxonomy The taxonomy that we are dealing with.
 			 *
 			 * @return string The filtered term link; w/ possible alterations.
 			 */
-			public function term_link_filter($link, \stdClass $term, $taxonomy)
+			public function term_link_filter($link, /* \WP_Term */ $term, $taxonomy)
 			{
 				if(!$this->plugin->options['sc_articles_list_index_post_id'])
 					return $link; // Not applicable.
