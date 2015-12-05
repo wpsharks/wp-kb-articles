@@ -1369,12 +1369,12 @@ namespace wp_kb_articles
 			 * @since 150113 First documented version.
 			 *
 			 * @param string    $link The URL/link that WordPress has.
-			 * @param \stdClass $term The term object associated w/ this link.
+			 * @param \WP_Term $term The term object associated w/ this link.
 			 * @param string    $taxonomy The taxonomy that we are dealing with.
 			 *
 			 * @return string The filtered term link; w/ possible alterations.
 			 */
-			public function sc_term_link($link, \stdClass $term, $taxonomy)
+			public function sc_term_link($link, /* \WP_Term */ $term, $taxonomy)
 			{
 				return $this->utils_post->term_link_filter($link, $term, $taxonomy);
 			}
