@@ -8,8 +8,8 @@
  */
 namespace wp_kb_articles
 {
-	if(!defined('WPINC')) // MUST have WordPress.
-		exit('Do NOT access this file directly: '.basename(__FILE__));
+	if(!defined('WPINC'))
+		exit('Do NOT access this file directly.');
 
 	$GLOBALS[__NAMESPACE__.'_uninstalling']    = TRUE;
 	$GLOBALS[__NAMESPACE__.'_autoload_plugin'] = FALSE;

@@ -9,7 +9,7 @@
 namespace wp_kb_articles // Root namespace.
 {
 	if(!defined('WPINC')) // MUST have WordPress.
-		exit('Do NOT access this file directly: '.basename(__FILE__));
+		exit('Do NOT access this file directly.');
 
 	if(!class_exists('\\'.__NAMESPACE__.'\\utils_php'))
 	{

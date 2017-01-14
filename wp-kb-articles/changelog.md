@@ -1,3 +1,8 @@
+= $v =
+
+- Enhancing security by removing `basename(__FILE__)` from direct access notices.
+- Enhancing MySQL compatibility by removing `$` symbols from variable names in custom functions.
+
 = v150411 =
 
 * Enhancing search functionality.
